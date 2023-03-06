@@ -3,8 +3,10 @@
   "parserOptions": {
     "project": "./tsconfig.json"
   },
+  "files": ["src/**/*.ts"],
   "rules": {
     "@typescript-eslint/prefer-nullish-coalescing": "off",
-    "@typescript-eslint/strict-boolean-expressions": "off"
+    "@typescript-eslint/strict-boolean-expressions": "off",
+    "@typescript-eslint/consistent-type-definitions": "off"
   }
 }

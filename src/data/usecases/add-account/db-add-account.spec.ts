@@ -1,18 +1,22 @@
 import { type Hasher } from '../../protocols/hasher'
 import { DbAddAccount } from './db-add-account'
 
+const makeHasher = (): Hasher => {
+  class HasherStub implements Hasher {
+    async hash (value: string): Promise<string> {
+      return await new Promise(resolve => { resolve('hashed_password') })
+    }
+  }
+  return new HasherStub()
+}
+
 interface SutTypes {
   sut: DbAddAccount
   hasherStub: Hasher
 }
 
 const makeSut = (): SutTypes => {
-  class HasherStub implements Hasher {
-    async hash (value: string): Promise<string> {
-      return await new Promise(resolve => { resolve('hashed_password') })
-    }
-  }
-  const hasherStub = new HasherStub()
+  const hasherStub = makeHasher()
   const sut = new DbAddAccount(hasherStub)
   return {
     sut,

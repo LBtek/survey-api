@@ -22,9 +22,6 @@ export const MongoHelper = {
   },
 
   mapOneResult (result: InsertOneResult, restData: object): any {
-    if (!result.acknowledged) {
-      return null
-    }
     return { id: result.insertedId.toString(), ...restData }
   }
 }

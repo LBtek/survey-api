@@ -1,7 +1,11 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import { type EmailValidator, type AddAccount, type AddAccountModel, type AccountModel, type HttpRequest } from './signup-protocols'
 import { MissingParamError, InvalidParamError, ServerError } from '../../errors'
 import { SignUpController } from './signup'
 import { ok, serverError, badRequest } from '../../helpers/http-helper'
+import request from 'supertest'
+import app from '../../../main/config/app'
+import { adaptRoute } from '../../../main/adapters/express-route-adapter'
 
 const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
@@ -170,5 +174,19 @@ describe('SignUp Controller', () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(ok(makeFakeAccount()))
+  })
+})
+
+describe('Express RouteAdapter', () => {
+  test('Should adaptRoute() returns the error message if controller throws', async () => {
+    const { sut: controller } = makeSut()
+    app.post('/api/signup', adaptRoute(controller))
+
+    await request(app)
+      .post('/api/signup')
+      .send({})
+      .expect({
+        error: 'Missing param: name'
+      })
   })
 })

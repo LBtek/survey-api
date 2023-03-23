@@ -3,9 +3,9 @@ import { type EmailValidator, type AddAccount, type AddAccountModel, type Accoun
 import { MissingParamError, InvalidParamError, ServerError } from '../../errors'
 import { SignUpController } from './signup'
 import { ok, serverError, badRequest } from '../../helpers/http-helper'
-/* import request from 'supertest'
+import request from 'supertest'
 import app from '../../../main/config/app'
-import { adaptRoute } from '../../../main/adapters/express-route-adapter' */
+import { adaptRoute } from '../../../main/adapters/express-route-adapter'
 
 const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
@@ -152,7 +152,7 @@ describe('SignUp Controller', () => {
   })
 })
 
-/* describe('Express RouteAdapter', () => {
+describe('Express RouteAdapter', () => {
   test('Should adaptRoute() returns the error message if controller throws', async () => {
     const { sut: controller } = makeSut()
     app.post('/api/signup', adaptRoute(controller))
@@ -164,4 +164,4 @@ describe('SignUp Controller', () => {
         error: 'Missing param: name'
       })
   })
-}) */
+})

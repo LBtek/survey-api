@@ -2,7 +2,7 @@
 import { type AddAccount, type AddAccountModel, type AccountModel, type HttpRequest, type Validation } from './signup-protocols'
 import { MissingParamError, ServerError } from '../../errors'
 import { SignUpController } from './signup'
-import { ok, serverError, badRequest } from '../../helpers/http-helper'
+import { ok, serverError, badRequest } from '../../helpers/http/http-helper'
 import request from 'supertest'
 import app from '../../../main/config/app'
 import { adaptRoute } from '../../../main/adapters/express-route-adapter'

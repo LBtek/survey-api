@@ -5,7 +5,7 @@ import { SignUpController } from './signup-controller'
 import { ok, serverError, badRequest } from '../../helpers/http/http-helper'
 import request from 'supertest'
 import app from '../../../main/config/app'
-import { adaptRoute } from '../../../main/adapters/express-route-adapter'
+import { adaptRoute } from '../../../main/adapters/express/express-route-adapter'
 
 const makeFakeAccount = (): AccountModel => ({
   id: 'valid_id',

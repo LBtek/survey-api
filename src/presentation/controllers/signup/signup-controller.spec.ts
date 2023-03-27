@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { type AddAccount, type AddAccountModel, type AccountModel, type HttpRequest, type Validation } from './signup-protocols'
+import { type AddAccount, type AddAccountModel, type AccountModel, type HttpRequest, type Validation } from './signup-controller-protocols'
 import { MissingParamError, ServerError } from '../../errors'
-import { SignUpController } from './signup'
+import { SignUpController } from './signup-controller'
 import { ok, serverError, badRequest } from '../../helpers/http/http-helper'
 import request from 'supertest'
 import app from '../../../main/config/app'

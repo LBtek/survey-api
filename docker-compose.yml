@@ -5,7 +5,7 @@ services:
     image: mongo:4
     restart: always
     volumes: 
-      - ./docker/data/:/data/db/
+      - db-data:/data/db/
     ports: 
       - '27017:27017'
   api:
@@ -27,3 +27,5 @@ networks:
   default:
     driver: "bridge"
     
+volumes:
+  db-data:

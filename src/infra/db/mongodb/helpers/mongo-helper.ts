@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/dot-notation */
+/* eslint-disable @typescript-eslint/no-dynamic-delete */
 import { type Collection, MongoClient, type InsertOneResult, type WithId, type Document } from 'mongodb'
 
 export const MongoHelper = {
@@ -22,7 +24,11 @@ export const MongoHelper = {
   },
 
   mapInsertOneResult (result: InsertOneResult<Document>, restData: object): any {
-    return { id: result.insertedId.toString(), ...restData }
+    const res = { id: result.insertedId.toString(), ...restData }
+    if (res['_id']) {
+      delete res['_id']
+    }
+    return res
   },
 
   mapOneDocumentWithId (result: WithId<Document>): any {

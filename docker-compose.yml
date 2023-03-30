@@ -13,15 +13,17 @@ services:
     build: .
     image: clean-node-api
     restart: always
+    working_dir: /usr/src/clean-node-api
     command: npm run debug
     volumes: 
-      - ./package.json:/usr/src/clean-node-api/package.json
       - ./dist/:/usr/src/clean-node-api/dist/
     ports: 
       - '5050:5050'
       - '9222:9222'
     links: 
-     - mongo
+      - mongo
+    depends_on:
+      - mongo
 
 networks:
   default:

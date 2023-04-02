@@ -4,7 +4,7 @@ import { ValidationComposite } from './validation-composite'
 
 const makeValidation = (): Validation => {
   class ValidationStub implements Validation {
-    validate (input: object): Error {
+    validate (input: object): Error | null {
       return null
     }
   }

@@ -1,12 +1,13 @@
 import { ObjectId, type Collection } from 'mongodb'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { AccountMongoRepository } from './account-mongo-repository'
+import env from '../../../../main/config/env'
 
 let accountCollection: Collection
 
 describe('Account Mongo Repository', () => {
   beforeAll(async () => {
-    await MongoHelper.connect(process.env.MONGO_URL)
+    await MongoHelper.connect(env.mongoUrl)
   })
 
   afterAll(async () => {
@@ -67,10 +68,10 @@ describe('Account Mongo Repository', () => {
     const result = await accountCollection.insertOne(fakeInsert)
     const id = result.insertedId.toString()
     const accountBeforeUpdate = await accountCollection.findOne({ _id: new ObjectId(id) })
-    expect(accountBeforeUpdate.accessToken).toBeFalsy()
+    expect(accountBeforeUpdate?.accessToken).toBeFalsy()
     await sut.updateAccessToken(id, 'any_token')
     const accountAfterUpdate = await accountCollection.findOne({ _id: new ObjectId(id) })
     expect(accountAfterUpdate).toBeTruthy()
-    expect(accountAfterUpdate.accessToken).toBe('any_token')
+    expect(accountAfterUpdate?.accessToken).toBe('any_token')
   })
 })

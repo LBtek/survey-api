@@ -28,7 +28,7 @@ const makeAddAccountRepository = (): AddAccountRepository => {
 
 const makeLoadAccountByEmailRepository = (): LoadAccountByEmailRepository => {
   class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
-    async loadByEmail (email: string): Promise<AccountModel> {
+    async loadByEmail (email: string): Promise<AccountModel | null> {
       return await new Promise(resolve => { resolve(null) })
     }
   }

@@ -16,7 +16,7 @@ const makeFakeAccount = (): AccountModel => ({
 
 const makeAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
-    async add (account: AddAccountModel): Promise<AccountModel> {
+    async add (account: AddAccountModel): Promise<AccountModel | null> {
       return await new Promise(resolve => { resolve(makeFakeAccount()) })
     }
   }

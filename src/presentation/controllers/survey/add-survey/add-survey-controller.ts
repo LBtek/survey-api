@@ -1,5 +1,5 @@
 import { type Validation, type Controller, type HttpRequest, type HttpResponse, type AddSurvey } from './add-survey-controller-protocols'
-import { badRequest, serverError } from '@/presentation/helpers/http/http-helper'
+import { badRequest, noContent, serverError } from '@/presentation/helpers/http/http-helper'
 
 export class AddSurveyController implements Controller {
   constructor (
@@ -18,7 +18,7 @@ export class AddSurveyController implements Controller {
         question,
         answers
       })
-      return null
+      return noContent()
     } catch (error) {
       return serverError(error)
     }

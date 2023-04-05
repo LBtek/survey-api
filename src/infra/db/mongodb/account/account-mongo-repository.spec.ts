@@ -1,7 +1,7 @@
 import { ObjectId, type Collection } from 'mongodb'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { AccountMongoRepository } from './account-mongo-repository'
-import env from '../../../../main/config/env'
+import env from '@/main/config/env'
 
 let accountCollection: Collection
 

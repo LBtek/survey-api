@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { type AddAccount, type AddAccountModel, type AccountModel, type HttpRequest, type Validation, type Authentication, type AuthenticationModel } from './signup-controller-protocols'
-import { EmailInUserError, MissingParamError, ServerError } from '../../errors'
+import { EmailInUserError, MissingParamError, ServerError } from '@/presentation/errors'
+import { ok, serverError, badRequest, forbidden } from '@/presentation/helpers/http/http-helper'
 import { SignUpController } from './signup-controller'
-import { ok, serverError, badRequest, forbidden } from '../../helpers/http/http-helper'
+import { adaptRoute } from '@/main/adapters/express/express-route-adapter'
+import app from '@/main/config/app'
 import request from 'supertest'
-import app from '../../../main/config/app'
-import { adaptRoute } from '../../../main/adapters/express/express-route-adapter'
 
 const makeFakeAccount = (): AccountModel => ({
   id: 'valid_id',

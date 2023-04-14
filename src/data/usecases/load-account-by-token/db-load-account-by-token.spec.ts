@@ -3,8 +3,8 @@ import { DbLoadAccountByToken } from './db-load-account-by-token'
 
 const makeTokenDecrypter = (): TokenDecrypter => {
   class TokenDecrypterStub implements TokenDecrypter {
-    async decrypt (value: string): Promise<string> {
-      return null
+    async decrypt (token: string): Promise<string> {
+      return 'any_value'
     }
   }
   return new TokenDecrypterStub()
@@ -28,7 +28,16 @@ describe('DbLoadAccountByToken Usecase', () => {
   test('Should call TokenDecrypter with correct value', async () => {
     const { sut, tokenDecrypterStub } = makeSut()
     const decryptSpy = jest.spyOn(tokenDecrypterStub, 'decrypt')
-    await sut.loadByToken('any_token')
+    await sut.loadByToken('any_token', 'any_role')
     expect(decryptSpy).toHaveBeenCalledWith('any_token')
+  })
+
+  test('Should return null if TokenDecrypter returns null', async () => {
+    const { sut, tokenDecrypterStub } = makeSut()
+    jest.spyOn(tokenDecrypterStub, 'decrypt').mockReturnValueOnce(
+      new Promise(resolve => { resolve(null) })
+    )
+    const account = await sut.loadByToken('any_token', 'any_role')
+    expect(account).toBeNull()
   })
 })

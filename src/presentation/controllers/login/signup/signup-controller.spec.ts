@@ -3,7 +3,7 @@ import { type AddAccount, type AddAccountModel, type AccountModel, type HttpRequ
 import { EmailInUserError, MissingParamError, ServerError } from '@/presentation/errors'
 import { ok, serverError, badRequest, forbidden } from '@/presentation/helpers/http/http-helper'
 import { SignUpController } from './signup-controller'
-import { adaptRoute } from '@/main/adapters/express/express-route-adapter'
+import { adaptRoute } from '@/main/adapters/express-route-adapter'
 import app from '@/main/config/app'
 import request from 'supertest'
 

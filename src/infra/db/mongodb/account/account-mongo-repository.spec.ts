@@ -30,6 +30,8 @@ describe('Account Mongo Repository', () => {
     password: 'any_password'
   })
 
+  const accessToken = 'any_token'
+
   describe('add()', () => {
     test('Should return an account on add success', async () => {
       const sut = makeSut()
@@ -72,6 +74,20 @@ describe('Account Mongo Repository', () => {
       const accountAfterUpdate = await accountCollection.findOne({ _id: new ObjectId(id) })
       expect(accountAfterUpdate).toBeTruthy()
       expect(accountAfterUpdate?.accessToken).toBe('any_token')
+    })
+  })
+
+  describe('loadByToken()', () => {
+    test('Should return an account on loadByToken without role', async () => {
+      const sut = makeSut()
+      const fakeInsert = { ...makeFakeInsert(), accessToken }
+      await accountCollection.insertOne(fakeInsert)
+      const account = await sut.loadByToken(accessToken)
+      expect(account).toBeTruthy()
+      expect(account.id).toBeTruthy()
+      expect(account.name).toBe('any_name')
+      expect(account.email).toBe('any_email@mail.com')
+      expect(account.password).toBe('any_password')
     })
   })
 })

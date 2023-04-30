@@ -1,3 +1,5 @@
+[![Coverage Status](https://coveralls.io/repos/github/LBtek/clean-ts-api/badge.svg?branch=main)](https://coveralls.io/github/LBtek/clean-ts-api?branch=main)
+
 # **Clean Node API**
 
 Essa API faz parte do treinamento do professor Rodrigo Manguinho (Mango) na Udemy.

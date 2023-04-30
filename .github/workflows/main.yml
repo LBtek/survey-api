@@ -1,25 +1,36 @@
-on: ["push", "pull_request"]
+name: Node.js CI
 
-name: Coveralls
+on:
+  push:
+    branches: [ dev, feat/** ]
+  pull_request:
+    branches: [ main, dev ]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     steps:
 
     - uses: actions/checkout@v3
-
+    
     - name: Use Node.js 18.16
       uses: actions/setup-node@v3
       with:
         node-version: 18.16
-
-    - name: Install dependencies and run coveralls
+        
+    - name: Install dependencies and run coverage tests
       run: |
         npm pkg delete scripts.prepare
         npm install
         npm run test:ci
 
+    - name: Run docker
+      uses: isbang/compose-action@v1.4.1
+      with:
+        up-flags: "--build"
+        down-flags: "--volumes"
+
     - name: Coveralls
       uses: coverallsapp/github-action@v2
+      
 

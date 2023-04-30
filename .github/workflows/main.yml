@@ -18,7 +18,7 @@ jobs:
       run: |
         npm pkg delete scripts.prepare
         npm install
-        npm run test:coveralls
+        npm run test:ci
 
     - name: Coveralls
       uses: coverallsapp/github-action@v2

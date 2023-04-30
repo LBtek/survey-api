@@ -1,0 +1,25 @@
+on: ["push", "pull_request"]
+
+name: Coveralls
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: actions/checkout@v3
+
+    - name: Use Node.js 18.16
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18.16
+
+    - name: Install dependencies and run coveralls
+      run: |
+        npm pkg delete scripts.prepare
+        npm install
+        npm run test:coveralls
+
+    - name: Coveralls
+      uses: coverallsapp/github-action@v2
+

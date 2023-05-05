@@ -5,7 +5,8 @@ module.exports = {
     '^(?=.*protocol).*',
     'domain',
     'server.ts',
-    'env.ts'
+    'env.ts',
+    'infra/http/requests'
   ],
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',

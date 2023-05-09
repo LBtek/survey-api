@@ -1,10 +1,11 @@
-import { type LoadSurveys, type Controller, type HttpRequest, type HttpResponse } from './load-surveys-controller-protocols'
+import { type LoadSurveys, type Controller, type HttpResponse, type HttpRequest } from './load-surveys-controller-protocols'
+import { ok } from '@/presentation/helpers/http/http-helper'
 
 export class LoadSurveysController implements Controller {
   constructor (private readonly loadSurveys: LoadSurveys) {}
 
-  async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
-    await this.loadSurveys.load()
-    return null
+  async handle (httpRequest?: HttpRequest): Promise<HttpResponse> {
+    const surveys = await this.loadSurveys.load()
+    return ok(surveys)
   }
 }

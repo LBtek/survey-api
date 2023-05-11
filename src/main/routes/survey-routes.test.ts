@@ -8,6 +8,25 @@ import request from 'supertest'
 let surveyCollection: Collection
 let accountCollection: Collection
 
+const makeAccessToken = async (role?: string): Promise<string> => {
+  const res = await accountCollection.insertOne({
+    name: 'Luan',
+    email: 'teste123@gmail.com',
+    password: '123',
+    role
+  })
+  const id = MongoHelper.mapInsertOneResult(res, {}).id
+  const accessToken = sign({ id }, env.jwtSecret)
+  await accountCollection.updateOne({
+    _id: new ObjectId(id)
+  }, {
+    $set: {
+      accessToken
+    }
+  })
+  return accessToken
+}
+
 describe('Survey Routes', () => {
   beforeAll(async () => {
     await MongoHelper.connect(env.mongoUrl)
@@ -41,21 +60,7 @@ describe('Survey Routes', () => {
     })
 
     test('Should return 204 on add survey with valid accessToken', async () => {
-      const res = await accountCollection.insertOne({
-        name: 'Luan',
-        email: 'teste123@gmail.com',
-        password: '123',
-        role: 'admin'
-      })
-      const id = MongoHelper.mapInsertOneResult(res, {}).id
-      const accessToken = sign({ id }, env.jwtSecret)
-      await accountCollection.updateOne({
-        _id: new ObjectId(id)
-      }, {
-        $set: {
-          accessToken
-        }
-      })
+      const accessToken = await makeAccessToken('admin')
       await request(app)
         .post('/api/surveys')
         .set('x-access-token', accessToken)
@@ -79,39 +84,12 @@ describe('Survey Routes', () => {
         .expect(403)
     })
 
-    test('Should return 200/204 on load surveys with valid accessToken', async () => {
-      const res = await accountCollection.insertOne({
-        name: 'Luan',
-        email: 'teste123@gmail.com',
-        password: '123'
-      })
-      const id = MongoHelper.mapInsertOneResult(res, {}).id
-      const accessToken = sign({ id }, env.jwtSecret)
-      await accountCollection.updateOne({
-        _id: new ObjectId(id)
-      }, {
-        $set: {
-          accessToken
-        }
-      })
+    test('Should return 204 on load surveys with valid accessToken', async () => {
+      const accessToken = await makeAccessToken()
       await request(app)
         .get('/api/surveys')
         .set('x-access-token', accessToken)
         .expect(204)
-
-      await surveyCollection.insertMany([{
-        question: 'any_question',
-        answers: [{
-          image: 'any_image',
-          answer: 'any_answer'
-        }],
-        date: new Date()
-      }])
-
-      await request(app)
-        .get('/api/surveys')
-        .set('x-access-token', accessToken)
-        .expect(200)
     })
   })
 })

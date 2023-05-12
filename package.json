@@ -10,7 +10,7 @@
     "up": "npm run build && docker-compose up --build --abort-on-container-exit",
     "down": "docker-compose down",
     "v:down": "docker-compose down --volumes",
-    "dev": "npm run build && sucrase-node src/main/server.ts",
+    "dev": "sucrase-node src/main/server.ts",
     "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
     "test:verbose": "jest --passWithNoTests --runInBand",
     "test:unit": "npm test -- --watch -c jest-unit-config.js",

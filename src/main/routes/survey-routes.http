@@ -1,0 +1,40 @@
+@host = http://localhost:5050/api
+@contentType = application/json
+
+
+# @name signUpLogin
+POST {{host}}/signup HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+  "name": "Luan Rafael",
+  "email": "luanrafaelberto@gmail.com",
+  "password": "123",
+  "passwordConfirmation": "123"
+}
+
+###
+
+@authToken = {{signUpLogin.response.body.$.accessToken}}
+
+
+GET {{host}}/surveys HTTP/1.1
+Content-Type: {{contentType}}
+x-access-token: {{authToken}}
+
+###
+
+POST {{host}}/surveys HTTP/1.1
+Content-Type: {{contentType}}
+x-access-token: {{authToken}}
+
+
+{
+  "question": "Question",
+  "answers": [{
+    "answer": "Answer 1",
+    "image": "http://image-name.com"
+  }, {
+    "answer": "Answer 2"
+  }]
+}

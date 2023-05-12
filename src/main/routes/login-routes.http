@@ -1,5 +1,9 @@
-POST http://localhost:5050/api/signup HTTP/1.1
-Content-Type: application/json
+@host = http://localhost:5050/api
+@contentType = application/json
+
+
+POST {{host}}/signup HTTP/1.1
+Content-Type: {{contentType}}
 
 {
   "name": "Luan Rafael",
@@ -10,8 +14,8 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:5050/api/login HTTP/1.1
-Content-Type: application/json
+POST {{host}}/login HTTP/1.1
+Content-Type: {{contentType}}
 
 {
   "email": "luanrafaelberto@gmail.com",

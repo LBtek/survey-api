@@ -19,13 +19,13 @@ describe('Log Mongo Repository', () => {
   })
 
   beforeEach(async () => {
-    errorCollection = await MongoHelper.getCollection('errors')
+    errorCollection = await MongoHelper.getCollection('server_errors')
     await errorCollection.deleteMany({})
   })
 
   test('Should create an error log on sucess', async () => {
     const sut = makeSut()
-    await sut.logError('any_error')
+    await sut.logError('any_error', 'server')
     const count = await errorCollection.countDocuments()
     expect(count).toBe(1)
   })

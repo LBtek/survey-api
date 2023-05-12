@@ -10,18 +10,16 @@ export class LogAuthMiddlewareDecorator implements Middleware {
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     const httpResponse = await this.middleware.handle(httpRequest)
-    if (httpResponse.statusCode === 400) {
-      const error = httpResponse.body
-      if (
-        error instanceof JsonWebTokenError ||
-        error instanceof TokenExpiredError ||
-        error instanceof NotBeforeError
-      ) {
-        await this.logErrorRepository.logError(httpResponse.body.stack)
-      }
+    const { body: error, statusCode } = httpResponse
+    if (statusCode === 500) {
+      await this.logErrorRepository.logError(error.stack, 'server')
     }
-    if (httpResponse.statusCode === 500) {
-      await this.logErrorRepository.logError(httpResponse.body.stack)
+    if (
+      error instanceof JsonWebTokenError ||
+      error instanceof TokenExpiredError ||
+      error instanceof NotBeforeError
+    ) {
+      await this.logErrorRepository.logError(error.stack, 'auth')
     }
     return httpResponse
   }

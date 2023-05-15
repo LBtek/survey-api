@@ -1,4 +1,5 @@
 [![Coverage Status](https://coveralls.io/repos/github/LBtek/clean-ts-api/badge.svg?branch=main)](https://coveralls.io/github/LBtek/clean-ts-api?branch=main)
+[![Node.js CI](https://github.com/LBtek/clean-ts-api/actions/workflows/main.yml/badge.svg)](https://github.com/LBtek/clean-ts-api/actions/workflows/main.yml)
 
 # **Clean Node API**
 
@@ -66,7 +67,7 @@ O objetivo do treinamento é mostrar como criar uma API com uma arquitetura bem 
 * Docker
 * Jest
 * MongoDb
-* Travis CI
+* Github Actions CI
 * Swagger
 * Bcrypt
 * JsonWebToken

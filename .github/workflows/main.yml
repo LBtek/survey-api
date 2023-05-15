@@ -22,8 +22,9 @@ jobs:
       run: |
         npm pkg delete scripts.prepare
         npm install
-        npm run build
+        npm run eslint
         npm run test:ci
+        npm run build
 
     - name: Start MongoDB
       uses: supercharge/mongodb-github-action@1.9.0

@@ -5,7 +5,8 @@ module.exports = {
     '^(?=.*protocol).*',
     'domain',
     'server.ts',
-    'env.ts'
+    'env.ts',
+    'infra/http/requests'
   ],
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
@@ -16,5 +17,13 @@ module.exports = {
   },
   moduleNameMapper: {
     '@/(.*)': '<rootDir>/src/$1'
+  },
+  coverageThreshold: {
+    global: {
+      branches: 90,
+      functions: 90,
+      lines: 85,
+      statements: -5
+    }
   }
 }

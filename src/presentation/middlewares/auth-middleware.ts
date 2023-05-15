@@ -1,6 +1,7 @@
 import { type Middleware, type HttpRequest, type HttpResponse, type LoadAccountByToken } from './auth-middleware-protocols'
 import { AccessDeniedError } from '../errors'
-import { forbidden, ok, serverError } from '../helpers/http/http-helper'
+import { badRequest, forbidden, ok, serverError } from '../helpers/http/http-helper'
+import { JsonWebTokenError, NotBeforeError, TokenExpiredError } from 'jsonwebtoken'
 
 export class AuthMiddleware implements Middleware {
   constructor (
@@ -19,7 +20,17 @@ export class AuthMiddleware implements Middleware {
       }
       return forbidden(new AccessDeniedError())
     } catch (error) {
-      return serverError(error)
+      let response: HttpResponse
+      if (
+        error instanceof JsonWebTokenError ||
+        error instanceof TokenExpiredError ||
+        error instanceof NotBeforeError
+      ) {
+        response = badRequest(error)
+      } else {
+        response = serverError(error)
+      }
+      return response
     }
   }
 }

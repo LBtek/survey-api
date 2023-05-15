@@ -10,4 +10,7 @@ export default (app: Express): void => {
       (await import(`../routes/${file}`)).default(router)
     }
   })
+  router.get('/', (req, res) => {
+    res.json('ok')
+  })
 }

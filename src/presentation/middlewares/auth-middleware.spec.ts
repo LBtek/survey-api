@@ -1,7 +1,8 @@
 import { type HttpRequest, type LoadAccountByToken, type AccountModel } from './auth-middleware-protocols'
 import { AccessDeniedError } from '../errors'
-import { forbidden, ok, serverError } from '../helpers/http/http-helper'
+import { badRequest, forbidden, ok, serverError } from '../helpers/http/http-helper'
 import { AuthMiddleware } from './auth-middleware'
+import { JsonWebTokenError } from 'jsonwebtoken'
 
 const makeFakeAccount = (): AccountModel => ({
   id: 'valid_id',
@@ -69,12 +70,18 @@ describe('Auth Middleware', () => {
     expect(httpResponse).toEqual(ok({ accountId: 'valid_id' }))
   })
 
-  test('Should return 500 if LoadAccountByToken throws', async () => {
+  test('Should return 400 or 500 if LoadAccountByToken throws', async () => {
     const { sut, loadAccountByTokenStub } = makeSut()
     jest.spyOn(loadAccountByTokenStub, 'loadByToken').mockReturnValueOnce(
       new Promise((resolve, reject) => { reject(new Error()) })
     )
-    const httpResponse = await sut.handle(makeFakeRequest())
+    let httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(serverError(new Error()))
+
+    jest.spyOn(loadAccountByTokenStub, 'loadByToken').mockReturnValueOnce(
+      new Promise((resolve, reject) => { reject(new JsonWebTokenError('jwt malformed')) })
+    )
+    httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(badRequest(new JsonWebTokenError('jwt malformed')))
   })
 })

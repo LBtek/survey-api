@@ -22,7 +22,7 @@ jobs:
       run: |
         npm pkg delete scripts.prepare
         npm install
-        npm run eslint
+        npm run lint:fix
         npm run test:ci
         npm run build
 
@@ -34,7 +34,7 @@ jobs:
 
     - name: Run docker
       run: |
-        docker-compose up --build -d
+        docker-compose up --build mongo api -d
         sleep 25 && node dist/infra/http/requests/check-server-is-ok.js pipeline_action 5000
 
     - name: Coveralls

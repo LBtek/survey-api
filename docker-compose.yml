@@ -11,6 +11,7 @@ services:
     networks:
       api-network: 
         ipv4_address: 192.168.10.2
+
   api:
     container_name: api-container
     build: .
@@ -32,6 +33,24 @@ services:
       api-network: 
         ipv4_address: 192.168.10.3
 
+  dbgate:
+    image: dbgate/dbgate
+    restart: always
+    ports:
+      - 80:3000
+    volumes:
+      - dbgate-data:/root/.dbgate
+    environment:
+      CONNECTIONS: con1
+      LABEL_con1: MongoDB
+      URL_con1: mongodb://mongo:27017/clean-node-api
+      ENGINE_con1: mongo@dbgate-plugin-mongo
+    depends_on:
+      - api
+    networks:
+      api-network: 
+        ipv4_address: 192.168.10.4
+
 networks:
   api-network:
     ipam:
@@ -39,4 +58,6 @@ networks:
         - subnet: 192.168.10.0/24
     
 volumes:
+  dbgate-data:
+    driver: local
   db-data:

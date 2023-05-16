@@ -11,7 +11,7 @@
     "down": "docker-compose down",
     "v:down": "docker-compose down --volumes",
     "dev": "sucrase-node src/main/server.ts",
-    "eslint": "eslint 'src/**' --fix",
+    "lint:fix": "eslint 'src/**' --fix",
     "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
     "test:verbose": "jest --passWithNoTests --runInBand",
     "test:unit": "npm test -- --watch -c jest-unit-config.js",

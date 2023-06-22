@@ -44,7 +44,6 @@ describe('Survey Mongo Repository', () => {
   describe('loadAll()', () => {
     test('Should load all surveys on success', async () => {
       await surveyCollection.insertMany([{
-        id: 'any_id',
         question: 'any_question',
         answers: [{
           image: 'any_image',
@@ -52,7 +51,6 @@ describe('Survey Mongo Repository', () => {
         }],
         date: new Date()
       }, {
-        id: 'other_id',
         question: 'other_question',
         answers: [{
           image: 'other_image',
@@ -71,6 +69,23 @@ describe('Survey Mongo Repository', () => {
       const sut = makeSut()
       const surveys = await sut.loadAll()
       expect(surveys.length).toBe(0)
+    })
+  })
+
+  describe('loadById()', () => {
+    test('Should load survey by id on success', async () => {
+      const data = {
+        question: 'any_question',
+        answers: [{
+          image: 'any_image',
+          answer: 'any_answer'
+        }],
+        date: new Date()
+      }
+      const res = await surveyCollection.insertOne(data)
+      const sut = makeSut()
+      const surveyLoaded = await sut.loadById(res.insertedId.toString())
+      expect(surveyLoaded).toBeTruthy()
     })
   })
 })

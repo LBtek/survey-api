@@ -1,4 +1,4 @@
-import { type AddSurveyModel, type AddSurveyRepository } from './db-add-survey-protocolls'
+import { type AddSurveyModel, type AddSurveyRepository } from './db-add-survey-protocols'
 import { DbAddSurvey } from './db-add-survey'
 
 const makeAddSurveyRepository = (): AddSurveyRepository => {

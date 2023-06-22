@@ -1,4 +1,4 @@
-import { type SaveSurveyResultModel, type SaveSurveyResultRepository, type SurveyResultModel } from './db-save-survey-result-protocolls'
+import { type SaveSurveyResultModel, type SaveSurveyResultRepository, type SurveyResultModel } from './db-save-survey-result-protocols'
 import { DbSaveSurveyResult } from './db-save-survey-result'
 
 const fakeSurveyResultData: SaveSurveyResultModel = {

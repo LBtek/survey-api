@@ -6,7 +6,8 @@ module.exports = {
     'domain',
     'server.ts',
     'env.ts',
-    'infra/http/requests'
+    'infra/http/requests',
+    '.d.ts$'
   ],
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',

@@ -1,26 +1,11 @@
-import { type HttpRequest, type HttpResponse, type Middleware } from '@/presentation/protocols'
-import { type LogErrorRepository } from '@/data/protocols/db/log/log-error-repository'
+import { type HttpRequest, type Middleware } from '@/presentation/protocols'
+import { type LogErrorRepository } from '@/data/protocols/repositories/log/log-error-repository'
 import { LogAuthMiddlewareDecorator } from './log-auth-middleware-decorator'
-import { badRequest, ok, serverError } from '@/presentation/helpers/http/http-helper'
-import { JsonWebTokenError, NotBeforeError, TokenExpiredError } from 'jsonwebtoken'
-
-const makeAuthMiddleware = (): Middleware => {
-  class AuthMiddlewareStub implements Middleware {
-    async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
-      return await new Promise(resolve => { resolve(ok('ok')) })
-    }
-  }
-  return new AuthMiddlewareStub()
-}
-
-const makeLogErrorRepository = (): LogErrorRepository => {
-  class LogErrorRepositoryStub implements LogErrorRepository {
-    async logError (stack: string, typeError: 'server' | 'auth'): Promise<void> {
-      await new Promise<void>(resolve => { resolve() })
-    }
-  }
-  return new LogErrorRepositoryStub()
-}
+import { ok } from '@/presentation/helpers/http/http-helper'
+import { mockAuthMiddleware } from '@/presentation/_mocks/middleware-mocks'
+import { mockLogErrorRepository } from '@/data/mocks'
+import { mockServerError } from '@/presentation/_mocks'
+import { mockJWTError, mockNotBeforeError, mockTokenExpiredError } from '@/infra/_mocks/jwt-error-mocks'
 
 const makeFakeRequest = (): HttpRequest => ({
   headers: {
@@ -29,30 +14,6 @@ const makeFakeRequest = (): HttpRequest => ({
   body: { any_value: 'any_value' }
 })
 
-const makeFakeServerError = (): HttpResponse => {
-  const fakeError = new Error()
-  fakeError.stack = 'any_stack'
-  return serverError(fakeError)
-}
-
-const makeFakeJWTError = (): HttpResponse => {
-  const fakeError = new JsonWebTokenError('jwt malformed')
-  fakeError.stack = 'jwt_stack'
-  return badRequest(fakeError)
-}
-
-const makeFakeTokenExpiredError = (): HttpResponse => {
-  const fakeError = new TokenExpiredError('token expired', new Date())
-  fakeError.stack = 'token-expired_stack'
-  return badRequest(fakeError)
-}
-
-const makeFakeNotBeforeError = (): HttpResponse => {
-  const fakeError = new NotBeforeError('error', new Date())
-  fakeError.stack = 'NotBeforeError_stack'
-  return badRequest(fakeError)
-}
-
 type SutTypes = {
   sut: LogAuthMiddlewareDecorator
   middlewareStub: Middleware
@@ -60,8 +21,8 @@ type SutTypes = {
 }
 
 const makeSut = (): SutTypes => {
-  const middlewareStub = makeAuthMiddleware()
-  const logErrorRepositoryStub = makeLogErrorRepository()
+  const middlewareStub = mockAuthMiddleware()
+  const logErrorRepositoryStub = mockLogErrorRepository()
   const sut = new LogAuthMiddlewareDecorator(middlewareStub, logErrorRepositoryStub)
 
   return {
@@ -89,27 +50,19 @@ describe('Log Auth Middleware Decorator', () => {
     const { sut, middlewareStub, logErrorRepositoryStub } = makeSut()
     const logSpy = jest.spyOn(logErrorRepositoryStub, 'logError')
 
-    jest.spyOn(middlewareStub, 'handle').mockReturnValueOnce(new Promise(resolve => {
-      resolve(makeFakeServerError())
-    }))
+    jest.spyOn(middlewareStub, 'handle').mockReturnValueOnce(Promise.resolve(mockServerError()))
     await sut.handle(makeFakeRequest())
     expect(logSpy).toHaveBeenCalledWith('any_stack', 'server')
 
-    jest.spyOn(middlewareStub, 'handle').mockReturnValueOnce(new Promise(resolve => {
-      resolve(makeFakeJWTError())
-    }))
+    jest.spyOn(middlewareStub, 'handle').mockReturnValueOnce(Promise.resolve(mockJWTError()))
     await sut.handle(makeFakeRequest())
     expect(logSpy).toHaveBeenCalledWith('jwt_stack', 'auth')
 
-    jest.spyOn(middlewareStub, 'handle').mockReturnValueOnce(new Promise(resolve => {
-      resolve(makeFakeTokenExpiredError())
-    }))
+    jest.spyOn(middlewareStub, 'handle').mockReturnValueOnce(Promise.resolve(mockTokenExpiredError()))
     await sut.handle(makeFakeRequest())
     expect(logSpy).toHaveBeenCalledWith('token-expired_stack', 'auth')
 
-    jest.spyOn(middlewareStub, 'handle').mockReturnValueOnce(new Promise(resolve => {
-      resolve(makeFakeNotBeforeError())
-    }))
+    jest.spyOn(middlewareStub, 'handle').mockReturnValueOnce(Promise.resolve(mockNotBeforeError()))
     await sut.handle(makeFakeRequest())
     expect(logSpy).toHaveBeenCalledWith('NotBeforeError_stack', 'auth')
   })

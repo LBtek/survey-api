@@ -7,7 +7,9 @@ module.exports = {
     'server.ts',
     'env.ts',
     'infra/http/requests',
-    '.d.ts$'
+    '.d.ts$',
+    'mocks',
+    '_mocks'
   ],
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',

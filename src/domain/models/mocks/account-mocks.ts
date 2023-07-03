@@ -14,5 +14,6 @@ export const mockAddAccountParams = (): AddAccountParams => ({
 
 export const mockAccount = (): AccountModel => ({
   id: 'any_id',
-  ...mockAddAccountParams()
+  ...mockAddAccountParams(),
+  password: 'hash'
 })

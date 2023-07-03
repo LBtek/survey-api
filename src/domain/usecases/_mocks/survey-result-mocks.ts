@@ -2,11 +2,12 @@ import { type SaveSurveyResult, type SaveSurveyResultParams } from '@/domain/use
 import { type SurveyResultModel } from '@/domain/models/survey-result'
 import { mockSurveyResult } from '@/domain/models/mocks'
 
-export const mockSaveSurveyResult = (): SaveSurveyResult => {
-  class SaveSurveyResultStub implements SaveSurveyResult {
-    async save (data: SaveSurveyResultParams): Promise<SurveyResultModel> {
-      return await Promise.resolve(mockSurveyResult())
-    }
+export class SaveSurveyResultSpy implements SaveSurveyResult {
+  saveSurveyResultData: SaveSurveyResultParams
+  surveyResult = mockSurveyResult()
+
+  async save (data: SaveSurveyResultParams): Promise<SurveyResultModel> {
+    this.saveSurveyResultData = data
+    return this.surveyResult
   }
-  return new SaveSurveyResultStub()
 }

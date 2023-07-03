@@ -15,81 +15,90 @@ import { type SaveSurveyResultRepository } from '../protocols/repositories/surve
 import { type LogErrorRepository } from '../protocols/repositories/log/log-error-repository'
 import { mockAccount, mockSurvey, mockSurveyResult, mockSurveys } from '@/domain/models/mocks'
 
-export const mockAddAccountRepository = (): AddAccountRepository => {
-  class AddAccountRepositoryStub implements AddAccountRepository {
-    async add (accountData: AddAccountParams): Promise<AccountModel> {
-      return await Promise.resolve((mockAccount()))
-    }
+export class AddAccountRepositorySpy implements AddAccountRepository {
+  addAccountData: AddAccountParams
+  account = mockAccount()
+
+  async add (accountData: AddAccountParams): Promise<AccountModel> {
+    this.addAccountData = accountData
+    return this.account
   }
-  return new AddAccountRepositoryStub()
 }
 
-export const mockAddSurveyRepository = (): AddSurveyRepository => {
-  class AddSurveyRepositoryStub implements AddSurveyRepository {
-    async add (surveyData: AddSurveyParams): Promise<void> { }
+export class AddSurveyRepositorySpy implements AddSurveyRepository {
+  addSurveyData: AddSurveyParams
+
+  async add (surveyData: AddSurveyParams): Promise<void> {
+    this.addSurveyData = surveyData
   }
-  return new AddSurveyRepositoryStub()
 }
 
-export const mockLoadSurveyByIdRepository = (): LoadSurveyByIdRepository => {
-  class LoadSurveyByIdRepositoryStub implements LoadSurveyByIdRepository {
-    async loadById (): Promise<SurveyModel> {
-      return await Promise.resolve(mockSurvey())
-    }
+export class LoadSurveyByIdRepositorySpy implements LoadSurveyByIdRepository {
+  survey = mockSurvey()
+  id: string
+
+  async loadById (id: string): Promise<SurveyModel> {
+    this.id = id
+    return this.survey
   }
-  return new LoadSurveyByIdRepositoryStub()
 }
 
-export const mockLoadSurveysRepository = (): LoadSurveysRepository => {
-  class LoadSurveysRepositoryStub implements LoadSurveysRepository {
-    async loadAll (): Promise<SurveyModel[]> {
-      return await Promise.resolve(mockSurveys())
-    }
+export class LoadSurveysRepositorySpy implements LoadSurveysRepository {
+  surveys = mockSurveys()
+
+  async loadAll (): Promise<SurveyModel[]> {
+    return this.surveys
   }
-  return new LoadSurveysRepositoryStub()
 }
 
-export const mockLoadAccountByEmailRepository = (): LoadAccountByEmailRepository => {
-  class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
-    async loadByEmail (email: string): Promise<AccountModel | null> {
-      return await Promise.resolve(mockAccount())
-    }
+export class LoadAccountByEmailRepositorySpy implements LoadAccountByEmailRepository {
+  account = mockAccount()
+  email: string
+
+  async loadByEmail (email: string): Promise<AccountModel | null> {
+    this.email = email
+    return this.account
   }
-  return new LoadAccountByEmailRepositoryStub()
 }
 
-export const mockLoadAccountByTokenRepository = (): LoadAccountByTokenRepository => {
-  class LoadAccountByTokenRepositoryStub implements LoadAccountByTokenRepository {
-    async loadByToken (token: string, role?: string): Promise<AccountModel> {
-      return mockAccount()
-    }
+export class LoadAccountByTokenRepositorySpy implements LoadAccountByTokenRepository {
+  token: string
+  role: string
+  account = mockAccount()
+
+  async loadByToken (token: string, role?: string): Promise<AccountModel> {
+    this.token = token
+    this.role = role
+    return this.account
   }
-  return new LoadAccountByTokenRepositoryStub()
 }
 
-export const mockUpdateAccessTokenRepository = (): UpdateAccessTokenRepository => {
-  class UpdateAccessTokenRepositoryStub implements UpdateAccessTokenRepository {
-    async updateAccessToken (id: string, token: string): Promise<void> {
-      await Promise.resolve()
-    }
+export class UpdateAccessTokenRepositorySpy implements UpdateAccessTokenRepository {
+  id: string
+  token: string
+
+  async updateAccessToken (id: string, token: string): Promise<void> {
+    this.id = id
+    this.token = token
   }
-  return new UpdateAccessTokenRepositoryStub()
 }
 
-export const mockSaveSurveyResultRepository = (): SaveSurveyResultRepository => {
-  class SaveSurveyResultRepositoryStub implements SaveSurveyResultRepository {
-    async save (data: SaveSurveyResultParams): Promise<SurveyResultModel> {
-      return mockSurveyResult()
-    }
+export class SaveSurveyResultRepositorySpy implements SaveSurveyResultRepository {
+  saveSurveyResultData: SaveSurveyResultParams
+  surveyResult = mockSurveyResult()
+
+  async save (data: SaveSurveyResultParams): Promise<SurveyResultModel> {
+    this.saveSurveyResultData = data
+    return this.surveyResult
   }
-  return new SaveSurveyResultRepositoryStub()
 }
 
-export const mockLogErrorRepository = (): LogErrorRepository => {
-  class LogErrorRepositoryStub implements LogErrorRepository {
-    async logError (stack: string, typeError: 'server' | 'auth'): Promise<void> {
-      await Promise.resolve()
-    }
+export class LogErrorRepositorySpy implements LogErrorRepository {
+  stack: string
+  typeError: 'server' | 'auth'
+
+  async logError (stack: string, typeError: 'server' | 'auth'): Promise<void> {
+    this.stack = stack
+    this.typeError = typeError
   }
-  return new LogErrorRepositoryStub()
 }

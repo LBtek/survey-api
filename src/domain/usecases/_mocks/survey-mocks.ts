@@ -1,7 +1,7 @@
-import { type AddSurvey, type AddSurveyParams } from '@/domain/usecases/surveys/add-survey'
+import { type AddSurvey } from '@/domain/usecases/surveys/add-survey'
 import { type LoadSurveyById } from '@/domain/usecases/surveys/load-survey-by-id'
 import { type LoadSurveys } from '@/domain/usecases/surveys/load-surveys'
-import { type SurveyModel } from '@/domain/models/survey'
+import { type AddSurveyParams, type SurveyModel } from '@/domain/models/survey'
 import { mockSurvey, mockSurveys } from '@/domain/models/mocks'
 
 export class AddSurveySpy implements AddSurvey {

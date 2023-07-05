@@ -1,5 +1,5 @@
 import { DbAddSurvey } from './db-add-survey'
-import { mockAddSurveyParams } from '@/domain/models/mocks'
+import { mockAddSurveyParams, mockAddSurveyRepositoryParams } from '@/domain/models/mocks'
 import { AddSurveyRepositorySpy } from '@/data/mocks'
 
 type SutTypes = {
@@ -19,9 +19,8 @@ const makeSut = (): SutTypes => {
 describe('DbAddSurvey UseCase', () => {
   test('Should call AddSurveyRepository with correct values', async () => {
     const { sut, addSurveyRepositorySpy } = makeSut()
-    const surveyData = mockAddSurveyParams()
-    await sut.add(surveyData)
-    expect(addSurveyRepositorySpy.addSurveyData).toEqual(surveyData)
+    await sut.add(mockAddSurveyParams())
+    expect(addSurveyRepositorySpy.addSurveyData).toEqual(mockAddSurveyRepositoryParams())
   })
 
   test('Should throw if AddSurveyRepository throws', async () => {

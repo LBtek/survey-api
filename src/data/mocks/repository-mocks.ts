@@ -1,11 +1,10 @@
 import { type AccountModel } from '@/domain/models/account'
 import { type AddAccountParams } from '@/domain/usecases/account/add-account'
 import { type SurveyModel } from '@/domain/models/survey'
-import { type AddSurveyParams } from '@/domain/usecases/surveys/add-survey'
 import { type SurveyResultModel } from '@/domain/models/survey-result'
 import { type SaveSurveyResultParams } from '@/domain/usecases/survey-result/save-survey-result'
 import { type AddAccountRepository } from '../protocols/repositories/account/add-account-repository'
-import { type AddSurveyRepository } from '../protocols/repositories/survey/add-survey-repository'
+import { type AddSurveyRepositoryParams, type AddSurveyRepository } from '../protocols/repositories/survey/add-survey-repository'
 import { type LoadSurveysRepository } from '../protocols/repositories/survey/load-surveys-repository'
 import { type LoadSurveyByIdRepository } from '../protocols/repositories/survey/load-survey-by-id-repository'
 import { type LoadAccountByEmailRepository } from '../protocols/repositories/account/load-account-by-email-repository'
@@ -26,9 +25,9 @@ export class AddAccountRepositorySpy implements AddAccountRepository {
 }
 
 export class AddSurveyRepositorySpy implements AddSurveyRepository {
-  addSurveyData: AddSurveyParams
+  addSurveyData: AddSurveyRepositoryParams
 
-  async add (surveyData: AddSurveyParams): Promise<void> {
+  async add (surveyData: AddSurveyRepositoryParams): Promise<void> {
     this.addSurveyData = surveyData
   }
 }

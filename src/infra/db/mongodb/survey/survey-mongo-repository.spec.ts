@@ -1,9 +1,10 @@
-import env from '@/main/config/env'
 import { type Collection } from 'mongodb'
+import { type SurveyModel } from '@/domain/models/survey'
+import { type AddSurveyRepositoryParams } from '@/data/protocols/repositories/survey/add-survey-repository'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { SurveyMongoRepository } from './survey-mongo-repository'
-import { type AddSurveyRepositoryParams } from '@/data/protocols/repositories/survey/add-survey-repository'
 import { mockAddSurveyRepositoryParams } from '@/domain/models/mocks'
+import env from '@/main/config/env'
 
 let surveyCollection: Collection
 
@@ -86,6 +87,79 @@ describe('Survey Mongo Repository', () => {
       const surveyLoaded = await sut.loadById(res.insertedId.toString())
       expect(surveyLoaded).toBeTruthy()
       expect(surveyLoaded.id).toBeTruthy()
+    })
+  })
+
+  describe('update()', () => {
+    test('Should return an updated Survey', async () => {
+      const sut = makeSut()
+      await sut.add(mockAddSurveyRepositoryParams())
+      const surveyFound = await surveyCollection.findOne({ question: 'any_question' })
+      const survey: SurveyModel = MongoHelper.mapOneDocumentWithId(surveyFound)
+      let updatedSurvey = await sut.update(survey, null, 'any_answer')
+      let expectedAnswers = mockAddSurveyRepositoryParams().answers.map(a => {
+        const answer = { ...a }
+        if (answer.answer === 'any_answer') answer.amountVotes = 1
+        return answer
+      })
+      expect(updatedSurvey).toBeTruthy()
+      expect(updatedSurvey.id).toBeTruthy()
+      expect(updatedSurvey).toEqual({
+        ...survey,
+        answers: expectedAnswers,
+        totalAmountVotes: 1
+      })
+
+      updatedSurvey = await sut.update(survey, null, 'other_answer')
+
+      expectedAnswers = expectedAnswers.map(a => {
+        const answer = { ...a }
+        if (answer.answer === 'other_answer') answer.amountVotes = 1
+        return answer
+      })
+
+      expect(updatedSurvey).toEqual({
+        ...survey,
+        answers: expectedAnswers,
+        totalAmountVotes: 2
+      })
+
+      updatedSurvey = await sut.update(survey, null, 'other_answer')
+
+      expectedAnswers = expectedAnswers.map(a => {
+        const answer = { ...a }
+        if (answer.answer === 'other_answer') answer.amountVotes = answer.amountVotes + 1
+        return answer
+      })
+
+      expect(updatedSurvey).toEqual({
+        ...survey,
+        answers: expectedAnswers,
+        totalAmountVotes: 3
+      })
+
+      updatedSurvey = await sut.update(survey, 'other_answer', 'any_answer')
+
+      expectedAnswers = expectedAnswers.map(a => {
+        const answer = { ...a }
+        if (answer.answer === 'other_answer') answer.amountVotes = answer.amountVotes - 1
+        if (answer.answer === 'any_answer') answer.amountVotes = answer.amountVotes + 1
+        return answer
+      })
+
+      expect(updatedSurvey).toEqual({
+        ...survey,
+        answers: expectedAnswers,
+        totalAmountVotes: 3
+      })
+
+      updatedSurvey = await sut.update(survey, 'any_answer', 'any_answer')
+
+      expect(updatedSurvey).toEqual({
+        ...survey,
+        answers: expectedAnswers,
+        totalAmountVotes: 3
+      })
     })
   })
 })

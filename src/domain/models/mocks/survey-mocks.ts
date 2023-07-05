@@ -21,7 +21,6 @@ export const mockAddSurveyParams = (): AddSurveyParams => ({
 export const mockAddSurveyRepositoryParams = (): AddSurveyRepositoryParams => {
   const answers = mockAnswers().map(answer => {
     answer.amountVotes = 0
-    answer.percent = 0
     return answer
   })
   return {

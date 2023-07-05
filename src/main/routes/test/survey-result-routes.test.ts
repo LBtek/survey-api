@@ -44,7 +44,7 @@ describe('Survey Routes', () => {
   })
 
   describe('PUT /surveys/:surveyId/results', () => {
-    test('Should return 403 on save survey result without accessToken', async () => {
+    test('Should return 403 on save survey vote without accessToken', async () => {
       await request(app)
         .put('/api/surveys/any_id/results')
         .send({
@@ -53,7 +53,7 @@ describe('Survey Routes', () => {
         .expect(403)
     })
 
-    test('Should return 200 on save survey result with valid accessToken', async () => {
+    test('Should return 200 on save survey vote with valid accessToken', async () => {
       const res = await surveyCollection.insertOne({
         question: 'Question',
         answers: [{

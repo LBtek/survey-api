@@ -5,7 +5,7 @@ export class DbAddSurvey implements AddSurvey {
   async add (addSurveyData: AddSurveyParams): Promise<void> {
     const addSurveyRepositoryData: AddSurveyRepositoryParams = {
       ...addSurveyData,
-      answers: addSurveyData.answers.map(answer => ({ ...answer, amountVotes: 0, percent: 0 })),
+      answers: addSurveyData.answers.map(answer => ({ ...answer, amountVotes: 0 })),
       totalAmountVotes: 0
     }
     await this.addSurveyRepository.add(addSurveyRepositoryData)

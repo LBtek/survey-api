@@ -10,7 +10,7 @@ export type SurveyAnswerModel = {
   image?: string
   answer: string
   amountVotes: number
-  percent: number
+  percent?: number
 }
 
 type SurveyAnswerParams = Omit<SurveyAnswerModel, 'amountVotes' | 'percent'>

@@ -1,8 +1,8 @@
 import { type AccountModel } from '@/domain/models/account'
 import { type AddAccountParams } from '@/domain/usecases/account/add-account'
 import { type SurveyModel } from '@/domain/models/survey'
-import { type SurveyResultModel } from '@/domain/models/survey-result'
-import { type SaveSurveyResultParams } from '@/domain/usecases/survey-result/save-survey-result'
+import { type SurveyVoteModel } from '@/domain/models/survey-vote'
+import { type SaveSurveyVoteParams } from '@/domain/usecases/survey-vote/save-survey-vote'
 import { type AddAccountRepository } from '../protocols/repositories/account/add-account-repository'
 import { type AddSurveyRepositoryParams, type AddSurveyRepository } from '../protocols/repositories/survey/add-survey-repository'
 import { type LoadSurveysRepository } from '../protocols/repositories/survey/load-surveys-repository'
@@ -10,9 +10,10 @@ import { type LoadSurveyByIdRepository } from '../protocols/repositories/survey/
 import { type LoadAccountByEmailRepository } from '../protocols/repositories/account/load-account-by-email-repository'
 import { type LoadAccountByTokenRepository } from '../protocols/repositories/account/load-account-by-token-repository'
 import { type UpdateAccessTokenRepository } from '../protocols/repositories/account/update-access-token-repository'
-import { type SaveSurveyResultRepository } from '../protocols/repositories/survey-result/save-survey-result-repository'
+import { type SaveSurveyVoteRepository } from '../protocols/repositories/survey-vote/save-survey-vote-repository'
 import { type LogErrorRepository } from '../protocols/repositories/log/log-error-repository'
-import { mockAccount, mockSurvey, mockSurveyResult, mockSurveys } from '@/domain/models/mocks'
+import { type UpdateSurveyRepository } from '../protocols/repositories/survey/update-survey-repository'
+import { mockAccount, mockSurvey, mockSurveys } from '@/domain/models/mocks'
 
 export class AddAccountRepositorySpy implements AddAccountRepository {
   addAccountData: AddAccountParams
@@ -29,6 +30,34 @@ export class AddSurveyRepositorySpy implements AddSurveyRepository {
 
   async add (surveyData: AddSurveyRepositoryParams): Promise<void> {
     this.addSurveyData = surveyData
+  }
+}
+
+export class UpdateSurveyRepositorySpy implements UpdateSurveyRepository {
+  oldSurvey: SurveyModel
+  newSurvey: SurveyModel
+  oldAnswer: string
+  newAnswer: string
+
+  async update (survey: SurveyModel, oldAnswer: string = null, newAnswer: string): Promise<SurveyModel> {
+    this.oldAnswer = oldAnswer
+    this.newAnswer = newAnswer
+    this.oldSurvey = survey
+    this.newSurvey = {
+      ...survey,
+      answers: survey.answers.map(a => {
+        const answer = { ...a }
+        if (oldAnswer && answer.answer === oldAnswer) {
+          answer.amountVotes = answer.amountVotes - 1
+        }
+        if (answer.answer === newAnswer) {
+          answer.amountVotes = answer.amountVotes + 1
+        }
+        return answer
+      }),
+      totalAmountVotes: oldAnswer ? survey.totalAmountVotes : survey.totalAmountVotes + 1
+    }
+    return this.newSurvey
   }
 }
 
@@ -82,13 +111,13 @@ export class UpdateAccessTokenRepositorySpy implements UpdateAccessTokenReposito
   }
 }
 
-export class SaveSurveyResultRepositorySpy implements SaveSurveyResultRepository {
-  saveSurveyResultData: SaveSurveyResultParams
-  surveyResult = mockSurveyResult()
+export class SaveSurveyVoteRepositorySpy implements SaveSurveyVoteRepository {
+  saveSurveyVoteData: SaveSurveyVoteParams
+  oldSurveyVote = undefined
 
-  async save (data: SaveSurveyResultParams): Promise<SurveyResultModel> {
-    this.saveSurveyResultData = data
-    return this.surveyResult
+  async save (data: SaveSurveyVoteParams): Promise<SurveyVoteModel> {
+    this.saveSurveyVoteData = data
+    return this.oldSurveyVote
   }
 }
 

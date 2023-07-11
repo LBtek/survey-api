@@ -1,22 +1,38 @@
-import { type SurveyModel } from '@/domain/models/survey'
-import { type AddSurveyParams } from '@/domain/usecases/surveys/add-survey'
+import { type AddSurveyRepositoryParams } from '@/data/protocols/repositories/survey/add-survey-repository'
+import { type SurveyModel, type AddSurveyParams } from '@/domain/models/survey'
 
 const date = new Date()
 
-export const mockAddSurveyParams = (): AddSurveyParams => ({
-  question: 'any_question',
-  answers: [{
+const mockAnswers = (): any[] => {
+  return [{
     image: 'any_image',
     answer: 'any_answer'
   }, {
     answer: 'other_answer'
-  }],
+  }]
+}
+
+export const mockAddSurveyParams = (): AddSurveyParams => ({
+  question: 'any_question',
+  answers: mockAnswers(),
   date
 })
 
+export const mockAddSurveyRepositoryParams = (): AddSurveyRepositoryParams => {
+  const answers = mockAnswers().map(answer => {
+    answer.amountVotes = 0
+    return answer
+  })
+  return {
+    ...mockAddSurveyParams(),
+    answers,
+    totalAmountVotes: 0
+  }
+}
+
 export const mockSurvey = (): SurveyModel => ({
   id: 'any_survey_id',
-  ...mockAddSurveyParams()
+  ...mockAddSurveyRepositoryParams()
 })
 
 export const mockSurveys = (): SurveyModel[] => {
@@ -27,8 +43,11 @@ export const mockSurveys = (): SurveyModel[] => {
       question: 'other_question',
       answers: [{
         image: 'other_image',
-        answer: 'other_answer'
+        answer: 'other_answer',
+        amountVotes: 0,
+        percent: 0
       }],
-      date
+      date,
+      totalAmountVotes: 0
     }]
 }

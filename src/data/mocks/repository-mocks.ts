@@ -1,95 +1,132 @@
 import { type AccountModel } from '@/domain/models/account'
 import { type AddAccountParams } from '@/domain/usecases/account/add-account'
 import { type SurveyModel } from '@/domain/models/survey'
-import { type AddSurveyParams } from '@/domain/usecases/surveys/add-survey'
-import { type SurveyResultModel } from '@/domain/models/survey-result'
-import { type SaveSurveyResultParams } from '@/domain/usecases/survey-result/save-survey-result'
+import { type SurveyVoteModel } from '@/domain/models/survey-vote'
+import { type SaveSurveyVoteParams } from '@/domain/usecases/survey-vote/save-survey-vote'
 import { type AddAccountRepository } from '../protocols/repositories/account/add-account-repository'
-import { type AddSurveyRepository } from '../protocols/repositories/survey/add-survey-repository'
+import { type AddSurveyRepositoryParams, type AddSurveyRepository } from '../protocols/repositories/survey/add-survey-repository'
 import { type LoadSurveysRepository } from '../protocols/repositories/survey/load-surveys-repository'
 import { type LoadSurveyByIdRepository } from '../protocols/repositories/survey/load-survey-by-id-repository'
 import { type LoadAccountByEmailRepository } from '../protocols/repositories/account/load-account-by-email-repository'
 import { type LoadAccountByTokenRepository } from '../protocols/repositories/account/load-account-by-token-repository'
 import { type UpdateAccessTokenRepository } from '../protocols/repositories/account/update-access-token-repository'
-import { type SaveSurveyResultRepository } from '../protocols/repositories/survey-result/save-survey-result-repository'
+import { type SaveSurveyVoteRepository } from '../protocols/repositories/survey-vote/save-survey-vote-repository'
 import { type LogErrorRepository } from '../protocols/repositories/log/log-error-repository'
-import { mockAccount, mockSurvey, mockSurveyResult, mockSurveys } from '@/domain/models/mocks'
+import { type UpdateSurveyRepository } from '../protocols/repositories/survey/update-survey-repository'
+import { mockAccount, mockSurvey, mockSurveys } from '@/domain/models/mocks'
 
-export const mockAddAccountRepository = (): AddAccountRepository => {
-  class AddAccountRepositoryStub implements AddAccountRepository {
-    async add (accountData: AddAccountParams): Promise<AccountModel> {
-      return await Promise.resolve((mockAccount()))
-    }
+export class AddAccountRepositorySpy implements AddAccountRepository {
+  addAccountData: AddAccountParams
+  account = mockAccount()
+
+  async add (accountData: AddAccountParams): Promise<AccountModel> {
+    this.addAccountData = accountData
+    return this.account
   }
-  return new AddAccountRepositoryStub()
 }
 
-export const mockAddSurveyRepository = (): AddSurveyRepository => {
-  class AddSurveyRepositoryStub implements AddSurveyRepository {
-    async add (surveyData: AddSurveyParams): Promise<void> { }
+export class AddSurveyRepositorySpy implements AddSurveyRepository {
+  addSurveyData: AddSurveyRepositoryParams
+
+  async add (surveyData: AddSurveyRepositoryParams): Promise<void> {
+    this.addSurveyData = surveyData
   }
-  return new AddSurveyRepositoryStub()
 }
 
-export const mockLoadSurveyByIdRepository = (): LoadSurveyByIdRepository => {
-  class LoadSurveyByIdRepositoryStub implements LoadSurveyByIdRepository {
-    async loadById (): Promise<SurveyModel> {
-      return await Promise.resolve(mockSurvey())
+export class UpdateSurveyRepositorySpy implements UpdateSurveyRepository {
+  oldSurvey: SurveyModel
+  newSurvey: SurveyModel
+  oldAnswer: string
+  newAnswer: string
+
+  async update (survey: SurveyModel, oldAnswer: string = null, newAnswer: string): Promise<SurveyModel> {
+    this.oldAnswer = oldAnswer
+    this.newAnswer = newAnswer
+    this.oldSurvey = survey
+    this.newSurvey = {
+      ...survey,
+      answers: survey.answers.map(a => {
+        const answer = { ...a }
+        if (oldAnswer && answer.answer === oldAnswer) {
+          answer.amountVotes = answer.amountVotes - 1
+        }
+        if (answer.answer === newAnswer) {
+          answer.amountVotes = answer.amountVotes + 1
+        }
+        return answer
+      }),
+      totalAmountVotes: oldAnswer ? survey.totalAmountVotes : survey.totalAmountVotes + 1
     }
+    return this.newSurvey
   }
-  return new LoadSurveyByIdRepositoryStub()
 }
 
-export const mockLoadSurveysRepository = (): LoadSurveysRepository => {
-  class LoadSurveysRepositoryStub implements LoadSurveysRepository {
-    async loadAll (): Promise<SurveyModel[]> {
-      return await Promise.resolve(mockSurveys())
-    }
+export class LoadSurveyByIdRepositorySpy implements LoadSurveyByIdRepository {
+  survey = mockSurvey()
+  id: string
+
+  async loadById (id: string): Promise<SurveyModel> {
+    this.id = id
+    return this.survey
   }
-  return new LoadSurveysRepositoryStub()
 }
 
-export const mockLoadAccountByEmailRepository = (): LoadAccountByEmailRepository => {
-  class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
-    async loadByEmail (email: string): Promise<AccountModel | null> {
-      return await Promise.resolve(mockAccount())
-    }
+export class LoadSurveysRepositorySpy implements LoadSurveysRepository {
+  surveys = mockSurveys()
+
+  async loadAll (): Promise<SurveyModel[]> {
+    return this.surveys
   }
-  return new LoadAccountByEmailRepositoryStub()
 }
 
-export const mockLoadAccountByTokenRepository = (): LoadAccountByTokenRepository => {
-  class LoadAccountByTokenRepositoryStub implements LoadAccountByTokenRepository {
-    async loadByToken (token: string, role?: string): Promise<AccountModel> {
-      return mockAccount()
-    }
+export class LoadAccountByEmailRepositorySpy implements LoadAccountByEmailRepository {
+  account = mockAccount()
+  email: string
+
+  async loadByEmail (email: string): Promise<AccountModel | null> {
+    this.email = email
+    return this.account
   }
-  return new LoadAccountByTokenRepositoryStub()
 }
 
-export const mockUpdateAccessTokenRepository = (): UpdateAccessTokenRepository => {
-  class UpdateAccessTokenRepositoryStub implements UpdateAccessTokenRepository {
-    async updateAccessToken (id: string, token: string): Promise<void> {
-      await Promise.resolve()
-    }
+export class LoadAccountByTokenRepositorySpy implements LoadAccountByTokenRepository {
+  token: string
+  role: string
+  account = mockAccount()
+
+  async loadByToken (token: string, role?: string): Promise<AccountModel> {
+    this.token = token
+    this.role = role
+    return this.account
   }
-  return new UpdateAccessTokenRepositoryStub()
 }
 
-export const mockSaveSurveyResultRepository = (): SaveSurveyResultRepository => {
-  class SaveSurveyResultRepositoryStub implements SaveSurveyResultRepository {
-    async save (data: SaveSurveyResultParams): Promise<SurveyResultModel> {
-      return mockSurveyResult()
-    }
+export class UpdateAccessTokenRepositorySpy implements UpdateAccessTokenRepository {
+  id: string
+  token: string
+
+  async updateAccessToken (id: string, token: string): Promise<void> {
+    this.id = id
+    this.token = token
   }
-  return new SaveSurveyResultRepositoryStub()
 }
 
-export const mockLogErrorRepository = (): LogErrorRepository => {
-  class LogErrorRepositoryStub implements LogErrorRepository {
-    async logError (stack: string, typeError: 'server' | 'auth'): Promise<void> {
-      await Promise.resolve()
-    }
+export class SaveSurveyVoteRepositorySpy implements SaveSurveyVoteRepository {
+  saveSurveyVoteData: SaveSurveyVoteParams
+  oldSurveyVote = undefined
+
+  async save (data: SaveSurveyVoteParams): Promise<SurveyVoteModel> {
+    this.saveSurveyVoteData = data
+    return this.oldSurveyVote
   }
-  return new LogErrorRepositoryStub()
+}
+
+export class LogErrorRepositorySpy implements LogErrorRepository {
+  stack: string
+  typeError: 'server' | 'auth'
+
+  async logError (stack: string, typeError: 'server' | 'auth'): Promise<void> {
+    this.stack = stack
+    this.typeError = typeError
+  }
 }

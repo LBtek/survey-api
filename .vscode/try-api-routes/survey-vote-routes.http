@@ -1,0 +1,58 @@
+@host = http://localhost:5000/api
+@contentType = application/json
+@authToken = {{login.response.body.$.accessToken}}
+@surveyId = 64a6dcb3b7c13b98fa85ae2d
+
+
+############################################################
+
+# @name login
+POST {{host}}/signup HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+  "name": "Luan Rafael",
+  "email": "luanrafaelberto@gmail.com",
+  "password": "123",
+  "passwordConfirmation": "123"
+}
+
+####################
+
+# @name login
+POST {{host}}/login HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+  "email": "luanrafaelberto@gmail.com",
+  "password": "123"
+}
+
+############################################################
+
+# @name survey
+POST {{host}}/surveys HTTP/1.1
+Content-Type: {{contentType}}
+x-access-token: {{authToken}}
+
+{
+  "question": "Question",
+  "answers": [{
+    "answer": "Answer 1",
+    "image": "http://image-name.com"
+  }, {
+    "answer": "Answer 2"
+  }]
+}
+
+############################################################
+
+PUT {{host}}/surveys/{{surveyId}}/results HTTP/1.1
+Content-Type: {{contentType}}
+x-access-token: {{authToken}}
+
+{
+  "answer": "Answer 2"
+}
+
+############################################################

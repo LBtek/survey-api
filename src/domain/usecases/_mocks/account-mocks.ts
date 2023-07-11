@@ -4,29 +4,34 @@ import { type LoadAccountByToken } from '@/domain/usecases/account/load-account-
 import { type AccountModel } from '@/domain/models/account'
 import { mockAccount } from '@/domain/models/mocks'
 
-export const mockAuthentication = (): Authentication => {
-  class AuthenticationStub implements Authentication {
-    async auth (authentication: AuthParams): Promise<string> {
-      return 'any_token'
-    }
+export class AuthenticationSpy implements Authentication {
+  authenticationData: AuthParams
+  token = 'any_token'
+
+  async auth (authentication: AuthParams): Promise<string> {
+    this.authenticationData = authentication
+    return this.token
   }
-  return new AuthenticationStub()
 }
 
-export const mockAddAccount = (): AddAccount => {
-  class AddAccountStub implements AddAccount {
-    async add (account: AddAccountParams): Promise<AccountModel | null> {
-      return await Promise.resolve(mockAccount())
-    }
+export class AddAccountSpy implements AddAccount {
+  addAccountData: AddAccountParams
+  account = mockAccount()
+
+  async add (addAccountData: AddAccountParams): Promise<AccountModel | null> {
+    this.addAccountData = addAccountData
+    return this.account
   }
-  return new AddAccountStub()
 }
 
-export const mockLoadAccountByToken = (): LoadAccountByToken => {
-  class LoadAccountByTokenStub implements LoadAccountByToken {
-    async loadByToken (accessToken: string, role?: string): Promise<AccountModel> {
-      return mockAccount()
-    }
+export class LoadAccountByTokenSpy implements LoadAccountByToken {
+  accessToken: string
+  role: string
+  account = mockAccount()
+
+  async loadByToken (accessToken: string, role?: string): Promise<AccountModel> {
+    this.accessToken = accessToken
+    this.role = role
+    return this.account
   }
-  return new LoadAccountByTokenStub()
 }

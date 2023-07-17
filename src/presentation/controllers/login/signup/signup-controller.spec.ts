@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { type HttpRequest } from './signup-controller-protocols'
 import { SignUpController } from './signup-controller'
-import { mockAccount, mockAddAccountParams } from '@/domain/models/mocks'
+import { mockAddAccountParams } from '@/domain/models/mocks'
 import { AddAccountSpy, AuthenticationSpy } from '@/domain/usecases/_mocks'
 import { ValidationSpy } from '@/presentation/_mocks'
 import { ok, serverError, badRequest, forbidden } from '@/presentation/helpers/http/http-helper'
@@ -58,9 +58,9 @@ describe('SignUp Controller', () => {
   })
 
   test('Should return 200 if an valid data is provided', async () => {
-    const { sut } = makeSut()
+    const { sut, authenticationSpy } = makeSut()
     const httpResponse = await sut.handle(makeFakeRequest())
-    expect(httpResponse).toEqual(ok({ accessToken: 'any_token', ...mockAccount() }))
+    expect(httpResponse).toEqual(ok(authenticationSpy.authenticationModel))
   })
 
   test('Should call Validation with correct value', async () => {

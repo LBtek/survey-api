@@ -1,14 +1,24 @@
-import { type Collection } from 'mongodb'
 import { DbSaveSurveyVote } from './db-save-survey-vote'
 import { SaveSurveyVoteRepositorySpy, UpdateSurveyRepositorySpy } from '@/data/mocks'
 import { mockSaveSurveyVoteParams, mockSurvey } from '@/domain/models/mocks'
-import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
-import env from '@/main/config/env'
-
-let surveyCollection: Collection
 
 const surveyMocked = mockSurvey()
 const saveSurveyVoteData = mockSaveSurveyVoteParams()
+
+class UpdatedSurveyReference {
+  #updatedSurvey = {}
+
+  constructor (private readonly updateSurveyRepositorySpy: UpdateSurveyRepositorySpy) { }
+
+  get updatedSurvey (): any {
+    return this.#updatedSurvey
+  }
+
+  set updatedSurvey (newSurvey) {
+    this.#updatedSurvey = newSurvey
+    this.updateSurveyRepositorySpy.oldSurvey = newSurvey
+  }
+}
 
 type SutTypes = {
   sut: DbSaveSurveyVote
@@ -28,39 +38,25 @@ const makeSut = (): SutTypes => {
 }
 
 describe('DbSaveSurveyVote UseCase', () => {
-  beforeAll(async () => {
-    await MongoHelper.connect(env.mongoUrl)
-  })
-
-  afterAll(async () => {
-    await MongoHelper.disconnect()
-  })
-
-  beforeEach(async () => {
-    surveyCollection = await MongoHelper.getCollection('surveys')
-    await surveyCollection.deleteMany({})
-    surveyCollection = await MongoHelper.getCollection('surveys')
-    await surveyCollection.insertOne(surveyMocked)
-  })
-
   test('Should call SaveSurveyVoteRepository with correct values', async () => {
     const { sut, saveSurveyVoteRepositorySpy } = makeSut()
-    await sut.save(saveSurveyVoteData, surveyMocked)
+    await sut.save(saveSurveyVoteData)
     expect(saveSurveyVoteRepositorySpy.saveSurveyVoteData).toEqual(saveSurveyVoteData)
   })
 
   test('Should call UpdateSurveyRepository with correct values', async () => {
     const { sut, updateSurveyRepositorySpy } = makeSut()
-    await sut.save(saveSurveyVoteData, surveyMocked)
+    await sut.save(saveSurveyVoteData)
     expect(updateSurveyRepositorySpy.oldSurvey).toEqual(surveyMocked)
     expect(updateSurveyRepositorySpy.oldAnswer).toBeNull()
     expect(updateSurveyRepositorySpy.newAnswer).toBe(saveSurveyVoteData.answer)
   })
 
   test('Should return an updated Survey on success', async () => {
-    const { sut, saveSurveyVoteRepositorySpy } = makeSut()
-
-    let updatedSurvey = await sut.save(saveSurveyVoteData, surveyMocked)
+    const { sut, saveSurveyVoteRepositorySpy, updateSurveyRepositorySpy } = makeSut()
+    const updatedSurveyRef = new UpdatedSurveyReference(updateSurveyRepositorySpy)
+    updatedSurveyRef.updatedSurvey = await sut.save(saveSurveyVoteData)
+    const surveyId = saveSurveyVoteData.surveyId
 
     let expectedAnswers = surveyMocked.answers.map(a => {
       const newAnswer = { ...a }
@@ -72,18 +68,18 @@ describe('DbSaveSurveyVote UseCase', () => {
       return newAnswer
     })
 
-    expect(updatedSurvey).toEqual({
+    expect(updatedSurveyRef.updatedSurvey).toEqual({
       ...surveyMocked,
       answers: expectedAnswers,
       totalAmountVotes: 1
     })
 
-    updatedSurvey = await sut.save({
-      surveyId: updatedSurvey.id,
+    updatedSurveyRef.updatedSurvey = await sut.save({
+      surveyId,
       accountId: 'other_account_id',
       answer: 'other_answer',
       date: new Date()
-    }, { ...updatedSurvey })
+    })
 
     expectedAnswers = surveyMocked.answers.map(a => {
       const newAnswer = { ...a }
@@ -92,60 +88,60 @@ describe('DbSaveSurveyVote UseCase', () => {
       return newAnswer
     })
 
-    expect(updatedSurvey).toEqual({
+    expect(updatedSurveyRef.updatedSurvey).toEqual({
       ...surveyMocked,
       answers: expectedAnswers,
       totalAmountVotes: 2
     })
 
-    updatedSurvey = await sut.save({
-      surveyId: updatedSurvey.id,
+    updatedSurveyRef.updatedSurvey = await sut.save({
+      surveyId,
       accountId: 'other_account_id2',
       answer: 'other_answer',
       date: new Date()
-    }, { ...updatedSurvey })
+    })
 
-    updatedSurvey = await sut.save({
-      surveyId: updatedSurvey.id,
+    updatedSurveyRef.updatedSurvey = await sut.save({
+      surveyId,
       accountId: 'other_account_id3',
       answer: 'other_answer',
       date: new Date()
-    }, { ...updatedSurvey })
+    })
 
-    updatedSurvey = await sut.save({
-      surveyId: updatedSurvey.id,
+    updatedSurveyRef.updatedSurvey = await sut.save({
+      surveyId,
       accountId: 'other_account_id4',
       answer: 'any_answer',
       date: new Date()
-    }, { ...updatedSurvey })
+    })
 
-    updatedSurvey = await sut.save({
-      surveyId: updatedSurvey.id,
+    updatedSurveyRef.updatedSurvey = await sut.save({
+      surveyId,
       accountId: 'other_account_id5',
       answer: 'other_answer',
       date: new Date()
-    }, { ...updatedSurvey })
+    })
 
     const lastVote = {
-      surveyId: updatedSurvey.id,
+      surveyId,
       accountId: 'other_account_id6',
       answer: 'other_answer',
       date: new Date()
     }
 
-    updatedSurvey = await sut.save(lastVote, { ...updatedSurvey })
+    updatedSurveyRef.updatedSurvey = await sut.save(lastVote)
 
     saveSurveyVoteRepositorySpy.oldSurveyVote = {
       id: 'any_id',
       ...lastVote
     }
 
-    updatedSurvey = await sut.save({
-      surveyId: updatedSurvey.id,
+    updatedSurveyRef.updatedSurvey = await sut.save({
+      surveyId,
       accountId: 'other_account_id6',
       answer: 'any_answer',
       date: new Date()
-    }, { ...updatedSurvey })
+    })
 
     expectedAnswers = surveyMocked.answers.map(a => {
       const newAnswer = { ...a }
@@ -160,7 +156,7 @@ describe('DbSaveSurveyVote UseCase', () => {
       return newAnswer
     })
 
-    expect(updatedSurvey).toEqual({
+    expect(updatedSurveyRef.updatedSurvey).toEqual({
       ...surveyMocked,
       answers: expectedAnswers,
       totalAmountVotes: 7
@@ -170,14 +166,14 @@ describe('DbSaveSurveyVote UseCase', () => {
   test('Should throw if SaveSurveyVoteRepository throws', async () => {
     const { sut, saveSurveyVoteRepositorySpy } = makeSut()
     jest.spyOn(saveSurveyVoteRepositorySpy, 'save').mockReturnValueOnce(Promise.reject(new Error()))
-    const promisse = sut.save(saveSurveyVoteData, surveyMocked)
+    const promisse = sut.save(saveSurveyVoteData)
     await expect(promisse).rejects.toThrow()
   })
 
   test('Should throw if UpdateSurveyRepository throws', async () => {
     const { sut, updateSurveyRepositorySpy } = makeSut()
     jest.spyOn(updateSurveyRepositorySpy, 'update').mockReturnValueOnce(Promise.reject(new Error()))
-    const promisse = sut.save(saveSurveyVoteData, surveyMocked)
+    const promisse = sut.save(saveSurveyVoteData)
     await expect(promisse).rejects.toThrow()
   })
 })

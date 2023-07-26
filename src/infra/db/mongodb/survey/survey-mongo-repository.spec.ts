@@ -44,8 +44,7 @@ describe('Survey Mongo Repository', () => {
           answers: [{
             image: 'other_image',
             answer: 'other_answer',
-            amountVotes: 0,
-            percent: 0
+            amountVotes: 0
           }],
           date: new Date(),
           totalAmountVotes: 0
@@ -76,8 +75,7 @@ describe('Survey Mongo Repository', () => {
         answers: [{
           image: 'any_image',
           answer: 'any_answer',
-          amountVotes: 0,
-          percent: 0
+          amountVotes: 0
         }],
         date: new Date(),
         totalAmountVotes: 0
@@ -96,7 +94,7 @@ describe('Survey Mongo Repository', () => {
       await sut.add(mockAddSurveyRepositoryParams())
       const surveyFound = await surveyCollection.findOne({ question: 'any_question' })
       const survey: SurveyModel = MongoHelper.mapOneDocumentWithId(surveyFound)
-      let updatedSurvey = await sut.update(survey, null, 'any_answer')
+      let updatedSurvey = await sut.update(survey.id, null, 'any_answer')
       let expectedAnswers = mockAddSurveyRepositoryParams().answers.map(a => {
         const answer = { ...a }
         if (answer.answer === 'any_answer') answer.amountVotes = 1
@@ -110,7 +108,7 @@ describe('Survey Mongo Repository', () => {
         totalAmountVotes: 1
       })
 
-      updatedSurvey = await sut.update(survey, null, 'other_answer')
+      updatedSurvey = await sut.update(survey.id, null, 'other_answer')
 
       expectedAnswers = expectedAnswers.map(a => {
         const answer = { ...a }
@@ -124,7 +122,7 @@ describe('Survey Mongo Repository', () => {
         totalAmountVotes: 2
       })
 
-      updatedSurvey = await sut.update(survey, null, 'other_answer')
+      updatedSurvey = await sut.update(survey.id, null, 'other_answer')
 
       expectedAnswers = expectedAnswers.map(a => {
         const answer = { ...a }
@@ -138,7 +136,7 @@ describe('Survey Mongo Repository', () => {
         totalAmountVotes: 3
       })
 
-      updatedSurvey = await sut.update(survey, 'other_answer', 'any_answer')
+      updatedSurvey = await sut.update(survey.id, 'other_answer', 'any_answer')
 
       expectedAnswers = expectedAnswers.map(a => {
         const answer = { ...a }
@@ -153,7 +151,7 @@ describe('Survey Mongo Repository', () => {
         totalAmountVotes: 3
       })
 
-      updatedSurvey = await sut.update(survey, 'any_answer', 'any_answer')
+      updatedSurvey = await sut.update(survey.id, 'any_answer', 'any_answer')
 
       expect(updatedSurvey).toEqual({
         ...survey,

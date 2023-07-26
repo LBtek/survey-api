@@ -34,18 +34,18 @@ export class AddSurveyRepositorySpy implements AddSurveyRepository {
 }
 
 export class UpdateSurveyRepositorySpy implements UpdateSurveyRepository {
-  oldSurvey: SurveyModel
+  oldSurvey: SurveyModel = mockSurvey()
   newSurvey: SurveyModel
   oldAnswer: string
   newAnswer: string
 
-  async update (survey: SurveyModel, oldAnswer: string = null, newAnswer: string): Promise<SurveyModel> {
+  async update (surveyId: string, oldAnswer: string = null, newAnswer: string): Promise<SurveyModel> {
+    this.oldSurvey.id = surveyId
     this.oldAnswer = oldAnswer
     this.newAnswer = newAnswer
-    this.oldSurvey = survey
     this.newSurvey = {
-      ...survey,
-      answers: survey.answers.map(a => {
+      ...this.oldSurvey,
+      answers: this.oldSurvey.answers.map(a => {
         const answer = { ...a }
         if (oldAnswer && answer.answer === oldAnswer) {
           answer.amountVotes = answer.amountVotes - 1
@@ -55,7 +55,7 @@ export class UpdateSurveyRepositorySpy implements UpdateSurveyRepository {
         }
         return answer
       }),
-      totalAmountVotes: oldAnswer ? survey.totalAmountVotes : survey.totalAmountVotes + 1
+      totalAmountVotes: oldAnswer ? this.oldSurvey.totalAmountVotes : this.oldSurvey.totalAmountVotes + 1
     }
     return this.newSurvey
   }
@@ -113,7 +113,7 @@ export class UpdateAccessTokenRepositorySpy implements UpdateAccessTokenReposito
 
 export class SaveSurveyVoteRepositorySpy implements SaveSurveyVoteRepository {
   saveSurveyVoteData: SaveSurveyVoteParams
-  oldSurveyVote = undefined
+  oldSurveyVote: SurveyVoteModel = undefined
 
   async save (data: SaveSurveyVoteParams): Promise<SurveyVoteModel> {
     this.saveSurveyVoteData = data

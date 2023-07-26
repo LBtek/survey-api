@@ -4,7 +4,6 @@ import { mockSurvey } from '@/domain/models/mocks'
 
 export class SaveSurveyVoteSpy implements SaveSurveyVote {
   saveSurveyVoteData: SaveSurveyVoteParams
-  beforeSurvey: SurveyModel
   afterSurvey: SurveyModel = {
     ...mockSurvey(),
     answers: mockSurvey().answers.map(a => {
@@ -17,9 +16,8 @@ export class SaveSurveyVoteSpy implements SaveSurveyVote {
     totalAmountVotes: 1
   }
 
-  async save (data: SaveSurveyVoteParams, survey: SurveyModel): Promise<SurveyModel> {
+  async save (data: SaveSurveyVoteParams): Promise<SurveyModel> {
     this.saveSurveyVoteData = data
-    this.beforeSurvey = survey
     return this.afterSurvey
   }
 }

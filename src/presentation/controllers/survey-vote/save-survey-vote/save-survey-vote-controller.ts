@@ -28,8 +28,7 @@ export class SaveSurveyVoteController implements Controller {
           surveyId,
           answer,
           date: new Date()
-        },
-        survey
+        }
       )
       return ok(surveyVote)
     } catch (error) {

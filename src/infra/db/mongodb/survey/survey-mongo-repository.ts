@@ -25,11 +25,11 @@ export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRe
     return survey && MongoHelper.mapOneDocumentWithId(survey)
   }
 
-  async update (survey: SurveyModel, oldAnswer: string = null, newAnswer: string): Promise<SurveyModel> {
+  async update (surveyId: string, oldAnswer: string = null, newAnswer: string): Promise<SurveyModel> {
     const surveysCollection = await MongoHelper.getCollection('surveys')
     const toHaveOldAnswer = !!oldAnswer
     const updatedSurvey = await surveysCollection.findOneAndUpdate(
-      { _id: new ObjectId(survey.id) },
+      { _id: new ObjectId(surveyId) },
       [
         {
           $set: {

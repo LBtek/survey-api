@@ -4,5 +4,5 @@ import { type SurveyVoteModel } from '@/domain/models/survey-vote'
 export type SaveSurveyVoteParams = Omit<SurveyVoteModel, 'id'>
 
 export interface SaveSurveyVote {
-  save: (data: SaveSurveyVoteParams, survey: SurveyModel) => Promise<SurveyModel>
+  save: (data: SaveSurveyVoteParams) => Promise<SurveyModel>
 }

@@ -44,8 +44,7 @@ export const mockSurveys = (): SurveyModel[] => {
       answers: [{
         image: 'other_image',
         answer: 'other_answer',
-        amountVotes: 0,
-        percent: 0
+        amountVotes: 0
       }],
       date,
       totalAmountVotes: 0

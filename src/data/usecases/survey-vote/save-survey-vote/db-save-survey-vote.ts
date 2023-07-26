@@ -12,9 +12,9 @@ export class DbSaveSurveyVote implements SaveSurveyVote {
     private readonly updateSurveyRepository: UpdateSurveyRepository
   ) { }
 
-  async save (saveSurveyVoteData: SaveSurveyVoteParams, survey: SurveyModel): Promise<SurveyModel> {
+  async save (saveSurveyVoteData: SaveSurveyVoteParams): Promise<SurveyModel> {
     const oldSurveyVote = await this.saveSurveyVoteRepository.save(saveSurveyVoteData)
-    const updatedSurvey = await this.updateSurveyRepository.update(survey, oldSurveyVote?.answer, saveSurveyVoteData.answer)
+    const updatedSurvey = await this.updateSurveyRepository.update(saveSurveyVoteData.surveyId, oldSurveyVote?.answer, saveSurveyVoteData.answer)
     const surveyWithPercent = { ...updatedSurvey }
     surveyWithPercent.answers = updatedSurvey.answers.map(a => {
       const answer = { ...a }

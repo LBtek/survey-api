@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/prefer-optional-chain */
-import { type SurveyModel } from '@/domain/models/survey'
+import { type AllSurveys, type SurveyModel } from '@/domain/models/survey'
 import { type AddSurveyRepositoryParams, type AddSurveyRepository } from '@/data/usecases/survey/add-survey/db-add-survey-protocols'
 import { type LoadSurveysRepository } from '@/data/usecases/survey/load-surveys/db-load-surveys-protocols'
 import { type LoadSurveyByIdRepository } from '@/data/protocols/repositories/survey/load-survey-by-id-repository'
 import { type UpdateSurveyRepository } from '@/data/protocols/repositories/survey/update-survey-repository'
 import { MongoHelper } from '../helpers/mongo-helper'
+import { MongoAggregateQueryBuilder } from '../helpers/query-builder'
 import { ObjectId } from 'mongodb'
 
 export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRepository, LoadSurveyByIdRepository, UpdateSurveyRepository {
@@ -13,10 +14,38 @@ export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRe
     await surveyCollection.insertOne(surveyData)
   }
 
-  async loadAll (): Promise<SurveyModel[]> {
+  async loadAll (accountId: string): Promise<AllSurveys> {
     const surveysCollection = await MongoHelper.getCollection('surveys')
-    const surveys = await MongoHelper.mapManyDocumentsWithId(surveysCollection.find())
-    return surveys
+    const query = new MongoAggregateQueryBuilder()
+      .lookup({
+        from: 'surveyVotes',
+        foreignField: 'surveyId',
+        localField: '_id',
+        as: 'result'
+      })
+      .project({
+        _id: 1,
+        question: 1,
+        answers: 1,
+        date: 1,
+        didAnswer: {
+          $gte: [{
+            $size: {
+              $filter: {
+                input: '$result',
+                as: 'item',
+                cond: {
+                  $eq: ['$$item.accountId', new ObjectId(accountId)]
+                }
+              }
+            }
+          }, 1]
+        }
+      })
+      .build()
+
+    const surveys = await surveysCollection.aggregate(query).toArray()
+    return await MongoHelper.mapManyDocumentsWithId(surveys)
   }
 
   async loadById (id: string): Promise<SurveyModel> {

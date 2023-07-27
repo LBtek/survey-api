@@ -6,6 +6,8 @@ export type SurveyModel = {
   totalAmountVotes: number
 }
 
+export type AllSurveys = Array<SurveyModel & { didAnswer: boolean }>
+
 export type SurveyAnswerModel = {
   image?: string
   answer: string

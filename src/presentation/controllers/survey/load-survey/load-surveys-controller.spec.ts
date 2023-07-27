@@ -1,8 +1,11 @@
+import { type HttpRequest } from './load-surveys-controller-protocols'
 import { LoadSurveysController } from './load-surveys-controller'
 import { mockSurveys } from '@/domain/models/mocks'
 import { LoadSurveysSpy } from '@/domain/usecases/_mocks'
 import { noContent, ok, serverError } from '@/presentation/helpers/http/http-helper'
 import MockDate from 'mockdate'
+
+const mockHttpRequest = (): HttpRequest => ({ accountId: 'any_account_id' })
 
 type SutTypes = {
   sut: LoadSurveysController
@@ -27,16 +30,17 @@ describe('LoadSurveys Controller', () => {
     MockDate.reset()
   })
 
-  test('Should call LoadSurveys', async () => {
+  test('Should call LoadSurveys with correct accountId', async () => {
     const { sut, loadSurveysSpy } = makeSut()
-    const loadSpy = jest.spyOn(loadSurveysSpy, 'load')
-    await sut.handle({})
-    expect(loadSpy).toHaveBeenCalled()
+    const httpRequest = mockHttpRequest()
+    await sut.handle(httpRequest)
+    expect(loadSurveysSpy.accountId).toBe(httpRequest.accountId)
   })
 
   test('Should return 200 on success', async () => {
     const { sut } = makeSut()
-    const httpResponse = await sut.handle({})
+    const httpRequest = mockHttpRequest()
+    const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toEqual(ok(mockSurveys()))
   })
 
@@ -45,7 +49,7 @@ describe('LoadSurveys Controller', () => {
     jest.spyOn(loadSurveysSpy, 'load').mockReturnValueOnce(
       Promise.resolve([])
     )
-    const httpResponse = await sut.handle({})
+    const httpResponse = await sut.handle(mockHttpRequest())
     expect(httpResponse).toEqual(noContent())
   })
 
@@ -54,7 +58,7 @@ describe('LoadSurveys Controller', () => {
     jest.spyOn(loadSurveysSpy, 'load').mockReturnValueOnce(
       Promise.reject(new Error())
     )
-    const httpResponse = await sut.handle({})
+    const httpResponse = await sut.handle(mockHttpRequest())
     expect(httpResponse).toEqual(serverError(new Error()))
   })
 })

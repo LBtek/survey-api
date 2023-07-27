@@ -19,21 +19,22 @@ const makeSut = (): SutTypes => {
 describe('DbLoadSurveys', () => {
   test('Should call LoadSurveysRepository', async () => {
     const { sut, loadSurveysRepositorySpy } = makeSut()
-    const loadAllSpy = jest.spyOn(loadSurveysRepositorySpy, 'loadAll')
-    await sut.load()
-    expect(loadAllSpy).toHaveBeenCalled()
+    const accountId = 'any_account_id'
+    await sut.load(accountId)
+    expect(loadSurveysRepositorySpy.accountId).toBe(accountId)
   })
 
   test('Should return a list of Surveys on success', async () => {
     const { sut } = makeSut()
-    const surveys = await sut.load()
+    const accountId = 'any_account_id'
+    const surveys = await sut.load(accountId)
     expect(surveys).toEqual(mockSurveys())
   })
 
   test('Should throw if LoadSurveysRepository throws', async () => {
     const { sut, loadSurveysRepositorySpy } = makeSut()
     jest.spyOn(loadSurveysRepositorySpy, 'loadAll').mockReturnValueOnce(Promise.reject(new Error()))
-    const promisse = sut.load()
+    const promisse = sut.load('any_account_id')
     await expect(promisse).rejects.toThrow()
   })
 })

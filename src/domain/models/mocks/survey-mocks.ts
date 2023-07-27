@@ -1,5 +1,5 @@
 import { type AddSurveyRepositoryParams } from '@/data/protocols/repositories/survey/add-survey-repository'
-import { type SurveyModel, type AddSurveyParams } from '@/domain/models/survey'
+import { type SurveyModel, type AddSurveyParams, type AllSurveys } from '@/domain/models/survey'
 
 const date = new Date()
 
@@ -35,9 +35,12 @@ export const mockSurvey = (): SurveyModel => ({
   ...mockAddSurveyRepositoryParams()
 })
 
-export const mockSurveys = (): SurveyModel[] => {
+export const mockSurveys = (): AllSurveys => {
   return [
-    mockSurvey(),
+    {
+      ...mockSurvey(),
+      didAnswer: false
+    },
     {
       id: 'other_id',
       question: 'other_question',
@@ -47,6 +50,7 @@ export const mockSurveys = (): SurveyModel[] => {
         amountVotes: 0
       }],
       date,
-      totalAmountVotes: 0
+      totalAmountVotes: 0,
+      didAnswer: false
     }]
 }

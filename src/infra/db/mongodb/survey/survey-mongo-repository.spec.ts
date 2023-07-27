@@ -1,12 +1,20 @@
-import { type Collection } from 'mongodb'
 import { type SurveyModel } from '@/domain/models/survey'
+import { type AccountModel } from '@/domain/models/account'
 import { type AddSurveyRepositoryParams } from '@/data/protocols/repositories/survey/add-survey-repository'
+import { type Collection, ObjectId } from 'mongodb'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { SurveyMongoRepository } from './survey-mongo-repository'
-import { mockAddSurveyRepositoryParams } from '@/domain/models/mocks'
+import { mockAddAccountParams, mockAddSurveyRepositoryParams } from '@/domain/models/mocks'
 import env from '@/main/config/env'
 
 let surveyCollection: Collection
+let surveyVoteCollection: Collection
+let accountCollection: Collection
+
+const makeAccount = async (): Promise<AccountModel> => {
+  const res = await accountCollection.insertOne(mockAddAccountParams())
+  return MongoHelper.mapInsertOneResult(res, mockAddAccountParams())
+}
 
 const makeSut = (): SurveyMongoRepository => {
   return new SurveyMongoRepository()
@@ -24,6 +32,10 @@ describe('Survey Mongo Repository', () => {
   beforeEach(async () => {
     surveyCollection = await MongoHelper.getCollection('surveys')
     await surveyCollection.deleteMany({})
+    surveyVoteCollection = await MongoHelper.getCollection('surveyVotes')
+    await surveyVoteCollection.deleteMany({})
+    accountCollection = await MongoHelper.getCollection('accounts')
+    await accountCollection.deleteMany({})
   })
 
   describe('add()', () => {
@@ -37,33 +49,49 @@ describe('Survey Mongo Repository', () => {
 
   describe('loadAll()', () => {
     test('Should load all surveys on success', async () => {
-      await surveyCollection.insertMany([
+      const account = await makeAccount()
+      const result = await surveyCollection.findOneAndReplace({},
         mockAddSurveyRepositoryParams(),
         {
-          question: 'other_question',
-          answers: [{
-            image: 'other_image',
-            answer: 'other_answer',
-            amountVotes: 0
-          }],
-          date: new Date(),
-          totalAmountVotes: 0
-        }] as AddSurveyRepositoryParams[])
+          upsert: true,
+          returnDocument: 'after'
+        }
+      )
+      await surveyCollection.insertOne({
+        question: 'other_question',
+        answers: [{
+          image: 'other_image',
+          answer: 'other_answer',
+          amountVotes: 0
+        }],
+        date: new Date(),
+        totalAmountVotes: 0
+      })
+
+      const survey = result.value
+
+      await surveyVoteCollection.insertOne({
+        surveyId: survey._id,
+        accountId: new ObjectId(account.id),
+        answer: survey.answers[0].answer,
+        date: new Date()
+      })
 
       const sut = makeSut()
-      const surveys = await sut.loadAll()
+      const surveys = await sut.loadAll(account.id)
       expect(surveys.length).toBe(2)
       expect(surveys[0].id).toBeTruthy()
       expect(surveys[1].id).toBeTruthy()
       expect(surveys[0].question).toBe('any_question')
+      expect(surveys[0].didAnswer).toBe(true)
       expect(surveys[1].question).toBe('other_question')
-      expect(surveys[0].totalAmountVotes).toBe(0)
-      expect(surveys[1].totalAmountVotes).toBe(0)
+      expect(surveys[1].didAnswer).toBe(false)
     })
 
     test('Should load empty list', async () => {
       const sut = makeSut()
-      const surveys = await sut.loadAll()
+      const account = await makeAccount()
+      const surveys = await sut.loadAll(account.id)
       expect(surveys.length).toBe(0)
     })
   })

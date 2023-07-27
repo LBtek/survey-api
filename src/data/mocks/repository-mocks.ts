@@ -1,6 +1,6 @@
 import { type AccountModel } from '@/domain/models/account'
 import { type AddAccountParams } from '@/domain/usecases/account/add-account'
-import { type SurveyModel } from '@/domain/models/survey'
+import { type AllSurveys, type SurveyModel } from '@/domain/models/survey'
 import { type SurveyVoteModel } from '@/domain/models/survey-vote'
 import { type SaveSurveyVoteParams } from '@/domain/usecases/survey-vote/save-survey-vote'
 import { type AddAccountRepository } from '../protocols/repositories/account/add-account-repository'
@@ -73,8 +73,10 @@ export class LoadSurveyByIdRepositorySpy implements LoadSurveyByIdRepository {
 
 export class LoadSurveysRepositorySpy implements LoadSurveysRepository {
   surveys = mockSurveys()
+  accountId: string
 
-  async loadAll (): Promise<SurveyModel[]> {
+  async loadAll (accountId: string): Promise<AllSurveys> {
+    this.accountId = accountId
     return this.surveys
   }
 }

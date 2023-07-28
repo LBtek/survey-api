@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/prefer-optional-chain */
 import { type AllSurveys, type SurveyModel } from '@/domain/models/survey'
+import { type LoadSurveyByIdRepository } from '@/presentation/protocols/repositories'
 import { type AddSurveyRepositoryParams, type AddSurveyRepository } from '@/data/usecases/survey/add-survey/db-add-survey-protocols'
 import { type LoadSurveysRepository } from '@/data/usecases/survey/load-surveys/db-load-surveys-protocols'
-import { type LoadSurveyByIdRepository } from '@/data/protocols/repositories/survey/load-survey-by-id-repository'
 import { type UpdateSurveyRepository } from '@/data/protocols/repositories/survey/update-survey-repository'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { MongoAggregateQueryBuilder } from '../helpers/query-builder'
@@ -52,6 +52,10 @@ export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRe
     const surveysCollection = await MongoHelper.getCollection('surveys')
     const survey = await surveysCollection.findOne({ _id: new ObjectId(id) })
     return survey && MongoHelper.mapOneDocumentWithId(survey)
+  }
+
+  async loadByIdWithCurrentAccountAnswer (surveyId: string, accountId: string): Promise<SurveyModel> {
+    return null
   }
 
   async update (surveyId: string, oldAnswer: string = null, newAnswer: string): Promise<SurveyModel> {

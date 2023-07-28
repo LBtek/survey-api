@@ -1,10 +1,10 @@
-import { type LoadSurveyById, type Controller, type HttpRequest, type HttpResponse, type SaveSurveyVote } from './save-survey-vote-controller-protocols'
+import { type Controller, type HttpRequest, type HttpResponse, type SaveSurveyVote, type LoadSurveyByIdRepository } from './save-survey-vote-controller-protocols'
 import { InvalidParamError } from '@/presentation/errors'
 import { forbidden, ok, serverError } from '@/presentation/helpers/http/http-helper'
 
 export class SaveSurveyVoteController implements Controller {
   constructor (
-    private readonly loadSurveyById: LoadSurveyById,
+    private readonly loadSurveyByIdRepository: LoadSurveyByIdRepository,
     private readonly saveSurveyVote: SaveSurveyVote
   ) { }
 
@@ -13,7 +13,7 @@ export class SaveSurveyVoteController implements Controller {
       const { surveyId } = httpRequest.params
       const { answer } = httpRequest.body
       const { accountId } = httpRequest
-      const survey = await this.loadSurveyById.loadById(surveyId)
+      const survey = await this.loadSurveyByIdRepository.loadById(surveyId)
       if (survey) {
         const answers = survey.answers.map(a => a.answer)
         if (!answers.includes(answer)) {

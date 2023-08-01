@@ -36,7 +36,7 @@ export const MongoHelper = {
     return { id: _id.toString(), ...rest }
   },
 
-  async mapManyDocumentsWithId (documents: Array<WithId<Document>> | Document[]): Promise<any> {
+  mapManyDocumentsWithId (documents: Array<WithId<Document>> | Document[]): any {
     return documents.map(doc => this.mapOneDocumentWithId(doc))
   }
 }

@@ -1,5 +1,5 @@
-import { type AllSurveys } from '@/domain/models/survey'
+import { type SurveyModel } from '@/domain/models/survey'
 
 export interface LoadSurveysRepository {
-  loadAll: (accountId: string) => Promise<AllSurveys>
+  loadAll: (accountId: string) => Promise<SurveyModel[]>
 }

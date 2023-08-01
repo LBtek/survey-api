@@ -61,9 +61,11 @@ describe('DbSaveSurveyVote UseCase', () => {
     let expectedAnswers = surveyMocked.answers.map(a => {
       const newAnswer = { ...a }
       newAnswer.percent = 0
+      newAnswer.isCurrentAccountAnswer = false
       if (a.answer === saveSurveyVoteData.answer) {
         newAnswer.amountVotes = 1
         newAnswer.percent = 100
+        newAnswer.isCurrentAccountAnswer = true
       }
       return newAnswer
     })
@@ -71,7 +73,8 @@ describe('DbSaveSurveyVote UseCase', () => {
     expect(updatedSurveyRef.updatedSurvey).toEqual({
       ...surveyMocked,
       answers: expectedAnswers,
-      totalAmountVotes: 1
+      totalAmountVotes: 1,
+      didAnswer: true
     })
 
     updatedSurveyRef.updatedSurvey = await sut.save({
@@ -85,13 +88,16 @@ describe('DbSaveSurveyVote UseCase', () => {
       const newAnswer = { ...a }
       newAnswer.amountVotes = 1
       newAnswer.percent = 50
+      newAnswer.isCurrentAccountAnswer = false
+      if (a.answer === 'other_answer') { newAnswer.isCurrentAccountAnswer = true }
       return newAnswer
     })
 
     expect(updatedSurveyRef.updatedSurvey).toEqual({
       ...surveyMocked,
       answers: expectedAnswers,
-      totalAmountVotes: 2
+      totalAmountVotes: 2,
+      didAnswer: true
     })
 
     updatedSurveyRef.updatedSurvey = await sut.save({
@@ -145,7 +151,9 @@ describe('DbSaveSurveyVote UseCase', () => {
 
     expectedAnswers = surveyMocked.answers.map(a => {
       const newAnswer = { ...a }
+      newAnswer.isCurrentAccountAnswer = false
       if (a.answer === 'any_answer') {
+        newAnswer.isCurrentAccountAnswer = true
         newAnswer.amountVotes = 3
         newAnswer.percent = 42.86
       }
@@ -159,7 +167,8 @@ describe('DbSaveSurveyVote UseCase', () => {
     expect(updatedSurveyRef.updatedSurvey).toEqual({
       ...surveyMocked,
       answers: expectedAnswers,
-      totalAmountVotes: 7
+      totalAmountVotes: 7,
+      didAnswer: true
     })
   })
 

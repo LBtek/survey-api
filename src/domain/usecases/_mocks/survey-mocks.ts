@@ -1,6 +1,6 @@
 import { type AddSurvey } from '@/domain/usecases/surveys/add-survey'
 import { type LoadSurveys } from '@/domain/usecases/surveys/load-surveys'
-import { type AllSurveys, type AddSurveyParams } from '@/domain/models/survey'
+import { type SurveyModel, type AddSurveyParams } from '@/domain/models/survey'
 import { mockSurveys } from '@/domain/models/mocks'
 
 export class AddSurveySpy implements AddSurvey {
@@ -15,7 +15,7 @@ export class LoadSurveysSpy implements LoadSurveys {
   surveys = mockSurveys()
   accountId: string
 
-  async load (accountId: string): Promise<AllSurveys> {
+  async load (accountId: string): Promise<SurveyModel[]> {
     this.accountId = accountId
     return this.surveys
   }

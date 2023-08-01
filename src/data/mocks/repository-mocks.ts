@@ -1,6 +1,6 @@
 import { type AccountModel } from '@/domain/models/account'
 import { type AddAccountParams } from '@/domain/usecases/account/add-account'
-import { type AllSurveys, type SurveyModel } from '@/domain/models/survey'
+import { type SurveyModel } from '@/domain/models/survey'
 import { type SurveyVoteModel } from '@/domain/models/survey-vote'
 import { type SaveSurveyVoteParams } from '@/domain/usecases/survey-vote/save-survey-vote'
 import { type AddAccountRepository } from '../protocols/repositories/account/add-account-repository'
@@ -46,15 +46,18 @@ export class UpdateSurveyRepositorySpy implements UpdateSurveyRepository {
       ...this.oldSurvey,
       answers: this.oldSurvey.answers.map(a => {
         const answer = { ...a }
+        answer.isCurrentAccountAnswer = false
         if (oldAnswer && answer.answer === oldAnswer) {
           answer.amountVotes = answer.amountVotes - 1
         }
         if (answer.answer === newAnswer) {
           answer.amountVotes = answer.amountVotes + 1
+          answer.isCurrentAccountAnswer = true
         }
         return answer
       }),
-      totalAmountVotes: oldAnswer ? this.oldSurvey.totalAmountVotes : this.oldSurvey.totalAmountVotes + 1
+      totalAmountVotes: oldAnswer ? this.oldSurvey.totalAmountVotes : this.oldSurvey.totalAmountVotes + 1,
+      didAnswer: true
     }
     return this.newSurvey
   }
@@ -64,7 +67,7 @@ export class LoadSurveysRepositorySpy implements LoadSurveysRepository {
   surveys = mockSurveys()
   accountId: string
 
-  async loadAll (accountId: string): Promise<AllSurveys> {
+  async loadAll (accountId: string): Promise<SurveyModel[]> {
     this.accountId = accountId
     return this.surveys
   }

@@ -9,6 +9,74 @@ import { MongoHelper } from '../helpers/mongo-helper'
 import { MongoAggregateQueryBuilder } from '../helpers/query-builder'
 import { ObjectId } from 'mongodb'
 
+const makeFindSurveysQuery = (accountId: string, surveyId: string = null): object[] => {
+  const query = new MongoAggregateQueryBuilder()
+    .lookup({
+      from: 'surveyVotes',
+      let: { accID: new ObjectId(accountId), id: '$_id' },
+      pipeline: [
+        {
+          $match: {
+            $expr: {
+              $and: [
+                { $eq: ['$surveyId', '$$id'] },
+                { $eq: ['$accountId', '$$accID'] }
+              ]
+            }
+          }
+        }
+      ],
+      as: 'result'
+    })
+    .project({
+      _id: 1,
+      question: 1,
+      answers: 1,
+      date: 1,
+      totalAmountVotes: 1,
+      didAnswer: {
+        $gte: [{
+          $size: '$result'
+        }, 1]
+      },
+      lastAnswer: {
+        $last: '$result'
+      }
+    })
+    .project({
+      _id: 1,
+      question: 1,
+      answers: {
+        $map: {
+          input: '$answers',
+          as: 'item',
+          in: {
+            $mergeObjects: [
+              '$$item',
+              {
+                isCurrentAccountAnswer: {
+                  $cond: [
+                    { $eq: ['$$item.answer', '$lastAnswer.answer'] },
+                    true,
+                    false
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      date: 1,
+      totalAmountVotes: 1,
+      didAnswer: 1
+    })
+    .build()
+
+  if (surveyId) query.unshift({ $match: { _id: new ObjectId(surveyId) } })
+
+  return query
+}
+
 export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRepository, LoadSurveyByIdRepository, UpdateSurveyRepository, LoadSurveyResultRepository {
   async add (surveyData: AddSurveyRepositoryParams): Promise<void> {
     const surveyCollection = await MongoHelper.getCollection('surveys')
@@ -17,68 +85,7 @@ export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRe
 
   async loadAll (accountId: string): Promise<SurveyModel[]> {
     const surveysCollection = await MongoHelper.getCollection('surveys')
-    const query = new MongoAggregateQueryBuilder()
-      .lookup({
-        from: 'surveyVotes',
-        let: { accID: new ObjectId(accountId), id: '$_id' },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $and: [
-                  { $eq: ['$surveyId', '$$id'] },
-                  { $eq: ['$accountId', '$$accID'] }
-                ]
-              }
-            }
-          }
-        ],
-        as: 'result'
-      })
-      .project({
-        _id: 1,
-        question: 1,
-        answers: 1,
-        date: 1,
-        totalAmountVotes: 1,
-        didAnswer: {
-          $gte: [{
-            $size: '$result'
-          }, 1]
-        },
-        lastAnswer: {
-          $last: '$result'
-        }
-      })
-      .project({
-        _id: 1,
-        question: 1,
-        answers: {
-          $map: {
-            input: '$answers',
-            as: 'item',
-            in: {
-              $mergeObjects: [
-                '$$item',
-                {
-                  isCurrentAccountAnswer: {
-                    $cond: [
-                      { $eq: ['$$item.answer', '$lastAnswer.answer'] },
-                      true,
-                      false
-                    ]
-                  }
-                }
-              ]
-            }
-          }
-        },
-        date: 1,
-        totalAmountVotes: 1,
-        didAnswer: 1
-      })
-      .build()
-
+    const query = makeFindSurveysQuery(accountId)
     const surveys = await surveysCollection.aggregate(query).toArray()
     return MongoHelper.mapManyDocumentsWithId(surveys)
   }
@@ -90,7 +97,10 @@ export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRe
   }
 
   async loadSurveyResult (surveyId: string, accountId: string): Promise<SurveyModel> {
-    return null
+    const surveysCollection = await MongoHelper.getCollection('surveys')
+    const query = makeFindSurveysQuery(accountId, surveyId)
+    const updatedSurvey = await surveysCollection.aggregate(query).toArray()
+    return updatedSurvey.length && MongoHelper.mapOneDocumentWithId(updatedSurvey[0])
   }
 
   async update (surveyId: string, oldAnswer: string = null, newAnswer: string, accountId: string): Promise<SurveyModel> {
@@ -161,71 +171,6 @@ export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRe
         upsert: false
       })
 
-    const query2 = new MongoAggregateQueryBuilder()
-      .match({ _id: new ObjectId(surveyId) })
-      .lookup({
-        from: 'surveyVotes',
-        let: { accID: new ObjectId(accountId), id: '$_id' },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $and: [
-                  { $eq: ['$surveyId', '$$id'] },
-                  { $eq: ['$accountId', '$$accID'] }
-                ]
-              }
-            }
-          }
-        ],
-        as: 'result'
-      })
-      .project({
-        _id: 1,
-        question: 1,
-        answers: 1,
-        date: 1,
-        totalAmountVotes: 1,
-        didAnswer: {
-          $gte: [{
-            $size: '$result'
-          }, 1]
-        },
-        lastAnswer: {
-          $last: '$result'
-        }
-      })
-      .project({
-        _id: 1,
-        question: 1,
-        answers: {
-          $map: {
-            input: '$answers',
-            as: 'item',
-            in: {
-              $mergeObjects: [
-                '$$item',
-                {
-                  isCurrentAccountAnswer: {
-                    $cond: [
-                      { $eq: ['$$item.answer', '$lastAnswer.answer'] },
-                      true,
-                      false
-                    ]
-                  }
-                }
-              ]
-            }
-          }
-        },
-        date: 1,
-        totalAmountVotes: 1,
-        didAnswer: 1
-      })
-      .build()
-
-    const updatedSurvey = await surveysCollection.aggregate(query2).toArray()
-
-    return updatedSurvey && MongoHelper.mapOneDocumentWithId(updatedSurvey[0])
+    return await this.loadSurveyResult(surveyId, accountId)
   }
 }

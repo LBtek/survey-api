@@ -1,13 +1,6 @@
 export class MongoAggregateQueryBuilder {
   private readonly query = []
 
-  match (data: object): MongoAggregateQueryBuilder {
-    this.query.push({
-      $match: data
-    })
-    return this
-  }
-
   set (data: object): MongoAggregateQueryBuilder {
     this.query.push({
       $set: data

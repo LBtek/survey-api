@@ -86,13 +86,15 @@ describe('Survey Mongo Repository', () => {
   describe('loadAll()', () => {
     test('Should load all surveys on success', async () => {
       const account = await makeAccount()
-      const result = await surveyCollection.findOneAndReplace({},
+
+      const firstSurveyAdded = await surveyCollection.findOneAndReplace({},
         mockAddSurveyRepositoryParams(),
         {
           upsert: true,
           returnDocument: 'after'
         }
       )
+
       await surveyCollection.insertOne({
         question: 'other_question',
         answers: [{
@@ -104,12 +106,12 @@ describe('Survey Mongo Repository', () => {
         totalAmountVotes: 0
       })
 
-      const survey = result.value
+      const firstSurvey = firstSurveyAdded.value
 
       await surveyVoteCollection.insertOne({
-        surveyId: survey._id,
+        surveyId: firstSurvey._id,
         accountId: new ObjectId(account.id),
-        answer: survey.answers[0].answer,
+        answer: firstSurvey.answers[0].answer,
         date: new Date()
       })
 

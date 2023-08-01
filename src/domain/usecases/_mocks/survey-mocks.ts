@@ -1,5 +1,5 @@
-import { type AddSurvey } from '@/domain/usecases/surveys/add-survey'
-import { type LoadSurveys } from '@/domain/usecases/surveys/load-surveys'
+import { type AddSurvey } from '@/domain/usecases/survey/add-survey'
+import { type LoadSurveys } from '@/domain/usecases/survey/load-surveys'
 import { type SurveyModel, type AddSurveyParams } from '@/domain/models/survey'
 import { mockSurveys } from '@/domain/models/mocks'
 

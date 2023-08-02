@@ -4,7 +4,7 @@ import { type LoadSurveyByIdRepository } from '@/presentation/protocols/reposito
 import { type AddSurveyRepositoryParams, type AddSurveyRepository } from '@/data/usecases/survey/add-survey/db-add-survey-protocols'
 import { type LoadSurveysRepository } from '@/data/usecases/survey/load-surveys/db-load-surveys-protocols'
 import { type UpdateSurveyRepository } from '@/data/protocols/repositories/survey/update-survey-repository'
-import { type LoadSurveyResultRepository } from '@/data/protocols/repositories/survey/load-survey-result-repository'
+import { type LoadSurveyRepository } from '@/data/protocols/repositories/survey/load-survey-repository'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { MongoAggregateQueryBuilder } from '../helpers/query-builder'
 import { ObjectId } from 'mongodb'
@@ -77,7 +77,7 @@ const makeFindSurveysQuery = (accountId: string, surveyId: string = null): objec
   return query
 }
 
-export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRepository, LoadSurveyByIdRepository, UpdateSurveyRepository, LoadSurveyResultRepository {
+export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRepository, LoadSurveyByIdRepository, UpdateSurveyRepository, LoadSurveyRepository {
   async add (surveyData: AddSurveyRepositoryParams): Promise<void> {
     const surveyCollection = await MongoHelper.getCollection('surveys')
     await surveyCollection.insertOne(surveyData)
@@ -96,7 +96,7 @@ export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRe
     return survey && MongoHelper.mapOneDocumentWithId(survey)
   }
 
-  async loadSurveyResult (surveyId: string, accountId: string): Promise<SurveyModel> {
+  async loadSurvey (surveyId: string, accountId: string): Promise<SurveyModel> {
     const surveysCollection = await MongoHelper.getCollection('surveys')
     const query = makeFindSurveysQuery(accountId, surveyId)
     const updatedSurvey = await surveysCollection.aggregate(query).toArray()
@@ -171,6 +171,6 @@ export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRe
         upsert: false
       })
 
-    return await this.loadSurveyResult(surveyId, accountId)
+    return await this.loadSurvey(surveyId, accountId)
   }
 }

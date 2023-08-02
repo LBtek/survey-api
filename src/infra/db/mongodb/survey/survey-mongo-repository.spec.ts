@@ -1,6 +1,5 @@
 import { type SurveyModel } from '@/domain/models/survey'
 import { type AccountModel } from '@/domain/models/account'
-import { type AddSurveyRepositoryParams } from '@/data/protocols/repositories/survey/add-survey-repository'
 import { type Collection, ObjectId } from 'mongodb'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { SurveyMongoRepository } from './survey-mongo-repository'
@@ -139,21 +138,56 @@ describe('Survey Mongo Repository', () => {
 
   describe('loadById()', () => {
     test('Should load survey by id on success', async () => {
-      const data: AddSurveyRepositoryParams = {
-        question: 'any_question',
-        answers: [{
-          image: 'any_image',
-          answer: 'any_answer',
-          amountVotes: 0
-        }],
-        date: new Date(),
-        totalAmountVotes: 0
-      }
-      const res = await surveyCollection.insertOne(data)
+      const res = await surveyCollection.insertOne(mockAddSurveyRepositoryParams())
       const { sut } = makeSut()
+      const surveyId = res.insertedId.toString()
       const surveyLoaded = await sut.loadById(res.insertedId.toString())
       expect(surveyLoaded).toBeTruthy()
       expect(surveyLoaded.id).toBeTruthy()
+      expect(surveyLoaded.id).toBe(surveyId)
+    })
+  })
+
+  describe('loadSurvey()', () => {
+    test('Should load survey with current account answer on success', async () => {
+      const account = await makeAccount()
+      const surveyAdded = await surveyCollection.findOneAndReplace({},
+        mockAddSurveyRepositoryParams(),
+        {
+          upsert: true,
+          returnDocument: 'after'
+        }
+      )
+      const survey = surveyAdded.value
+      const { sut } = makeSut()
+      await surveyVoteCollection.insertOne({
+        surveyId: survey._id,
+        accountId: new ObjectId(account.id),
+        answer: survey.answers[0].answer,
+        date: new Date()
+      })
+      const surveyId = survey._id.toString()
+      const surveyLoaded = await sut.loadSurvey(surveyId, account.id)
+      expect(surveyLoaded).toBeTruthy()
+      expect(surveyLoaded.id).toBeTruthy()
+      expect(surveyLoaded.id).toBe(surveyId)
+      expect(surveyLoaded.didAnswer).toBe(true)
+      expect(surveyLoaded.answers[0].isCurrentAccountAnswer).toBe(true)
+      expect(surveyLoaded.answers[1].isCurrentAccountAnswer).toBe(false)
+    })
+
+    test("Must load the survey even if the user hasn't answered it yet", async () => {
+      const account = await makeAccount()
+      const res = await surveyCollection.insertOne(mockAddSurveyRepositoryParams())
+      const { sut } = makeSut()
+      const surveyId = res.insertedId.toString()
+      const surveyLoaded = await sut.loadSurvey(surveyId, account.id)
+      expect(surveyLoaded).toBeTruthy()
+      expect(surveyLoaded.id).toBeTruthy()
+      expect(surveyLoaded.id).toBe(surveyId)
+      expect(surveyLoaded.didAnswer).toBe(false)
+      expect(surveyLoaded.answers[0].isCurrentAccountAnswer).toBe(false)
+      expect(surveyLoaded.answers[1].isCurrentAccountAnswer).toBe(false)
     })
   })
 

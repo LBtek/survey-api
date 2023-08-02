@@ -8,7 +8,7 @@ import request from 'supertest'
 let surveyCollection: Collection
 let accountCollection: Collection
 
-const makeAccessToken = async (role?: string): Promise<string> => {
+const makeAccessToken = async (role?: 'admin'): Promise<string> => {
   const res = await accountCollection.insertOne({
     name: 'Luan',
     email: 'teste123@gmail.com',
@@ -90,6 +90,50 @@ describe('Survey Routes', () => {
         .get('/api/surveys')
         .set('x-access-token', accessToken)
         .expect(204)
+    })
+
+    test('Should return 200 on load surveys with valid accessToken', async () => {
+      await surveyCollection.insertOne({
+        question: 'Question',
+        answers: [{
+          answer: 'Answer 1',
+          image: 'http://image-name.com'
+        }, {
+          answer: 'Answer 2'
+        }],
+        date: new Date()
+      })
+      const accessToken = await makeAccessToken()
+      await request(app)
+        .get('/api/surveys')
+        .set('x-access-token', accessToken)
+        .expect(200)
+    })
+  })
+
+  describe('GET /surveys/:surveyId', () => {
+    test('Should return 403 on load survey without accessToken', async () => {
+      await request(app)
+        .get('/api/surveys/survey_id')
+        .expect(403)
+    })
+
+    test('Should return 200 on load survey with valid accessToken', async () => {
+      const res = await surveyCollection.insertOne({
+        question: 'Question',
+        answers: [{
+          answer: 'Answer 1',
+          image: 'http://image-name.com'
+        }, {
+          answer: 'Answer 2'
+        }],
+        date: new Date()
+      })
+      const accessToken = await makeAccessToken()
+      await request(app)
+        .get(`/api/surveys/${res.insertedId.toString()}`)
+        .set('x-access-token', accessToken)
+        .expect(200)
     })
   })
 })

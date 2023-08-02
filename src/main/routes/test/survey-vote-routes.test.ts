@@ -8,7 +8,7 @@ import { sign } from 'jsonwebtoken'
 let surveyCollection: Collection
 let accountCollection: Collection
 
-const makeAccessToken = async (role?: string): Promise<string> => {
+const makeAccessToken = async (role?: 'admin'): Promise<string> => {
   const res = await accountCollection.insertOne({
     name: 'Luan',
     email: 'teste123@gmail.com',
@@ -27,7 +27,7 @@ const makeAccessToken = async (role?: string): Promise<string> => {
   return accessToken
 }
 
-describe('Survey Routes', () => {
+describe('Survey Vote Routes', () => {
   beforeAll(async () => {
     await MongoHelper.connect(env.mongoUrl)
   })

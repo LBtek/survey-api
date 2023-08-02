@@ -5,6 +5,7 @@ import { type SurveyVoteModel } from '@/domain/models/survey-vote'
 import { type SaveSurveyVoteParams } from '@/domain/usecases/survey-vote/save-survey-vote'
 import { type AddAccountRepository } from '../protocols/repositories/account/add-account-repository'
 import { type AddSurveyRepositoryParams, type AddSurveyRepository } from '../protocols/repositories/survey/add-survey-repository'
+import { type LoadSurveyRepository } from '../protocols/repositories/survey/load-survey-repository'
 import { type LoadSurveysRepository } from '../protocols/repositories/survey/load-surveys-repository'
 import { type LoadAccountByEmailRepository } from '../protocols/repositories/account/load-account-by-email-repository'
 import { type LoadAccountByTokenRepository } from '../protocols/repositories/account/load-account-by-token-repository'
@@ -70,6 +71,18 @@ export class LoadSurveysRepositorySpy implements LoadSurveysRepository {
   async loadAll (accountId: string): Promise<SurveyModel[]> {
     this.accountId = accountId
     return this.surveys
+  }
+}
+
+export class LoadSurveyRepositorySpy implements LoadSurveyRepository {
+  survey = mockSurvey()
+  surveyId: string
+  accountId: string
+
+  async loadSurvey (surveyId: string, accountId: string): Promise<SurveyModel> {
+    this.surveyId = surveyId
+    this.accountId = accountId
+    return this.survey
   }
 }
 

@@ -1,5 +1,5 @@
 module.exports = {
-  roots: ['<rootDir>/src'],
+  roots: ['<rootDir>/src', '<rootDir>/tests'],
   collectCoverageFrom: ['<rootDir>/src/**/*.ts'],
   coveragePathIgnorePatterns: [
     '^(?=.*protocol).*',
@@ -19,7 +19,8 @@ module.exports = {
     '.+\\.ts$': 'ts-jest'
   },
   moduleNameMapper: {
-    '@/(.*)': '<rootDir>/src/$1'
+    '@/(.*)': '<rootDir>/src/$1',
+    '#/(.*)': '<rootDir>/tests/$1'
   },
   coverageThreshold: {
     global: {

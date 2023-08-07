@@ -1,5 +1,0 @@
-export * from '@/domain/models/survey'
-export * from '@/domain/models/survey-vote'
-export * from '@/domain/usecases/survey-vote/save-survey-vote'
-export * from '@/data/protocols/repositories/survey/update-survey-repository'
-export * from '@/data/protocols/repositories/survey-vote/save-survey-vote-repository'

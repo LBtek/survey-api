@@ -1,10 +1,7 @@
-import { type TokenDecrypter } from '@/application/data/protocols/criptography'
+import { type Authentication } from '@/application/models'
+import { type LoadUserAccountByTokenService } from '@/presentation/protocols/services'
 import { type LoadUserAccountByTokenRepository } from '@/application/data/protocols/repositories'
-import {
-  type LoadUserAccountByTokenService,
-  type LoadUserAccountByTokenParams,
-  type LoadUserAccountByTokenResult
-} from '@/presentation/protocols/services'
+import { type TokenDecrypter } from '@/application/data/protocols/criptography'
 
 export class DbLoadUserByAccountAccessToken implements LoadUserAccountByTokenService {
   constructor (
@@ -12,7 +9,7 @@ export class DbLoadUserByAccountAccessToken implements LoadUserAccountByTokenSer
     private readonly loadUserAccountByTokenRepository: LoadUserAccountByTokenRepository
   ) { }
 
-  async loadByToken (data: LoadUserAccountByTokenParams): Promise<LoadUserAccountByTokenResult> {
+  async loadByToken (data: Authentication.LoadUserByToken.Params): Promise<Authentication.LoadUserByToken.Result> {
     const payload = await this.tokenDecrypter.decrypt(data.accessToken)
     if (payload) {
       const account = await this.loadUserAccountByTokenRepository.loadByToken(data)

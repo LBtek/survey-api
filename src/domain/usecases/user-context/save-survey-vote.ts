@@ -1,5 +1,5 @@
-import { type SurveyVote } from '@/domain/entities'
+import { type SaveSurveyVote as SaveSurveyVoteModel } from '@/domain/models'
 
-export interface UserSaveSurveyVote {
-  save: (data: SurveyVote.Save.Params) => Promise<SurveyVote.Save.Result>
+export interface SaveSurveyVote {
+  save: (data: SaveSurveyVoteModel.Params) => Promise<SaveSurveyVoteModel.Result>
 }

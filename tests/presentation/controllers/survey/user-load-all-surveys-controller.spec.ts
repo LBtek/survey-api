@@ -1,11 +1,11 @@
-import { type Survey } from '@/domain/entities'
+import { type UserLoadAllSurveys } from '@/domain/models'
 import { UserLoadAllSurveysController } from '@/presentation/controllers'
 import { UserLoadAllSurveysSpy } from '#/domain/mocks/usecases'
 import { mockAllSurveysToUserContext } from '#/domain/mocks/models'
 import { noContent, ok, serverError } from '@/presentation/helpers/http/http-helper'
 import MockDate from 'mockdate'
 
-const mockRequest = (): Survey.UserLoadAllSurveys.Params => ({ accountId: 'any_account_id' })
+const mockRequest = (): UserLoadAllSurveys.Params => ({ accountId: 'any_account_id' })
 
 type SutTypes = {
   sut: UserLoadAllSurveysController

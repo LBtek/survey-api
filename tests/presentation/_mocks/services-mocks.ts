@@ -1,9 +1,8 @@
+import { type Authentication } from '@/application/models'
 import {
   type AuthParams,
   type AuthResult,
   type AuthenticationService,
-  type LoadUserAccountByTokenParams,
-  type LoadUserAccountByTokenResult,
   type LoadUserAccountByTokenService,
   type CheckSurveyAnswerParams,
   type CheckSurveyContainsAnswerService
@@ -42,7 +41,7 @@ export class LoadUserByAccountAccessTokenSpy implements LoadUserAccountByTokenSe
   role: string
   account = mockAccount()
 
-  async loadByToken (data: LoadUserAccountByTokenParams): Promise<LoadUserAccountByTokenResult> {
+  async loadByToken (data: Authentication.LoadUserByToken.Params): Promise<Authentication.LoadUserByToken.Result> {
     this.accessToken = data.accessToken
     this.role = data.role
     return {

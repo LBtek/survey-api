@@ -1,4 +1,4 @@
-import { type Account } from '@/domain/entities'
+import { type Authentication } from '@/application/models'
 import { type AuthenticationService, type Controller, type HttpResponse, type Validation } from '@/presentation/protocols'
 import { badRequest, ok, serverError, unauthorized } from '@/presentation/helpers/http/http-helper'
 import { UnauthorizedError } from '@/application/errors'
@@ -9,7 +9,7 @@ export class LoginController implements Controller {
     private readonly validation: Validation
   ) { }
 
-  async handle (request: Account.Authentication.Login.Params): Promise<HttpResponse> {
+  async handle (request: Authentication.Login.Params): Promise<HttpResponse> {
     try {
       const error = this.validation.validate(request)
       if (error) {

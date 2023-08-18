@@ -1,5 +1,5 @@
-import { type Account } from '@/domain/entities'
+import { type AddUserAccount as AddUserAccountModel } from '@/domain/models'
 
 export interface AddUserAccount {
-  add: (data: Account.AddUserAccount.Params) => Promise<Account.AddUserAccount.Result>
+  add: (data: AddUserAccountModel.Params) => Promise<AddUserAccountModel.Result>
 }

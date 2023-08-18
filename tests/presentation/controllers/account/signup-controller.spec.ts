@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { type Account } from '@/domain/entities'
+import { type AddUserAccount } from '@/domain/models'
 import { SignUpController } from '@/presentation/controllers/account/signup-controller'
 import { ValidationSpy } from '#/presentation/_mocks'
 import { ok, serverError, badRequest, forbidden } from '@/presentation/helpers/http/http-helper'
@@ -12,7 +12,7 @@ import { AuthenticationSpy } from '#/presentation/_mocks/services-mocks'
 import app from '@/main/config/app'
 import request from 'supertest'
 
-const mockRequest = (): Account.AddUserAccount.Params & { passwordConfirmation: string } => ({
+const mockRequest = (): AddUserAccount.Params & { passwordConfirmation: string } => ({
   ...mockAddAccountParams(),
   passwordConfirmation: 'any_password'
 })

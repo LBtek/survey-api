@@ -1,4 +1,4 @@
-import { type Survey } from '@/domain/entities'
+import { type UserLoadOneSurvey } from '@/domain/models'
 import { UserLoadOneSurveyController } from '@/presentation/controllers'
 import { UserLoadOneSurveySpy } from '#/domain/mocks/usecases'
 import { mockSurveyToUserContext } from '#/domain/mocks/models'
@@ -6,7 +6,7 @@ import { forbidden, ok, serverError } from '@/presentation/helpers/http/http-hel
 import { InvalidParamError } from '@/presentation/errors'
 import MockDate from 'mockdate'
 
-const mockRequest = (): Survey.UserLoadOneSurvey.Params => ({
+const mockRequest = (): UserLoadOneSurvey.Params => ({
   accountId: 'any_account_id',
   surveyId: 'any_survey_id'
 })

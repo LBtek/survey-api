@@ -1,12 +1,13 @@
 import { type SurveyVote } from '@/domain/entities'
+import { type SaveSurveyVote } from '@/domain/models'
 
 export namespace SurveyVoteRepository {
   export namespace Save {
-    export type Params = SurveyVote.Save.Params
+    export type Params = SaveSurveyVote.Params
     export type Result = { id: string } & SurveyVote.BaseDataModel.Body | null | undefined
   }
 }
 
-export interface UserSaveSurveyVoteRepository {
+export interface SaveSurveyVoteRepository {
   save: (data: SurveyVoteRepository.Save.Params) => Promise<SurveyVoteRepository.Save.Result>
 }

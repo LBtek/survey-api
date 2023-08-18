@@ -1,12 +1,13 @@
-import { type Survey, type SurveyVote } from '@/domain/entities'
-import { type UserSaveSurveyVote } from '@/domain/usecases/user-context'
+import { type SurveyVote } from '@/domain/entities'
+import { type SaveSurveyVote, type AnswerToUserContext } from '@/domain/models'
+import { type SaveSurveyVote as SaveSurveyVoteUsecase } from '@/domain/usecases/user-context'
 import { mockSurvey } from '../models'
 
-export class UserSaveSurveyVoteSpy implements UserSaveSurveyVote {
+export class SaveSurveyVoteSpy implements SaveSurveyVoteUsecase {
   saveSurveyVoteData: SurveyVote.BaseDataModel.Body
-  afterSurvey: SurveyVote.Save.Result = {
+  afterSurvey: SaveSurveyVote.Result = {
     ...mockSurvey(),
-    answers: mockSurvey().answers.map((answer: Survey.AnswerToUserContext) => {
+    answers: mockSurvey().answers.map((answer: AnswerToUserContext) => {
       answer.isCurrentAccountAnswer = false
       if (answer.answer === 'any_answer') {
         answer.amountVotes = 1
@@ -19,7 +20,7 @@ export class UserSaveSurveyVoteSpy implements UserSaveSurveyVote {
     didAnswer: true
   }
 
-  async save (data: SurveyVote.Save.Params): Promise<SurveyVote.Save.Result> {
+  async save (data: SaveSurveyVote.Params): Promise<SaveSurveyVote.Result> {
     this.saveSurveyVoteData = data
     return this.afterSurvey
   }

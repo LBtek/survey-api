@@ -1,5 +1,5 @@
-import { type Survey } from '@/domain/entities'
+import { type UserLoadAllSurveys as UserLoadAllSurveysModel } from '@/domain/models'
 
 export interface UserLoadAllSurveys {
-  load: (data: Survey.UserLoadAllSurveys.Params) => Promise<Survey.UserLoadAllSurveys.Result>
+  load: (data: UserLoadAllSurveysModel.Params) => Promise<UserLoadAllSurveysModel.Result>
 }

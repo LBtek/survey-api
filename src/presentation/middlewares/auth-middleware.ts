@@ -1,4 +1,5 @@
-import { type Account } from '@/domain/entities'
+import { type Account } from '@/application/entities'
+import { type Authentication } from '@/application/models'
 import { type Middleware, type HttpResponse, type LoadUserAccountByTokenService } from '@/presentation/protocols'
 import { AccessDeniedError } from '@/application/errors'
 import { JsonWebTokenError, TokenExpiredError, NotBeforeError } from '@/infra/errors'
@@ -10,7 +11,7 @@ export class AuthMiddleware implements Middleware {
     private readonly role?: Account.BaseDataModel.Roles
   ) { }
 
-  async handle (request: Account.Authentication.LoadUserByToken.Params): Promise<HttpResponse> {
+  async handle (request: Authentication.LoadUserByToken.Params): Promise<HttpResponse> {
     try {
       const accessToken = request?.accessToken
       if (accessToken) {

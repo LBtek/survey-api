@@ -1,4 +1,10 @@
 import { type Survey } from '@/domain/entities'
+import {
+  type PublisherAddSurvey,
+  type AnswerToUserContext,
+  type UserLoadOneSurvey,
+  type UserLoadAllSurveys
+} from '@/domain/models'
 import { type SurveyRepository } from '@/application/data/protocols/repositories'
 
 const date = new Date()
@@ -12,7 +18,7 @@ const mockAnswers = (): Array<Omit<Survey.BaseDataModel.BaseAnswer, 'amountVotes
   }]
 }
 
-export const mockAddSurveyParams = (): Survey.PublisherAddSurvey.Params => ({
+export const mockAddSurveyParams = (): PublisherAddSurvey.Params => ({
   question: 'any_question',
   answers: mockAnswers(),
   date
@@ -35,16 +41,16 @@ export const mockSurvey = (): Survey.BaseDataModel.Body & { id: string } => ({
   ...mockAddSurveyRepositoryParams()
 })
 
-export const mockSurveyToUserContext = (): Survey.UserLoadOneSurvey.Result => ({
+export const mockSurveyToUserContext = (): UserLoadOneSurvey.Result => ({
   ...mockSurvey(),
-  answers: mockSurvey().answers.map((answer: Survey.AnswerToUserContext) => {
+  answers: mockSurvey().answers.map((answer: AnswerToUserContext) => {
     answer.isCurrentAccountAnswer = false
     return answer
   }),
   didAnswer: false
 })
 
-export const mockAllSurveysToUserContext = (): Survey.UserLoadAllSurveys.Result => {
+export const mockAllSurveysToUserContext = (): UserLoadAllSurveys.Result => {
   return [
     mockSurveyToUserContext(),
     {

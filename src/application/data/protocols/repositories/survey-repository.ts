@@ -1,4 +1,9 @@
 import { type Survey } from '@/domain/entities'
+import {
+  type AnswerToUserContext,
+  type UserLoadOneSurvey as UserLoadOneSurveyModel,
+  type UserLoadAllSurveys as UserLoadAllSurveysModel
+} from '@/domain/models'
 
 export namespace SurveyRepository {
   export namespace PublisherAddSurvey {
@@ -12,13 +17,13 @@ export namespace SurveyRepository {
   }
 
   export namespace UserLoadOneSurvey {
-    export type Params = Survey.UserLoadOneSurvey.Params
-    export type Result = Survey.UserLoadOneSurvey.Result
+    export type Params = UserLoadOneSurveyModel.Params
+    export type Result = UserLoadOneSurveyModel.Result
   }
 
   export namespace UserLoadAllSurveys {
-    export type Params = Survey.UserLoadAllSurveys.Params
-    export type Result = Survey.UserLoadAllSurveys.Result
+    export type Params = UserLoadAllSurveysModel.Params
+    export type Result = UserLoadAllSurveysModel.Result
   }
 
   export namespace UserUpdateSurvey {
@@ -29,8 +34,8 @@ export namespace SurveyRepository {
       accountId: string
     }
     export type Result =
-      Omit<Survey.UserLoadOneSurvey.Result, 'answers'>
-      & { answers: Array<Omit<Survey.AnswerToUserContext, 'percent'>> }
+      Omit<UserLoadOneSurveyModel.Result, 'answers'>
+      & { answers: Array<Omit<AnswerToUserContext, 'percent'>> }
   }
 }
 

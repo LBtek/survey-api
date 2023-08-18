@@ -1,4 +1,4 @@
-import { type Survey } from '@/domain/entities'
+import { type AnswerToUserContext } from '@/domain/models'
 import {
   type AccountRepository,
   type SurveyRepository,
@@ -9,7 +9,7 @@ import {
   type LoadUserAccountByTokenRepository,
   type UpdateAccessTokenRepository,
   type PublisherAddSurveyRepository,
-  type UserSaveSurveyVoteRepository,
+  type SaveSurveyVoteRepository,
   type UserUpdateSurveyRepository,
   type UserLoadOneSurveyRepository,
   type UserLoadAllSurveysRepository,
@@ -92,7 +92,7 @@ export class PublisherAddSurveyRepositorySpy implements PublisherAddSurveyReposi
   }
 }
 
-export class UserSaveSurveyVoteRepositorySpy implements UserSaveSurveyVoteRepository {
+export class SaveSurveyVoteRepositorySpy implements SaveSurveyVoteRepository {
   saveSurveyVoteData: SurveyVoteRepository.Save.Params
   oldSurveyVote: SurveyVoteRepository.Save.Result = undefined
 
@@ -115,7 +115,7 @@ export class UserUpdateSurveyRepositorySpy implements UserUpdateSurveyRepository
     this.newAnswer = newAnswer
     this.newSurvey = {
       ...this.oldSurvey,
-      answers: this.oldSurvey.answers.map((a: Survey.AnswerToUserContext) => {
+      answers: this.oldSurvey.answers.map((a: AnswerToUserContext) => {
         const answer = { ...a }
         answer.isCurrentAccountAnswer = false
         if (oldAnswer && answer.answer === oldAnswer) {

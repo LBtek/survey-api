@@ -1,11 +1,12 @@
-import { type Account } from '@/domain/entities'
+import { type Account } from '@/application/entities'
+import { type Authentication } from '@/application/models'
 import { AuthMiddleware } from '@/presentation/middlewares/auth-middleware'
 import { AccessDeniedError } from '@/application/errors'
 import { badRequest, forbidden, ok, serverError } from '@/presentation/helpers/http/http-helper'
 import { LoadUserByAccountAccessTokenSpy } from '../_mocks/services-mocks'
 import { JsonWebTokenError } from 'jsonwebtoken'
 
-const mockRequest = (): Account.Authentication.LoadUserByToken.Params => ({
+const mockRequest = (): Authentication.LoadUserByToken.Params => ({
   accessToken: 'any_token'
 })
 

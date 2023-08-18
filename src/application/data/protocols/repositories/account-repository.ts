@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-invalid-void-type */
-import { type Account, type User } from '@/domain/entities'
+import { type User } from '@/domain/entities'
+import { type Account } from '@/application/entities'
+import { type AddUserAccount as AddUserAccountModel } from '@/domain/models'
 
 export namespace AccountRepository {
   export namespace AddUserAccount {
-    export type Params = Account.AddUserAccount.Params
+    export type Params = AddUserAccountModel.Params
     export type Result = { accountId: string, userId: string }
   }
 

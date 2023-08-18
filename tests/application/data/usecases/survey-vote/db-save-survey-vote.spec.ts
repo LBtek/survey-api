@@ -1,10 +1,10 @@
-import { type Survey } from '@/domain/entities'
-import { UserSaveSurveyVoteRepositorySpy, UserUpdateSurveyRepositorySpy } from '#/application/data/mocks/repository-mocks'
-import { mockUserSaveSurveyVoteParams, mockSurvey } from '#/domain/mocks/models'
-import { DbUserSaveSurveyVote } from '@/application/data/usecases/survey-vote'
+import { type AnswerToUserContext } from '@/domain/models'
+import { SaveSurveyVoteRepositorySpy, UserUpdateSurveyRepositorySpy } from '#/application/data/mocks/repository-mocks'
+import { mockSaveSurveyVoteParams, mockSurvey } from '#/domain/mocks/models'
+import { DbSaveSurveyVote } from '@/application/data/usecases/survey-vote'
 
 const surveyMocked = mockSurvey()
-const saveSurveyVoteData = mockUserSaveSurveyVoteParams()
+const saveSurveyVoteData = mockSaveSurveyVoteParams()
 
 class UpdatedSurveyReference {
   #updatedSurvey = {}
@@ -22,15 +22,15 @@ class UpdatedSurveyReference {
 }
 
 type SutTypes = {
-  sut: DbUserSaveSurveyVote
-  saveSurveyVoteRepositorySpy: UserSaveSurveyVoteRepositorySpy
+  sut: DbSaveSurveyVote
+  saveSurveyVoteRepositorySpy: SaveSurveyVoteRepositorySpy
   userUpdateSurveyRepositorySpy: UserUpdateSurveyRepositorySpy
 }
 
 const makeSut = (): SutTypes => {
-  const saveSurveyVoteRepositorySpy = new UserSaveSurveyVoteRepositorySpy()
+  const saveSurveyVoteRepositorySpy = new SaveSurveyVoteRepositorySpy()
   const userUpdateSurveyRepositorySpy = new UserUpdateSurveyRepositorySpy()
-  const sut = new DbUserSaveSurveyVote(saveSurveyVoteRepositorySpy, userUpdateSurveyRepositorySpy)
+  const sut = new DbSaveSurveyVote(saveSurveyVoteRepositorySpy, userUpdateSurveyRepositorySpy)
   return {
     sut,
     saveSurveyVoteRepositorySpy,
@@ -38,8 +38,8 @@ const makeSut = (): SutTypes => {
   }
 }
 
-describe('DbUserSaveSurveyVote UseCase', () => {
-  test('Should call UserSaveSurveyVoteRepository with correct values', async () => {
+describe('DbSaveSurveyVote UseCase', () => {
+  test('Should call SaveSurveyVoteRepository with correct values', async () => {
     const { sut, saveSurveyVoteRepositorySpy } = makeSut()
     await sut.save(saveSurveyVoteData)
     expect(saveSurveyVoteRepositorySpy.saveSurveyVoteData).toEqual(saveSurveyVoteData)
@@ -59,7 +59,7 @@ describe('DbUserSaveSurveyVote UseCase', () => {
     updatedSurveyRef.updatedSurvey = await sut.save(saveSurveyVoteData)
     const surveyId = saveSurveyVoteData.surveyId
 
-    let expectedAnswers = surveyMocked.answers.map((a: Survey.AnswerToUserContext) => {
+    let expectedAnswers = surveyMocked.answers.map((a: AnswerToUserContext) => {
       const newAnswer = { ...a }
       newAnswer.percent = 0
       newAnswer.isCurrentAccountAnswer = false
@@ -85,7 +85,7 @@ describe('DbUserSaveSurveyVote UseCase', () => {
       date: new Date()
     })
 
-    expectedAnswers = surveyMocked.answers.map((a: Survey.AnswerToUserContext) => {
+    expectedAnswers = surveyMocked.answers.map((a: AnswerToUserContext) => {
       const newAnswer = { ...a }
       newAnswer.amountVotes = 1
       newAnswer.percent = 50
@@ -150,7 +150,7 @@ describe('DbUserSaveSurveyVote UseCase', () => {
       date: new Date()
     })
 
-    expectedAnswers = surveyMocked.answers.map((a: Survey.AnswerToUserContext) => {
+    expectedAnswers = surveyMocked.answers.map((a: AnswerToUserContext) => {
       const newAnswer = { ...a }
       newAnswer.isCurrentAccountAnswer = false
       if (a.answer === 'any_answer') {
@@ -173,7 +173,7 @@ describe('DbUserSaveSurveyVote UseCase', () => {
     })
   })
 
-  test('Should throw if UserSaveSurveyVoteRepository throws', async () => {
+  test('Should throw if SaveSurveyVoteRepository throws', async () => {
     const { sut, saveSurveyVoteRepositorySpy } = makeSut()
     jest.spyOn(saveSurveyVoteRepositorySpy, 'save').mockReturnValueOnce(Promise.reject(new Error()))
     const promisse = sut.save(saveSurveyVoteData)

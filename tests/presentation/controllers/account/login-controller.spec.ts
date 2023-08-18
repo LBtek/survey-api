@@ -1,4 +1,4 @@
-import { type Account } from '@/domain/entities'
+import { type Authentication } from '@/application/models'
 import { LoginController } from '@/presentation/controllers/account/login-controller'
 import { badRequest, ok, serverError, unauthorized } from '@/presentation/helpers/http/http-helper'
 import { MissingParamError } from '@/presentation/errors'
@@ -7,7 +7,7 @@ import { mockAuthenticationParams } from '#/domain/mocks/models'
 import { AuthenticationSpy } from '#/presentation/_mocks/services-mocks'
 import { UnauthorizedError } from '@/application/errors'
 
-const mockRequest = (): Account.Authentication.Login.Params => ({
+const mockRequest = (): Authentication.Login.Params => ({
   ...mockAuthenticationParams()
 })
 

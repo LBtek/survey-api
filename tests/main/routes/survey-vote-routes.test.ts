@@ -1,4 +1,4 @@
-import { type Account } from '@/domain/entities'
+import { type Account } from '@/application/entities'
 import { type Collection, ObjectId } from 'mongodb'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import app from '@/main/config/app'

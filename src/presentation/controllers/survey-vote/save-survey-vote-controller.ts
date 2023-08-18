@@ -1,23 +1,23 @@
-import { type SurveyVote } from '@/domain/entities'
-import { type UserSaveSurveyVote } from '@/domain/usecases/user-context'
+import { type SaveSurveyVote } from '@/domain/models'
+import { type SaveSurveyVote as SaveSurveyVoteUsecase } from '@/domain/usecases/user-context'
 import { type Controller, type HttpResponse } from '@/presentation/protocols'
 import { type CheckSurveyContainsAnswerService } from '@/presentation/protocols/services'
 import { forbidden, ok, serverError } from '@/presentation/helpers/http/http-helper'
 
-export class UserSaveSurveyVoteController implements Controller {
+export class SaveSurveyVoteController implements Controller {
   constructor (
     private readonly checkSurveyContainsAnswerService: CheckSurveyContainsAnswerService,
-    private readonly useSaveSurveyVote: UserSaveSurveyVote
+    private readonly useSaveSurveyVote: SaveSurveyVoteUsecase
   ) { }
 
-  async handle (request: SurveyVote.Save.Params): Promise<HttpResponse> {
+  async handle (request: SaveSurveyVote.Params): Promise<HttpResponse> {
     try {
       const { surveyId, answer, accountId } = request
       const error = await this.checkSurveyContainsAnswerService.verify({ surveyId, answer })
       if (error) {
         return forbidden(error)
       }
-      const surveyVote = await this.useSaveSurveyVote.save(
+      const survey = await this.useSaveSurveyVote.save(
         {
           accountId,
           surveyId,
@@ -25,7 +25,7 @@ export class UserSaveSurveyVoteController implements Controller {
           date: new Date()
         }
       )
-      return ok(surveyVote)
+      return ok(survey)
     } catch (error) {
       return serverError(error)
     }

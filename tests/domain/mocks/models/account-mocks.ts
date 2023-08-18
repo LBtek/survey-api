@@ -1,6 +1,6 @@
-import { type AccountRepository } from '@/application/data/protocols/repositories/account-repository'
-import { type Account } from '@/domain/entities'
+import { type AddUserAccount } from '@/domain/models'
 import { type AuthParams } from '@/presentation/protocols'
+import { type AccountRepository } from '@/application/data/protocols/repositories/account-repository'
 
 const email = 'any_email@mail.com'
 const userName = 'any_name'
@@ -10,7 +10,7 @@ export const mockAuthenticationParams = (): AuthParams => ({
   password: 'any_password'
 })
 
-export const mockAddAccountParams = (): Account.AddUserAccount.Params => ({
+export const mockAddAccountParams = (): AddUserAccount.Params => ({
   name: userName,
   ...mockAuthenticationParams()
 })

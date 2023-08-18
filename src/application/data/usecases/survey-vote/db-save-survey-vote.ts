@@ -1,15 +1,15 @@
-import { type Survey, type SurveyVote } from '@/domain/entities'
-import { type UserSaveSurveyVote } from '@/domain/usecases/user-context'
-import { type UserSaveSurveyVoteRepository } from '@/application/data/protocols/repositories/survey-vote-repository'
+import { type SaveSurveyVote, type AnswerToUserContext } from '@/domain/models'
+import { type SaveSurveyVote as SaveSurveyVoteUsecase } from '@/domain/usecases/user-context'
+import { type SaveSurveyVoteRepository } from '@/application/data/protocols/repositories/survey-vote-repository'
 import { type UserUpdateSurveyRepository } from '@/application/data/protocols/repositories/survey-repository'
 
-export class DbUserSaveSurveyVote implements UserSaveSurveyVote {
+export class DbSaveSurveyVote implements SaveSurveyVoteUsecase {
   constructor (
-    private readonly saveSurveyVoteRepository: UserSaveSurveyVoteRepository,
+    private readonly saveSurveyVoteRepository: SaveSurveyVoteRepository,
     private readonly userUpdateSurveyRepository: UserUpdateSurveyRepository
   ) { }
 
-  async save (saveSurveyVoteData: SurveyVote.Save.Params): Promise<SurveyVote.Save.Result> {
+  async save (saveSurveyVoteData: SaveSurveyVote.Params): Promise<SaveSurveyVote.Result> {
     const oldSurveyVote = await this.saveSurveyVoteRepository.save(saveSurveyVoteData)
     const updatedSurvey = await this.userUpdateSurveyRepository.update({
       surveyId: saveSurveyVoteData.surveyId,
@@ -17,7 +17,7 @@ export class DbUserSaveSurveyVote implements UserSaveSurveyVote {
       newAnswer: saveSurveyVoteData.answer,
       accountId: saveSurveyVoteData.accountId
     })
-    const newAnswers = updatedSurvey.answers.map((a: Survey.AnswerToUserContext) => {
+    const newAnswers = updatedSurvey.answers.map((a: AnswerToUserContext) => {
       const answer = { ...a }
       answer.percent = Number(((answer.amountVotes / updatedSurvey.totalAmountVotes) * 100).toFixed(2))
       return answer

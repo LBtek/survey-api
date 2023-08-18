@@ -1,1 +1,1 @@
-export * from './user-save-survey-vote-controller'
+export * from './save-survey-vote-controller'

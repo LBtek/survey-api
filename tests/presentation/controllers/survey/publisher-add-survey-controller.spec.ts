@@ -1,4 +1,4 @@
-import { type Survey } from '@/domain/entities'
+import { type PublisherAddSurvey } from '@/domain/models'
 import { PublisherAddSurveyController } from '@/presentation/controllers'
 import { PublisherAddSurveySpy } from '#/domain/mocks/usecases'
 import { mockAddSurveyParams } from '#/domain/mocks/models'
@@ -7,7 +7,7 @@ import { badRequest, noContent, serverError } from '@/presentation/helpers/http/
 import MockDate from 'mockdate'
 import { AnswersLengthError } from '@/domain/errors'
 
-const mockRequest = (): Survey.PublisherAddSurvey.Params => ({
+const mockRequest = (): PublisherAddSurvey.Params => ({
   ...mockAddSurveyParams(),
   date: new Date()
 })

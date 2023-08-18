@@ -1,4 +1,4 @@
-import { type Account } from '@/domain/entities'
+import { type Account } from '@/application/entities'
 import { type Middleware } from '@/presentation/protocols'
 import { AuthMiddleware } from '@/presentation/middlewares/auth-middleware'
 import { makeLogAuthMiddlewareDecorator } from '../decorators'

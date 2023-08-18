@@ -1,1 +1,1 @@
-export * from './db-user-save-survey-vote'
+export * from './db-save-survey-vote'

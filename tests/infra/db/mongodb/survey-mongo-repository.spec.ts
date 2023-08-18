@@ -1,4 +1,4 @@
-import { type Survey } from '@/domain/entities'
+import { type AnswerToUserContext } from '@/domain/models'
 import { type AccountRepository } from '@/application/data/protocols/repositories/account-repository'
 import { type Collection, ObjectId } from 'mongodb'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
@@ -224,7 +224,7 @@ describe('Survey Mongo Repository', () => {
         (await makeAccount()).accountId
       )
 
-      let expectedAnswers = mockAddSurveyRepositoryParams().answers.map((a: Survey.AnswerToUserContext) => {
+      let expectedAnswers = mockAddSurveyRepositoryParams().answers.map((a: AnswerToUserContext) => {
         const answer = { ...a }
         answer.isCurrentAccountAnswer = false
         if (answer.answer === 'any_answer') {

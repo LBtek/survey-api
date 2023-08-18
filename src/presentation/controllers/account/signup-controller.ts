@@ -1,17 +1,17 @@
-import { type Account } from '@/domain/entities'
-import { type AddUserAccount } from '@/domain/usecases/user-context'
+import { type AddUserAccount } from '@/domain/models'
+import { type AddUserAccount as AddUserAccountUsecase } from '@/domain/usecases/user-context'
 import { type HttpResponse, type Controller, type Validation, type AuthenticationService } from '@/presentation/protocols'
 import { badRequest, forbidden, ok, serverError } from '@/presentation/helpers/http/http-helper'
 import { EmailInUserError } from '@/domain/errors'
 
 export class SignUpController implements Controller {
   constructor (
-    private readonly addUserAccount: AddUserAccount,
+    private readonly addUserAccount: AddUserAccountUsecase,
     private readonly validation: Validation,
     private readonly authentication: AuthenticationService
   ) { }
 
-  async handle (request: Account.AddUserAccount.Params): Promise<HttpResponse> {
+  async handle (request: AddUserAccount.Params): Promise<HttpResponse> {
     try {
       const error = this.validation.validate(request)
       if (error) {

@@ -1,19 +1,16 @@
-import { type Account } from '@/domain/entities'
+import { type Authentication } from '@/application/models'
 import { type InvalidParamError } from '../errors'
 import { type UnauthorizedError } from '@/application/errors'
 
-export type AuthParams = Account.Authentication.Login.Params
-export type AuthResult = Account.Authentication.Login.Result
+export type AuthParams = Authentication.Login.Params
+export type AuthResult = Authentication.Login.Result
 
 export interface AuthenticationService {
   auth: (data: AuthParams) => Promise<AuthResult | UnauthorizedError>
 }
 
-export type LoadUserAccountByTokenParams = Account.Authentication.LoadUserByToken.Params
-export type LoadUserAccountByTokenResult = Account.Authentication.LoadUserByToken.Result
-
 export interface LoadUserAccountByTokenService {
-  loadByToken: (data: LoadUserAccountByTokenParams) => Promise<LoadUserAccountByTokenResult>
+  loadByToken: (data: Authentication.LoadUserByToken.Params) => Promise<Authentication.LoadUserByToken.Result>
 }
 
 export type CheckSurveyAnswerParams = {

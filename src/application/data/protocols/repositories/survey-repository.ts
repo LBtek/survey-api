@@ -18,12 +18,13 @@ export namespace SurveyRepository {
 
   export namespace UserLoadOneSurvey {
     export type Params = UserLoadOneSurveyModel.Params
-    export type Result = UserLoadOneSurveyModel.Result
+    export type Result = Omit<UserLoadOneSurveyModel.Result, 'answers'>
+    & { answers: Array<Omit<AnswerToUserContext, 'percent'>> }
   }
 
   export namespace UserLoadAllSurveys {
     export type Params = UserLoadAllSurveysModel.Params
-    export type Result = UserLoadAllSurveysModel.Result
+    export type Result = UserLoadOneSurvey.Result[]
   }
 
   export namespace UserUpdateSurvey {
@@ -33,9 +34,7 @@ export namespace SurveyRepository {
       newAnswer: string
       accountId: string
     }
-    export type Result =
-      Omit<UserLoadOneSurveyModel.Result, 'answers'>
-      & { answers: Array<Omit<AnswerToUserContext, 'percent'>> }
+    export type Result = UserLoadOneSurvey.Result
   }
 }
 

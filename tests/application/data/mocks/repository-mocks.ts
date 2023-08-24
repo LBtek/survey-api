@@ -17,7 +17,7 @@ import {
   type LogErrorRepository,
   type LogTypeError
 } from '@/application/data/protocols/repositories'
-import { mockAccount, mockSurvey, mockSurveyToUserContext, mockAllSurveysToUserContext } from '#/domain/mocks/models'
+import { mockAccount, mockSurvey, mockUserLoadOneSurveyRepositoryResult, mockUserLoadAllSurveysRepositoryResult } from '#/domain/mocks/models'
 
 export class AddAccountRepositorySpy implements AddUserAccountRepository {
   addAccountData: AccountRepository.AddUserAccount.Params
@@ -135,7 +135,7 @@ export class UserUpdateSurveyRepositorySpy implements UserUpdateSurveyRepository
 }
 
 export class UserLoadOneSurveyRepositorySpy implements UserLoadOneSurveyRepository {
-  survey = mockSurveyToUserContext()
+  survey = mockUserLoadOneSurveyRepositoryResult()
   surveyId: string
   accountId: string
 
@@ -147,7 +147,7 @@ export class UserLoadOneSurveyRepositorySpy implements UserLoadOneSurveyReposito
 }
 
 export class UserLoadAllSurveysRepositorySpy implements UserLoadAllSurveysRepository {
-  surveys = mockAllSurveysToUserContext()
+  surveys = mockUserLoadAllSurveysRepositoryResult()
   accountId: string
 
   async loadAll (data: SurveyRepository.UserLoadAllSurveys.Params): Promise<SurveyRepository.UserLoadAllSurveys.Result> {

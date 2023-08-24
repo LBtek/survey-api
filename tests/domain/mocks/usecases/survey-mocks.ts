@@ -1,15 +1,14 @@
 import {
   type PublisherAddSurvey,
   type UserLoadAllSurveys,
-  type UserLoadOneSurvey,
-  type AnswerToUserContext
+  type UserLoadOneSurvey
 } from '@/domain/models'
 import { type PublisherAddSurvey as PublisherAddSurveyUsecase } from '@/domain/usecases/publisher-context'
 import {
   type UserLoadOneSurvey as UserLoadOneSurveyUsecase,
   type UserLoadAllSurveys as UserLoadAllSurveysUsecase
 } from '@/domain/usecases/user-context'
-import { mockSurvey, mockAllSurveysToUserContext } from '../models'
+import { mockAllSurveysToUserContext, mockSurveyToUserContext } from '../models'
 
 export class PublisherAddSurveySpy implements PublisherAddSurveyUsecase {
   addSurveyData: PublisherAddSurvey.Params
@@ -35,14 +34,7 @@ export class UserLoadAllSurveysSpy implements UserLoadAllSurveysUsecase {
 export class UserLoadOneSurveySpy implements UserLoadOneSurveyUsecase {
   surveyId: string
   accountId: string
-  survey: UserLoadOneSurvey.Result = {
-    ...mockSurvey(),
-    answers: mockSurvey().answers.map((answer: AnswerToUserContext) => {
-      answer.isCurrentAccountAnswer = false
-      return answer
-    }),
-    didAnswer: false
-  }
+  survey = mockSurveyToUserContext()
 
   async load (data: UserLoadOneSurvey.Params): Promise<UserLoadOneSurvey.Result> {
     this.surveyId = data.surveyId

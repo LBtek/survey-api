@@ -10,6 +10,25 @@ let surveyCollection: Collection
 let accountCollection: Collection
 let userCollection: Collection
 
+const surveyRequest = {
+  question: 'Question',
+  answers: [{
+    answer: 'Answer 1',
+    image: 'http://image-name.com'
+  }, {
+    answer: 'Answer 2'
+  }]
+}
+
+const surveyToInsertOnDatabase = {
+  ...surveyRequest,
+  answers: surveyRequest.answers.map((a: any) => {
+    a.amountVotes = 0
+    return a
+  }),
+  totalAmountVotes: 0
+}
+
 const makeAccessToken = async (role?: Account.BaseDataModel.Roles): Promise<string> => {
   const user = await userCollection.insertOne({
     name: 'Luan',
@@ -54,15 +73,7 @@ describe('Survey Routes', () => {
     test('Should return 403 on add survey without accessToken', async () => {
       await request(app)
         .post('/api/surveys')
-        .send({
-          question: 'Question',
-          answers: [{
-            answer: 'Answer 1',
-            image: 'http://image-name.com'
-          }, {
-            answer: 'Answer 2'
-          }]
-        })
+        .send(surveyRequest)
         .expect(403)
     })
 
@@ -71,15 +82,7 @@ describe('Survey Routes', () => {
       await request(app)
         .post('/api/surveys')
         .set('x-access-token', accessToken)
-        .send({
-          question: 'Question',
-          answers: [{
-            answer: 'Answer 1',
-            image: 'http://image-name.com'
-          }, {
-            answer: 'Answer 2'
-          }]
-        })
+        .send(surveyRequest)
         .expect(204)
     })
   })
@@ -100,16 +103,7 @@ describe('Survey Routes', () => {
     })
 
     test('Should return 200 on load surveys with valid accessToken', async () => {
-      await surveyCollection.insertOne({
-        question: 'Question',
-        answers: [{
-          answer: 'Answer 1',
-          image: 'http://image-name.com'
-        }, {
-          answer: 'Answer 2'
-        }],
-        date: new Date()
-      })
+      await surveyCollection.insertOne(surveyToInsertOnDatabase)
       const accessToken = await makeAccessToken()
       await request(app)
         .get('/api/surveys')
@@ -126,16 +120,7 @@ describe('Survey Routes', () => {
     })
 
     test('Should return 200 on load survey with valid accessToken', async () => {
-      const res = await surveyCollection.insertOne({
-        question: 'Question',
-        answers: [{
-          answer: 'Answer 1',
-          image: 'http://image-name.com'
-        }, {
-          answer: 'Answer 2'
-        }],
-        date: new Date()
-      })
+      const res = await surveyCollection.insertOne(surveyToInsertOnDatabase)
       const accessToken = await makeAccessToken()
       await request(app)
         .get(`/api/surveys/${res.insertedId.toString()}`)

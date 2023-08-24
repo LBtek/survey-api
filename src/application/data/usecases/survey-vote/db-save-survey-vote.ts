@@ -1,7 +1,8 @@
-import { type SaveSurveyVote, type AnswerToUserContext } from '@/domain/models'
+import { type SaveSurveyVote } from '@/domain/models'
 import { type SaveSurveyVote as SaveSurveyVoteUsecase } from '@/domain/usecases/user-context'
 import { type SaveSurveyVoteRepository } from '@/application/data/protocols/repositories/survey-vote-repository'
 import { type UserUpdateSurveyRepository } from '@/application/data/protocols/repositories/survey-repository'
+import { addPercentageToAnswers } from '../../helpers'
 
 export class DbSaveSurveyVote implements SaveSurveyVoteUsecase {
   constructor (
@@ -17,12 +18,7 @@ export class DbSaveSurveyVote implements SaveSurveyVoteUsecase {
       newAnswer: saveSurveyVoteData.answer,
       accountId: saveSurveyVoteData.accountId
     })
-    const newAnswers = updatedSurvey.answers.map((a: AnswerToUserContext) => {
-      const answer = { ...a }
-      answer.percent = Number(((answer.amountVotes / updatedSurvey.totalAmountVotes) * 100).toFixed(2))
-      return answer
-    })
-    const surveyWithPercent = { ...updatedSurvey, answers: newAnswers }
+    const surveyWithPercent = addPercentageToAnswers(updatedSurvey)
 
     return surveyWithPercent
   }

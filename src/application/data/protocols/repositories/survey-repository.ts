@@ -1,4 +1,4 @@
-import { type Survey } from '@/domain/entities'
+import { type UserID, type SurveyID, type Survey } from '@/domain/entities'
 import {
   type AnswerToUserContext,
   type UserLoadOneSurvey as UserLoadOneSurveyModel,
@@ -8,12 +8,12 @@ import {
 export namespace SurveyRepository {
   export namespace PublisherAddSurvey {
     export type Params = Survey.BaseDataModel.Body
-    export type Result = { surveyId: string }
+    export type Result = { surveyId: SurveyID }
   }
 
   export namespace LoadSurveyById {
-    export type Params = { id: string }
-    export type Result = { id: string } & Survey.BaseDataModel.Body
+    export type Params = { id: SurveyID }
+    export type Result = Survey.Model
   }
 
   export namespace UserLoadOneSurvey {
@@ -29,10 +29,10 @@ export namespace SurveyRepository {
 
   export namespace UserUpdateSurvey {
     export type Params = {
-      surveyId: string
+      userId: UserID
+      surveyId: SurveyID
       oldAnswer: string
       newAnswer: string
-      accountId: string
     }
     export type Result = UserLoadOneSurvey.Result
   }

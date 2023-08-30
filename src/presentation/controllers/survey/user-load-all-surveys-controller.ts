@@ -8,8 +8,8 @@ export class UserLoadAllSurveysController implements Controller {
 
   async handle (request: UserLoadAllSurveys.Params): Promise<HttpResponse> {
     try {
-      const { accountId } = request
-      const surveys = await this.loadSurveys.load({ accountId })
+      const { userId } = request
+      const surveys = await this.loadSurveys.load({ userId })
       return surveys.length ? ok(surveys) : noContent()
     } catch (error) {
       return serverError(error)

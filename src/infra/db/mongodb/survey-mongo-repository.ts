@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/prefer-optional-chain */
 import {
   type SurveyRepository,
   type PublisherAddSurveyRepository,
@@ -12,19 +11,20 @@ import {
 import { MongoHelper } from './helpers/mongo-helper'
 import { MongoAggregateQueryBuilder } from './helpers/query-builder'
 import { ObjectId } from 'mongodb'
+import { type SurveyID, type UserID } from '@/domain/entities'
 
-const makeFindSurveysQuery = (accountId: string, surveyId: string = null): object[] => {
+const makeFindSurveysQuery = (userId: UserID, surveyId: SurveyID = null): object[] => {
   const query = new MongoAggregateQueryBuilder()
     .lookup({
       from: 'surveyVotes',
-      let: { accID: new ObjectId(accountId), id: '$_id' },
+      let: { userID: new ObjectId(userId), id: '$_id' },
       pipeline: [
         {
           $match: {
             $expr: {
               $and: [
                 { $eq: ['$surveyId', '$$id'] },
-                { $eq: ['$accountId', '$$accID'] }
+                { $eq: ['$userId', '$$userID'] }
               ]
             }
           }
@@ -93,7 +93,7 @@ export class SurveyMongoRepository implements PublisherAddSurveyRepository, User
 
   async loadAll (data: SurveyRepository.UserLoadAllSurveys.Params): Promise<SurveyRepository.UserLoadAllSurveys.Result> {
     const surveysCollection = await MongoHelper.getCollection('surveys')
-    const query = makeFindSurveysQuery(data.accountId)
+    const query = makeFindSurveysQuery(data.userId)
     const surveys = await surveysCollection.aggregate(query).toArray()
     return MongoHelper.mapManyDocumentsWithId(surveys)
   }
@@ -105,15 +105,15 @@ export class SurveyMongoRepository implements PublisherAddSurveyRepository, User
   }
 
   async loadSurvey (data: SurveyRepository.UserLoadOneSurvey.Params): Promise<SurveyRepository.UserLoadOneSurvey.Result> {
-    const { accountId, surveyId } = data
+    const { userId, surveyId } = data
     const surveysCollection = await MongoHelper.getCollection('surveys')
-    const query = makeFindSurveysQuery(accountId, surveyId)
+    const query = makeFindSurveysQuery(userId, surveyId)
     const updatedSurvey = await surveysCollection.aggregate(query).toArray()
     return updatedSurvey.length && MongoHelper.mapOneDocumentWithId(updatedSurvey[0])
   }
 
   async update (data: SurveyRepository.UserUpdateSurvey.Params): Promise<SurveyRepository.UserUpdateSurvey.Result> {
-    const { surveyId, oldAnswer, newAnswer, accountId } = data
+    const { surveyId, oldAnswer, newAnswer, userId } = data
     const surveysCollection = await MongoHelper.getCollection('surveys')
     const toHaveOldAnswer = !!oldAnswer
 
@@ -181,6 +181,6 @@ export class SurveyMongoRepository implements PublisherAddSurveyRepository, User
         upsert: false
       })
 
-    return await this.loadSurvey({ surveyId, accountId })
+    return await this.loadSurvey({ surveyId, userId })
   }
 }

@@ -7,7 +7,7 @@ export class SurveyVoteMongoRepository implements SaveSurveyVoteRepository {
     const surveyVotesCollection = await MongoHelper.getCollection('surveyVotes')
     const res = await surveyVotesCollection.findOneAndUpdate({
       surveyId: new ObjectId(data.surveyId),
-      accountId: new ObjectId(data.accountId)
+      userId: new ObjectId(data.userId)
     }, {
       $set: {
         answer: data.answer,
@@ -20,7 +20,7 @@ export class SurveyVoteMongoRepository implements SaveSurveyVoteRepository {
     if (res.value) {
       const surveyVote: SurveyVoteRepository.Save.Result = MongoHelper.mapOneDocumentWithId(res.value)
       surveyVote.surveyId = surveyVote.surveyId.toString()
-      surveyVote.accountId = surveyVote.accountId.toString()
+      surveyVote.userId = surveyVote.userId.toString()
 
       return surveyVote
     }

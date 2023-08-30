@@ -1,8 +1,11 @@
+import { type SurveyID } from './survey'
+import { type UserID } from './user'
+
 export namespace SurveyVote {
   export namespace BaseDataModel {
     export type Body = {
-      surveyId: string
-      accountId: string
+      userId: UserID
+      surveyId: SurveyID
       answer: string
       date: Date
     }

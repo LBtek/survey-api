@@ -9,8 +9,8 @@ export class UserLoadOneSurveyController implements Controller {
 
   async handle (request: UserLoadOneSurvey.Params): Promise<HttpResponse> {
     try {
-      const { surveyId, accountId } = request
-      const survey = await this.userLoadOneSurvey.load({ surveyId, accountId })
+      const { surveyId, userId } = request
+      const survey = await this.userLoadOneSurvey.load({ surveyId, userId })
       if (!survey) {
         return forbidden(new InvalidParamError('surveyId'))
       }

@@ -13,10 +13,10 @@ export class DbSaveSurveyVote implements SaveSurveyVoteUsecase {
   async save (saveSurveyVoteData: SaveSurveyVote.Params): Promise<SaveSurveyVote.Result> {
     const oldSurveyVote = await this.saveSurveyVoteRepository.save(saveSurveyVoteData)
     const updatedSurvey = await this.userUpdateSurveyRepository.update({
+      userId: saveSurveyVoteData.userId,
       surveyId: saveSurveyVoteData.surveyId,
       oldAnswer: oldSurveyVote?.answer,
-      newAnswer: saveSurveyVoteData.answer,
-      accountId: saveSurveyVoteData.accountId
+      newAnswer: saveSurveyVoteData.answer
     })
     const surveyWithPercent = addPercentageToAnswers(updatedSurvey)
 

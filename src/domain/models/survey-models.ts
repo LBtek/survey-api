@@ -1,4 +1,4 @@
-import { type Survey } from '../entities'
+import { type UserID, type SurveyID, type Survey } from '../entities'
 import { type AnswersLengthError } from '../errors'
 
 export namespace PublisherAddSurvey {
@@ -13,20 +13,20 @@ export type AnswerToUserContext = Survey.BaseDataModel.BaseAnswer & { isCurrentA
 
 export namespace UserLoadOneSurvey {
   export type Params = {
-    surveyId: string
-    accountId: string
+    surveyId: SurveyID
+    userId: UserID
   }
 
   export type Result =
     Survey.BaseDataModel.Body
-    & { id: string }
+    & { id: SurveyID }
     & { answers: AnswerToUserContext[] }
     & { didAnswer: boolean }
 }
 
 export namespace UserLoadAllSurveys {
   export type Params = {
-    accountId: string
+    userId: UserID
   }
   export type Result = UserLoadOneSurvey.Result[]
 }

@@ -4,6 +4,7 @@ module.exports = {
   coveragePathIgnorePatterns: [
     '^(?=.*protocol).*',
     'domain/usecases',
+    'domain/value-objects',
     '/entities/',
     '/models/',
     'server.ts',

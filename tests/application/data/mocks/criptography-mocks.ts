@@ -34,7 +34,7 @@ export class TokenGeneratorSpy implements TokenGenerator {
 
 export class TokenDecrypterSpy implements TokenDecrypter {
   token: string
-  decrypted = 'any_value'
+  decrypted = 'any_user_id'
 
   async decrypt (token: string): Promise<string> {
     this.token = token

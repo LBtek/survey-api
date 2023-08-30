@@ -1,17 +1,17 @@
-import { type Authentication } from '@/application/models'
+import { type AuthenticationModel } from '@/application/models'
 import {
   type AuthParams,
   type AuthResult,
-  type AuthenticationService,
-  type LoadUserAccountByTokenService,
+  type IAuthenticationService,
+  type ILoadAuthenticatedUserByTokenService,
   type CheckSurveyAnswerParams,
-  type CheckSurveyContainsAnswerService
+  type ICheckSurveyContainsAnswerService
 } from '@/presentation/protocols'
 import { type UnauthorizedError } from '@/application/errors'
 import { InvalidParamError } from '@/presentation/errors'
 import { mockAccount } from '#/domain/mocks/models'
 
-export class CheckSurveyAnswerServiceSpy implements CheckSurveyContainsAnswerService {
+export class CheckSurveyAnswerServiceSpy implements ICheckSurveyContainsAnswerService {
   id: string
   answer: string
   error: InvalidParamError = new InvalidParamError('any_param')
@@ -23,7 +23,7 @@ export class CheckSurveyAnswerServiceSpy implements CheckSurveyContainsAnswerSer
   }
 }
 
-export class AuthenticationSpy implements AuthenticationService {
+export class AuthenticationSpy implements IAuthenticationService {
   authenticationData: AuthParams
   authenticationResult: AuthResult | UnauthorizedError = {
     username: 'any_name',
@@ -36,17 +36,17 @@ export class AuthenticationSpy implements AuthenticationService {
   }
 }
 
-export class LoadUserByAccountAccessTokenSpy implements LoadUserAccountByTokenService {
+export class LoadAuthenticatedUserByTokenSpy implements ILoadAuthenticatedUserByTokenService {
   accessToken: string
-  role: string
+  roles: AuthenticationModel.LoadUserByToken.Params['roles']
   account = mockAccount()
 
-  async loadByToken (data: Authentication.LoadUserByToken.Params): Promise<Authentication.LoadUserByToken.Result> {
+  async loadByToken (data: AuthenticationModel.LoadUserByToken.Params): Promise<AuthenticationModel.LoadUserByToken.Result> {
     this.accessToken = data.accessToken
-    this.role = data.role
+    this.roles = data.roles
     return {
       accountId: this.account.accountId,
-      ...this.account.user
+      user: this.account.user
     }
   }
 }

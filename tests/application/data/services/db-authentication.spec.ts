@@ -1,28 +1,28 @@
 import { type AuthResult } from '@/presentation/protocols'
-import { DbAuthentication } from '@/application/data/services'
+import { Authentication } from '@/application/data/services'
 import { HashComparerSpy, TokenGeneratorSpy } from '#/application/data/mocks/criptography-mocks'
-import { LoadUserAccountByEmailRepositorySpy, UpdateAccessTokenRepositorySpy } from '#/application/data/mocks/repository-mocks'
+import { AuthenticateUserRepositorySpy, LoadUserAccountByEmailRepositorySpy } from '#/application/data/mocks/repository-mocks'
 import { mockAccount, mockAuthenticationParams } from '#/domain/mocks/models'
 import { UnauthorizedError } from '@/application/errors'
 
 type SutTypes = {
-  sut: DbAuthentication
+  sut: Authentication
   loadUserAccountByEmailRepositorySpy: LoadUserAccountByEmailRepositorySpy
   hashComparerSpy: HashComparerSpy
   tokenGeneratorSpy: TokenGeneratorSpy
-  updateAccessTokenRepositorySpy: UpdateAccessTokenRepositorySpy
+  authenticateUserRepositorySpy: AuthenticateUserRepositorySpy
 }
 
 const makeSut = (): SutTypes => {
   const loadUserAccountByEmailRepositorySpy = new LoadUserAccountByEmailRepositorySpy()
+  const authenticateUserRepositorySpy = new AuthenticateUserRepositorySpy()
   const hashComparerSpy = new HashComparerSpy()
   const tokenGeneratorSpy = new TokenGeneratorSpy()
-  const updateAccessTokenRepositorySpy = new UpdateAccessTokenRepositorySpy()
-  const sut = new DbAuthentication(
+  const sut = new Authentication(
     loadUserAccountByEmailRepositorySpy,
+    authenticateUserRepositorySpy,
     hashComparerSpy,
-    tokenGeneratorSpy,
-    updateAccessTokenRepositorySpy
+    tokenGeneratorSpy
   )
 
   return {
@@ -30,11 +30,11 @@ const makeSut = (): SutTypes => {
     loadUserAccountByEmailRepositorySpy,
     hashComparerSpy,
     tokenGeneratorSpy,
-    updateAccessTokenRepositorySpy
+    authenticateUserRepositorySpy
   }
 }
 
-describe('DbAuthentication UseCase', () => {
+describe('Authentication Service', () => {
   test('Should call LoadAccountByEmailRepository with correct email', async () => {
     const { sut, loadUserAccountByEmailRepositorySpy } = makeSut()
     const authenticationData = mockAuthenticationParams()
@@ -90,7 +90,7 @@ describe('DbAuthentication UseCase', () => {
     const { sut, tokenGeneratorSpy } = makeSut()
     const account = mockAccount()
     await sut.auth(mockAuthenticationParams())
-    expect(tokenGeneratorSpy.content).toBe(account.accountId)
+    expect(tokenGeneratorSpy.content).toBe(account.user.id)
   })
 
   test('Should throw if TokenGenerator throws', async () => {
@@ -109,17 +109,17 @@ describe('DbAuthentication UseCase', () => {
     expect(accessToken).toBe(tokenGeneratorSpy.token)
   })
 
-  test('Should call UpdateAccessTokenRepository with correct values', async () => {
-    const { sut, updateAccessTokenRepositorySpy } = makeSut()
+  test('Should call IAuthenticateUserRepository with correct values', async () => {
+    const { sut, authenticateUserRepositorySpy } = makeSut()
     const account = mockAccount()
     await sut.auth(mockAuthenticationParams())
-    expect(updateAccessTokenRepositorySpy.id).toBe(account.accountId)
-    expect(updateAccessTokenRepositorySpy.token).toBe('any_token')
+    expect(authenticateUserRepositorySpy.authenticateData.accountId).toBe(account.accountId)
+    expect(authenticateUserRepositorySpy.authenticateData.accessToken).toBe('any_token')
   })
 
   test('Should throw if UpdateAccessTokenRepository throws', async () => {
-    const { sut, updateAccessTokenRepositorySpy } = makeSut()
-    jest.spyOn(updateAccessTokenRepositorySpy, 'updateAccessToken').mockReturnValueOnce(
+    const { sut, authenticateUserRepositorySpy } = makeSut()
+    jest.spyOn(authenticateUserRepositorySpy, 'authenticate').mockReturnValueOnce(
       Promise.reject(new Error())
     )
     const promise = sut.auth(mockAuthenticationParams())

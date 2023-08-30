@@ -1,4 +1,4 @@
-import { type Authentication } from '@/application/models'
+import { type AuthenticationModel } from '@/application/models'
 import { LoginController } from '@/presentation/controllers/account/login-controller'
 import { badRequest, ok, serverError, unauthorized } from '@/presentation/helpers/http/http-helper'
 import { MissingParamError } from '@/presentation/errors'
@@ -7,7 +7,7 @@ import { mockAuthenticationParams } from '#/domain/mocks/models'
 import { AuthenticationSpy } from '#/presentation/_mocks/services-mocks'
 import { UnauthorizedError } from '@/application/errors'
 
-const mockRequest = (): Authentication.Login.Params => ({
+const mockRequest = (): AuthenticationModel.Login.Params => ({
   ...mockAuthenticationParams()
 })
 
@@ -32,8 +32,8 @@ describe('Login Controller', () => {
   test('Should call Authentication with correct values', async () => {
     const { sut, authenticationSpy } = makeSut()
     await sut.handle(mockRequest())
-    const { email, password } = mockRequest()
-    expect(authenticationSpy.authenticationData).toEqual({ email, password })
+    const { ip, email, password } = mockRequest()
+    expect(authenticationSpy.authenticationData).toEqual({ ip, email, password })
   })
 
   test('Should return 401 if invalid credentials are provided', async () => {

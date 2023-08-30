@@ -1,11 +1,11 @@
-import { DbAddUserAccount } from '@/application/data/usecases/account'
+import { AddUserAccount } from '@/application/data/usecases/account'
 import { HasherSpy } from '#/application/data/mocks/criptography-mocks'
 import { AddAccountRepositorySpy, CheckUserAccountByEmailRepositorySpy } from '#/application/data/mocks/repository-mocks'
 import { mockAccount, mockAddAccountParams } from '#/domain/mocks/models'
 import { EmailInUserError } from '@/domain/errors'
 
 type SutTypes = {
-  sut: DbAddUserAccount
+  sut: AddUserAccount
   hasherSpy: HasherSpy
   addAccountRepositorySpy: AddAccountRepositorySpy
   checkUserAccountByEmailRepositorySpy: CheckUserAccountByEmailRepositorySpy
@@ -15,7 +15,7 @@ const makeSut = (): SutTypes => {
   const hasherSpy = new HasherSpy()
   const checkUserAccountByEmailRepositorySpy = new CheckUserAccountByEmailRepositorySpy()
   const addAccountRepositorySpy = new AddAccountRepositorySpy()
-  const sut = new DbAddUserAccount(hasherSpy, addAccountRepositorySpy, checkUserAccountByEmailRepositorySpy)
+  const sut = new AddUserAccount(hasherSpy, addAccountRepositorySpy, checkUserAccountByEmailRepositorySpy)
   return {
     sut,
     hasherSpy,

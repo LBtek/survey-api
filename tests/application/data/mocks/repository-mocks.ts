@@ -3,11 +3,9 @@ import {
   type AccountRepository,
   type SurveyRepository,
   type SurveyVoteRepository,
-  type AddUserAccountRepository,
-  type CheckUserAccountByEmailRepository,
-  type LoadUserAccountByEmailRepository,
-  type LoadUserAccountByTokenRepository,
-  type UpdateAccessTokenRepository,
+  type IAddUserAccountRepository,
+  type ICheckUserAccountByEmailRepository,
+  type ILoadUserAccountByEmailRepository,
   type PublisherAddSurveyRepository,
   type SaveSurveyVoteRepository,
   type UserUpdateSurveyRepository,
@@ -15,11 +13,14 @@ import {
   type UserLoadAllSurveysRepository,
   type LoadSurveyByIdRepository,
   type LogErrorRepository,
-  type LogTypeError
+  type LogTypeError,
+  type AuthenticationRepository,
+  type ILoadAuthenticatedUserRepository,
+  type IAuthenticateUserRepository
 } from '@/application/data/protocols/repositories'
 import { mockAccount, mockSurvey, mockUserLoadOneSurveyRepositoryResult, mockUserLoadAllSurveysRepositoryResult } from '#/domain/mocks/models'
 
-export class AddAccountRepositorySpy implements AddUserAccountRepository {
+export class AddAccountRepositorySpy implements IAddUserAccountRepository {
   addAccountData: AccountRepository.AddUserAccount.Params
   response: AccountRepository.AddUserAccount.Result = {
     accountId: 'any_accountId',
@@ -32,7 +33,7 @@ export class AddAccountRepositorySpy implements AddUserAccountRepository {
   }
 }
 
-export class CheckUserAccountByEmailRepositorySpy implements CheckUserAccountByEmailRepository {
+export class CheckUserAccountByEmailRepositorySpy implements ICheckUserAccountByEmailRepository {
   email: string
   result = false
 
@@ -44,7 +45,7 @@ export class CheckUserAccountByEmailRepositorySpy implements CheckUserAccountByE
   }
 }
 
-export class LoadUserAccountByEmailRepositorySpy implements LoadUserAccountByEmailRepository {
+export class LoadUserAccountByEmailRepositorySpy implements ILoadUserAccountByEmailRepository {
   account = mockAccount()
   email: string
 
@@ -56,29 +57,27 @@ export class LoadUserAccountByEmailRepositorySpy implements LoadUserAccountByEma
   }
 }
 
-export class LoadUserAccountByTokenRepositorySpy implements LoadUserAccountByTokenRepository {
-  token: string
-  role: string
+export class LoadUserAccountByTokenRepositorySpy implements ILoadAuthenticatedUserRepository {
+  loadUserData: AuthenticationRepository.LoadUser.Params
   account = mockAccount()
 
-  async loadByToken (data: AccountRepository.LoadUserAccountByToken.Params): Promise<AccountRepository.LoadUserAccountByToken.Result> {
-    this.token = data.accessToken
-    this.role = data.role
+  async loadUser (data: AuthenticationRepository.LoadUser.Params): Promise<AuthenticationRepository.LoadUser.Result> {
+    this.loadUserData = data
+
     const { user, ...account } = this.account
+
     return {
       accountId: account.accountId,
-      ...user
+      user
     }
   }
 }
 
-export class UpdateAccessTokenRepositorySpy implements UpdateAccessTokenRepository {
-  id: string
-  token: string
+export class AuthenticateUserRepositorySpy implements IAuthenticateUserRepository {
+  authenticateData: AuthenticationRepository.AuthenticateUser.Params
 
-  async updateAccessToken (data: AccountRepository.UpdateAccessToken.Params): Promise<AccountRepository.UpdateAccessToken.Result> {
-    this.id = data.accountId
-    this.token = data.accessToken
+  async authenticate (data: AuthenticationRepository.AuthenticateUser.Params): Promise<AuthenticationRepository.AuthenticateUser.Result> {
+    this.authenticateData = data
   }
 }
 
@@ -137,21 +136,21 @@ export class UserUpdateSurveyRepositorySpy implements UserUpdateSurveyRepository
 export class UserLoadOneSurveyRepositorySpy implements UserLoadOneSurveyRepository {
   survey = mockUserLoadOneSurveyRepositoryResult()
   surveyId: string
-  accountId: string
+  userId: string
 
   async loadSurvey (data: SurveyRepository.UserLoadOneSurvey.Params): Promise<SurveyRepository.UserLoadOneSurvey.Result> {
     this.surveyId = data.surveyId
-    this.accountId = data.accountId
+    this.userId = data.userId
     return this.survey
   }
 }
 
 export class UserLoadAllSurveysRepositorySpy implements UserLoadAllSurveysRepository {
   surveys = mockUserLoadAllSurveysRepositoryResult()
-  accountId: string
+  userId: string
 
   async loadAll (data: SurveyRepository.UserLoadAllSurveys.Params): Promise<SurveyRepository.UserLoadAllSurveys.Result> {
-    this.accountId = data.accountId
+    this.userId = data.userId
     return this.surveys
   }
 }

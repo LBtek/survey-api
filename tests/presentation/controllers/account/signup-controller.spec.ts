@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { type AddUserAccount } from '@/domain/models'
+import { type AddUserAccountModel } from '@/domain/models'
 import { SignUpController } from '@/presentation/controllers/account/signup-controller'
 import { ValidationSpy } from '#/presentation/_mocks'
 import { ok, serverError, badRequest, forbidden } from '@/presentation/helpers/http/http-helper'
@@ -12,7 +12,8 @@ import { AuthenticationSpy } from '#/presentation/_mocks/services-mocks'
 import app from '@/main/config/app'
 import request from 'supertest'
 
-const mockRequest = (): AddUserAccount.Params & { passwordConfirmation: string } => ({
+const mockRequest = (): { ip: string } & AddUserAccountModel.Params & { passwordConfirmation: string } => ({
+  ip: 'any_ip',
   ...mockAddAccountParams(),
   passwordConfirmation: 'any_password'
 })
@@ -80,8 +81,8 @@ describe('SignUp Controller', () => {
   test('Should call Authentication with correct values', async () => {
     const { sut, authenticationSpy } = makeSut()
     await sut.handle(mockRequest())
-    const { email, password } = mockRequest()
-    expect(authenticationSpy.authenticationData).toEqual({ email, password })
+    const { ip, email, password } = mockRequest()
+    expect(authenticationSpy.authenticationData).toEqual({ ip, email, password })
   })
 
   test('Should return 500 if Authentication throws', async () => {

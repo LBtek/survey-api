@@ -1,23 +1,24 @@
-import { type AddUserAccount } from '@/domain/models'
-import { type AddUserAccount as AddUserAccountUsecase } from '@/domain/usecases/user-context'
-import { type HttpResponse, type Controller, type Validation, type AuthenticationService } from '@/presentation/protocols'
+import { type AddUserAccountModel } from '@/domain/models'
+import { type IAddUserAccount as IAddUserAccountUsecase } from '@/domain/usecases/user-context'
+import { type HttpResponse, type Controller, type Validation, type IAuthenticationService } from '@/presentation/protocols'
+import { type IP } from '@/application/entities'
 import { badRequest, forbidden, ok, serverError } from '@/presentation/helpers/http/http-helper'
 import { EmailInUserError } from '@/domain/errors'
 
 export class SignUpController implements Controller {
   constructor (
-    private readonly addUserAccount: AddUserAccountUsecase,
+    private readonly addUserAccount: IAddUserAccountUsecase,
     private readonly validation: Validation,
-    private readonly authentication: AuthenticationService
+    private readonly authentication: IAuthenticationService
   ) { }
 
-  async handle (request: AddUserAccount.Params): Promise<HttpResponse> {
+  async handle (request: { ip: IP } & AddUserAccountModel.Params): Promise<HttpResponse> {
     try {
       const error = this.validation.validate(request)
       if (error) {
         return badRequest(error)
       }
-      const { name, email, password } = request
+      const { name, email, password, ip } = request
       const result = await this.addUserAccount.add({
         name,
         email,
@@ -26,7 +27,7 @@ export class SignUpController implements Controller {
       if (result instanceof EmailInUserError) {
         return forbidden(result)
       }
-      const authenticationResponse = await this.authentication.auth({ email, password })
+      const authenticationResponse = await this.authentication.auth({ ip, email, password })
       return ok(authenticationResponse)
     } catch (error) {
       return serverError(error)

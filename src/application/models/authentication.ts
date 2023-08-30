@@ -1,25 +1,29 @@
 import { type User } from '@/domain/entities'
+import { type Password, type AuthenticatedAccount, type AccessToken, type IP, type AccountID } from '../entities'
+import { type Email, type UserName } from '@/domain/value-objects'
 
-export namespace Authentication {
+export namespace AuthenticationModel {
   export namespace Login {
     export type Params = {
-      email: string
-      password: string
+      ip: IP
+      email: Email
+      password: Password
     }
     export type Result = {
-      accessToken: string
-      username: string
+      accessToken: AccessToken
+      username: UserName
     }
   }
 
   export namespace LoadUserByToken {
     export type Params = {
-      accessToken: string
-      role?: string
+      ip: IP
+      accessToken: AccessToken
+      roles: Set<AuthenticatedAccount.BaseAccessKey.Key['role'] | null>
     }
     export type Result = {
-      accountId: string
-      userId: string
-    } & User.BaseDataModel.Body
+      accountId: AccountID
+      user: User.Model
+    }
   }
 }

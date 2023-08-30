@@ -1,5 +1,5 @@
-import { type AddUserAccount as AddUserAccountModel } from '@/domain/models'
+import { type AddUserAccountModel } from '@/domain/models'
 
-export interface AddUserAccount {
+export interface IAddUserAccount {
   add: (data: AddUserAccountModel.Params) => Promise<AddUserAccountModel.Result>
 }

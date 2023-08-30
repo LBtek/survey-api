@@ -1,17 +1,17 @@
-import { type AddUserAccount } from '@/domain/models'
-import { type AddUserAccount as AddUserAccountUsecase } from '@/domain/usecases/user-context'
-import { type CheckUserAccountByEmailRepository, type AddUserAccountRepository } from '@/application/data/protocols/repositories/account-repository'
+import { type AddUserAccountModel } from '@/domain/models'
+import { type IAddUserAccount as IAddUserAccountUsecase } from '@/domain/usecases/user-context'
+import { type ICheckUserAccountByEmailRepository, type IAddUserAccountRepository } from '@/application/data/protocols/repositories/account-repository'
 import { type Hasher } from '@/application/data/protocols/criptography'
 import { EmailInUserError } from '@/domain/errors'
 
-export class DbAddUserAccount implements AddUserAccountUsecase {
+export class AddUserAccount implements IAddUserAccountUsecase {
   constructor (
     private readonly hasher: Hasher,
-    private readonly addUserAccountRepository: AddUserAccountRepository,
-    private readonly checkUserAccountByEmailRepository: CheckUserAccountByEmailRepository
+    private readonly addUserAccountRepository: IAddUserAccountRepository,
+    private readonly checkUserAccountByEmailRepository: ICheckUserAccountByEmailRepository
   ) { }
 
-  async add (data: AddUserAccount.Params): Promise<AddUserAccount.Result> {
+  async add (data: AddUserAccountModel.Params): Promise<AddUserAccountModel.Result> {
     const exist = await this.checkUserAccountByEmailRepository.checkByEmail({ email: data.email })
     if (exist) {
       return new EmailInUserError()

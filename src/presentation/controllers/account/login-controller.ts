@@ -1,22 +1,22 @@
-import { type Authentication } from '@/application/models'
-import { type AuthenticationService, type Controller, type HttpResponse, type Validation } from '@/presentation/protocols'
+import { type AuthenticationModel } from '@/application/models'
+import { type IAuthenticationService, type Controller, type HttpResponse, type Validation } from '@/presentation/protocols'
 import { badRequest, ok, serverError, unauthorized } from '@/presentation/helpers/http/http-helper'
 import { UnauthorizedError } from '@/application/errors'
 
 export class LoginController implements Controller {
   constructor (
-    private readonly authentication: AuthenticationService,
+    private readonly authentication: IAuthenticationService,
     private readonly validation: Validation
   ) { }
 
-  async handle (request: Authentication.Login.Params): Promise<HttpResponse> {
+  async handle (request: AuthenticationModel.Login.Params): Promise<HttpResponse> {
     try {
       const error = this.validation.validate(request)
       if (error) {
         return badRequest(error)
       }
-      const { email, password } = request
-      const authenticationResponse = await this.authentication.auth({ email, password })
+      const { email, password, ip } = request
+      const authenticationResponse = await this.authentication.auth({ ip, email, password })
       if (authenticationResponse instanceof UnauthorizedError) {
         return unauthorized()
       }

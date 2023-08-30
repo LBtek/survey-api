@@ -6,7 +6,8 @@ export const adaptMiddleware = (middleware: Middleware) => {
     const request = {
       accessToken: req.headers['x-access-token'],
       ...(req.headers),
-      ...(req.body)
+      ...(req.body),
+      ip: req.ip
     }
     const httpResponse = await middleware.handle(request)
     if (httpResponse.statusCode >= 200 && httpResponse.statusCode <= 299) {

@@ -1,27 +1,36 @@
-import { type AuthenticationService, type AuthParams, type AuthResult } from '@/presentation/protocols/services'
+import { type IAuthenticationService, type AuthParams, type AuthResult } from '@/presentation/protocols/services'
 import { type HashComparer, type TokenGenerator } from '@/application/data/protocols/criptography'
 import {
-  type UpdateAccessTokenRepository,
-  type LoadUserAccountByEmailRepository
+  type IAuthenticateUserRepository,
+  type ILoadUserAccountByEmailRepository
 } from '@/application/data/protocols/repositories'
 import { UnauthorizedError } from '@/application/errors'
 
-export class DbAuthentication implements AuthenticationService {
+export class Authentication implements IAuthenticationService {
   constructor (
-    private readonly loadUserAccountByEmailRepository: LoadUserAccountByEmailRepository,
+    private readonly loadUserAccountByEmailRepository: ILoadUserAccountByEmailRepository,
+    private readonly authenticateUserRepository: IAuthenticateUserRepository,
     private readonly hashComparer: HashComparer,
-    private readonly tokenGenerator: TokenGenerator,
-    private readonly updateAccessTokenRepository: UpdateAccessTokenRepository
+    private readonly tokenGenerator: TokenGenerator
   ) { }
 
   async auth (authentication: AuthParams): Promise<AuthResult | UnauthorizedError> {
-    const account = await this.loadUserAccountByEmailRepository.loadByEmail({ email: authentication.email })
+    const { ip, email } = authentication
+    const account = await this.loadUserAccountByEmailRepository.loadByEmail({ email })
+
     if (account) {
-      const { accountId } = account
+      const { accountId, user, ...rest } = account
       const isValid = await this.hashComparer.compare(authentication.password, account.password)
+
       if (isValid) {
-        const accessToken = await this.tokenGenerator.generate(accountId)
-        await this.updateAccessTokenRepository.updateAccessToken({ accountId, accessToken })
+        const accessToken = await this.tokenGenerator.generate(user.id)
+        await this.authenticateUserRepository.authenticate({
+          accountId,
+          ip,
+          accessToken,
+          role: rest.role || 'basic_user',
+          user
+        })
 
         return { username: account.user.name, accessToken }
       }

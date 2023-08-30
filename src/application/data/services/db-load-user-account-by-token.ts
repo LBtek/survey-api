@@ -1,20 +1,32 @@
-import { type Authentication } from '@/application/models'
-import { type LoadUserAccountByTokenService } from '@/presentation/protocols/services'
-import { type LoadUserAccountByTokenRepository } from '@/application/data/protocols/repositories'
+import { type AuthenticationModel } from '@/application/models'
 import { type TokenDecrypter } from '@/application/data/protocols/criptography'
+import { type ILoadAuthenticatedUserByTokenService } from '@/presentation/protocols/services'
+import { type ILoadAuthenticatedUserRepository } from '../protocols/repositories'
 
-export class DbLoadUserByAccountAccessToken implements LoadUserAccountByTokenService {
+export class LoadAuthenticatedUserByToken implements ILoadAuthenticatedUserByTokenService {
   constructor (
     private readonly tokenDecrypter: TokenDecrypter,
-    private readonly loadUserAccountByTokenRepository: LoadUserAccountByTokenRepository
+    private readonly loadAuthenticatedUserRepository: ILoadAuthenticatedUserRepository
   ) { }
 
-  async loadByToken (data: Authentication.LoadUserByToken.Params): Promise<Authentication.LoadUserByToken.Result> {
+  async loadByToken (data: AuthenticationModel.LoadUserByToken.Params): Promise<AuthenticationModel.LoadUserByToken.Result> {
+    const { roles, ...rest } = data
+    if (!roles || !roles.size) {
+      throw new Error('Empty Roles')
+    }
     const payload = await this.tokenDecrypter.decrypt(data.accessToken)
     if (payload) {
-      const account = await this.loadUserAccountByTokenRepository.loadByToken(data)
-      if (account) {
-        return account
+      const promises = []
+      roles.forEach((role) => {
+        promises.push(this.loadAuthenticatedUserRepository.loadUser({
+          userId: payload,
+          role,
+          ...rest
+        }))
+      })
+      const user = await Promise.all(promises)
+      if (user[0]) {
+        return user[0]
       }
     }
     return null

@@ -1,23 +1,27 @@
 import { type Account } from '@/application/entities'
-import { type Authentication } from '@/application/models'
-import { type Middleware, type HttpResponse, type LoadUserAccountByTokenService } from '@/presentation/protocols'
+import { type AuthenticationModel } from '@/application/models'
+import { type Middleware, type HttpResponse, type ILoadAuthenticatedUserByTokenService } from '@/presentation/protocols'
 import { AccessDeniedError } from '@/application/errors'
 import { JsonWebTokenError, TokenExpiredError, NotBeforeError } from '@/infra/errors'
 import { badRequest, forbidden, ok, serverError } from '../helpers/http/http-helper'
 
 export class AuthMiddleware implements Middleware {
   constructor (
-    private readonly loadUserAccountByTokenService: LoadUserAccountByTokenService,
-    private readonly role?: Account.BaseDataModel.Roles
+    private readonly loadAuthenticatedUserByToken: ILoadAuthenticatedUserByTokenService,
+    private readonly roles?: Set<Account.BaseDataModel.Roles>
   ) { }
 
-  async handle (request: Authentication.LoadUserByToken.Params): Promise<HttpResponse> {
+  async handle (request: Omit<AuthenticationModel.LoadUserByToken.Params, 'roles'>): Promise<HttpResponse> {
     try {
-      const accessToken = request?.accessToken
-      if (accessToken) {
-        const account = await this.loadUserAccountByTokenService.loadByToken({ accessToken, role: this.role })
+      const { ip, accessToken } = request || { ip: null, accessToken: null }
+      if (ip && accessToken) {
+        const account = await this.loadAuthenticatedUserByToken.loadByToken({
+          ip,
+          accessToken,
+          roles: this.roles && this.roles.size ? this.roles : new Set<Account.BaseDataModel.Roles>().add('basic_user')
+        })
         if (account) {
-          return ok({ accountId: account.accountId })
+          return ok({ userId: account.user.id, accountId: account.accountId })
         }
       }
       return forbidden(new AccessDeniedError())

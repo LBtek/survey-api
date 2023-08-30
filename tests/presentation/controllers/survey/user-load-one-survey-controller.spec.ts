@@ -7,7 +7,7 @@ import { InvalidParamError } from '@/presentation/errors'
 import MockDate from 'mockdate'
 
 const mockRequest = (): UserLoadOneSurvey.Params => ({
-  accountId: 'any_account_id',
+  userId: 'any_user_id',
   surveyId: 'any_survey_id'
 })
 
@@ -39,7 +39,7 @@ describe('LoadSurveys Controller', () => {
     const request = mockRequest()
     await sut.handle(request)
     expect(loadSurveySpy.surveyId).toBe(request.surveyId)
-    expect(loadSurveySpy.accountId).toBe(request.accountId)
+    expect(loadSurveySpy.userId).toBe(request.userId)
   })
 
   test('Should return 403 if survey is not found ', async () => {

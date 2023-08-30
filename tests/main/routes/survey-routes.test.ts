@@ -1,9 +1,11 @@
+import { type Collection } from 'mongodb'
+import { type User } from '@/domain/entities'
 import { type Account } from '@/application/entities'
-import { ObjectId, type Collection } from 'mongodb'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
-import { sign } from 'jsonwebtoken'
-import app from '@/main/config/app'
+import { InMemoryAuthenticatedUserAccountsRepository } from '@/infra/in-memory/authenticated-user-accounts-repository'
 import env from '@/main/config/env'
+import app from '@/main/config/app'
+import { sign } from 'jsonwebtoken'
 import request from 'supertest'
 
 let surveyCollection: Collection
@@ -29,25 +31,30 @@ const surveyToInsertOnDatabase = {
   totalAmountVotes: 0
 }
 
-const makeAccessToken = async (role?: Account.BaseDataModel.Roles): Promise<string> => {
-  const user = await userCollection.insertOne({
+const authenticatedUserAccounts = new InMemoryAuthenticatedUserAccountsRepository()
+
+const makeAccessToken = async (role: Account.BaseDataModel.Roles): Promise<string> => {
+  const user = await userCollection.findOneAndReplace({}, {
     name: 'Luan',
     email: 'teste123@gmail.com'
-  })
-  const account = await accountCollection.insertOne({
-    userId: user.insertedId,
+  }, { upsert: true, returnDocument: 'after' })
+
+  const account = await accountCollection.findOneAndReplace({}, {
+    userId: user.value._id,
     password: '123',
     role
+  }, { upsert: true, returnDocument: 'after' })
+
+  const accessToken = sign(user.value._id.toString(), env.jwtSecret)
+
+  await authenticatedUserAccounts.authenticate({
+    ip: '::ffff:127.0.0.1',
+    accountId: account.value._id.toString(),
+    user: MongoHelper.mapOneDocumentWithId(user.value) as User.Model,
+    accessToken,
+    role
   })
-  const { id } = MongoHelper.mapInsertOneResult(account, {})
-  const accessToken = sign({ id }, env.jwtSecret)
-  await accountCollection.updateOne({
-    _id: new ObjectId(id)
-  }, {
-    $set: {
-      accessToken
-    }
-  })
+
   return accessToken
 }
 
@@ -95,7 +102,7 @@ describe('Survey Routes', () => {
     })
 
     test('Should return 204 on load surveys with valid accessToken', async () => {
-      const accessToken = await makeAccessToken()
+      const accessToken = await makeAccessToken('basic_user')
       await request(app)
         .get('/api/surveys')
         .set('x-access-token', accessToken)
@@ -104,7 +111,7 @@ describe('Survey Routes', () => {
 
     test('Should return 200 on load surveys with valid accessToken', async () => {
       await surveyCollection.insertOne(surveyToInsertOnDatabase)
-      const accessToken = await makeAccessToken()
+      const accessToken = await makeAccessToken('basic_user')
       await request(app)
         .get('/api/surveys')
         .set('x-access-token', accessToken)
@@ -121,7 +128,7 @@ describe('Survey Routes', () => {
 
     test('Should return 200 on load survey with valid accessToken', async () => {
       const res = await surveyCollection.insertOne(surveyToInsertOnDatabase)
-      const accessToken = await makeAccessToken()
+      const accessToken = await makeAccessToken('basic_user')
       await request(app)
         .get(`/api/surveys/${res.insertedId.toString()}`)
         .set('x-access-token', accessToken)

@@ -11,7 +11,7 @@ let originalError
 const mockRequest = (): SaveSurveyVote.Params => ({
   surveyId: 'any_survey_id',
   answer: 'any_answer',
-  accountId: 'any_account_id',
+  userId: 'any_user_id',
   date: new Date()
 })
 
@@ -69,7 +69,7 @@ describe('SaveSurveyVote Controller', () => {
     const { sut, checkSurveyContainsAnswerServiceSpy } = makeSut()
     checkSurveyContainsAnswerServiceSpy.error = originalError
     const httpResponse = await sut.handle({
-      accountId: 'any_account_id',
+      userId: 'any_user_id',
       surveyId: 'any_survey_id',
       answer: 'wrong_answer',
       date: new Date()
@@ -82,7 +82,7 @@ describe('SaveSurveyVote Controller', () => {
     await sut.handle(mockRequest())
     expect(saveSurveyVoteSpy.saveSurveyVoteData).toEqual({
       surveyId: 'any_survey_id',
-      accountId: 'any_account_id',
+      userId: 'any_user_id',
       answer: 'any_answer',
       date: new Date()
     })

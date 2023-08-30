@@ -5,7 +5,7 @@ const date = new Date()
 
 export const mockSaveSurveyVoteParams = (): SaveSurveyVote.Params => ({
   surveyId: 'any_survey_id',
-  accountId: 'any_account_id',
+  userId: 'any_user_id',
   answer: 'any_answer',
   date
 })

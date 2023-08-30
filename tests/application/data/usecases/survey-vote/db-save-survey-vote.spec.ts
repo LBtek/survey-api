@@ -80,7 +80,7 @@ describe('DbSaveSurveyVote UseCase', () => {
 
     updatedSurveyRef.updatedSurvey = await sut.save({
       surveyId,
-      accountId: 'other_account_id',
+      userId: 'other_user_id',
       answer: 'other_answer',
       date: new Date()
     })
@@ -103,35 +103,35 @@ describe('DbSaveSurveyVote UseCase', () => {
 
     updatedSurveyRef.updatedSurvey = await sut.save({
       surveyId,
-      accountId: 'other_account_id2',
+      userId: 'other_user_id2',
       answer: 'other_answer',
       date: new Date()
     })
 
     updatedSurveyRef.updatedSurvey = await sut.save({
       surveyId,
-      accountId: 'other_account_id3',
+      userId: 'other_user_id3',
       answer: 'other_answer',
       date: new Date()
     })
 
     updatedSurveyRef.updatedSurvey = await sut.save({
       surveyId,
-      accountId: 'other_account_id4',
+      userId: 'other_user_id4',
       answer: 'any_answer',
       date: new Date()
     })
 
     updatedSurveyRef.updatedSurvey = await sut.save({
       surveyId,
-      accountId: 'other_account_id5',
+      userId: 'other_user_id5',
       answer: 'other_answer',
       date: new Date()
     })
 
     const lastVote = {
       surveyId,
-      accountId: 'other_account_id6',
+      userId: 'other_user_id6',
       answer: 'other_answer',
       date: new Date()
     }
@@ -145,7 +145,7 @@ describe('DbSaveSurveyVote UseCase', () => {
 
     updatedSurveyRef.updatedSurvey = await sut.save({
       surveyId,
-      accountId: 'other_account_id6',
+      userId: 'other_user_id6',
       answer: 'any_answer',
       date: new Date()
     })

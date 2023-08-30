@@ -22,38 +22,37 @@ class SaveVoteAndUpdateSurvey {
     surveyId: string,
     oldAnswer: string,
     newAnswer: string,
-    accountId: string
+    userId: string
   ): Promise<any> {
     await this.saveSurveyVoteRepository.save({
       surveyId,
-      accountId,
+      userId,
       answer: newAnswer,
       date: new Date()
     })
-    const survey = await this.surveyRepository.update({ surveyId, oldAnswer, newAnswer, accountId })
+    const survey = await this.surveyRepository.update({ surveyId, oldAnswer, newAnswer, userId })
     return survey
   }
 }
 
-const makeAccount = async (): Promise<AccountRepository.LoadUserAccountByToken.Result> => {
+const makeAccount = async (): Promise<AccountRepository.LoadUserAccountByEmail.Result> => {
   const userData = {
     name: mockAddAccountParams().name,
     email: mockAddAccountParams().email
   }
-  const user = await userCollection.insertOne(userData)
+  const insertedUser = await userCollection.insertOne(userData)
   const accountData = {
-    userId: user.insertedId,
+    userId: insertedUser.insertedId,
     password: mockAddAccountParams().password
   }
   const account = await accountCollection.insertOne(accountData)
-  const { id: userId } = MongoHelper.mapInsertOneResult(user, userData)
+  const user = MongoHelper.mapInsertOneResult(insertedUser, userData)
   const { id: accountId } = MongoHelper.mapInsertOneResult(account, accountData)
 
   return {
     accountId,
     ...accountData,
-    userId,
-    ...userData
+    user
   }
 }
 
@@ -103,7 +102,8 @@ describe('Survey Mongo Repository', () => {
 
   describe('loadAll()', () => {
     test('Should load all surveys on success', async () => {
-      const { accountId } = await makeAccount()
+      const { user } = await makeAccount()
+      const userId = user.id
 
       const firstSurveyAdded = await surveyCollection.findOneAndReplace({},
         mockAddSurveyRepositoryParams(),
@@ -128,13 +128,13 @@ describe('Survey Mongo Repository', () => {
 
       await surveyVoteCollection.insertOne({
         surveyId: firstSurvey._id,
-        accountId: new ObjectId(accountId),
+        userId: new ObjectId(userId),
         answer: firstSurvey.answers[0].answer,
         date: new Date()
       })
 
       const { sut } = makeSut()
-      const surveys = await sut.loadAll({ accountId })
+      const surveys = await sut.loadAll({ userId })
       expect(surveys.length).toBe(2)
       expect(surveys[0].id).toBeTruthy()
       expect(surveys[1].id).toBeTruthy()
@@ -149,8 +149,8 @@ describe('Survey Mongo Repository', () => {
 
     test('Should load empty list', async () => {
       const { sut } = makeSut()
-      const { accountId } = await makeAccount()
-      const surveys = await sut.loadAll({ accountId })
+      const { user } = await makeAccount()
+      const surveys = await sut.loadAll({ userId: user.id })
       expect(surveys.length).toBe(0)
     })
   })
@@ -169,7 +169,7 @@ describe('Survey Mongo Repository', () => {
 
   describe('loadSurvey()', () => {
     test('Should load survey with current account answer on success', async () => {
-      const { accountId } = await makeAccount()
+      const { user } = await makeAccount()
       const surveyAdded = await surveyCollection.findOneAndReplace({},
         mockAddSurveyRepositoryParams(),
         {
@@ -181,12 +181,12 @@ describe('Survey Mongo Repository', () => {
       const { sut } = makeSut()
       await surveyVoteCollection.insertOne({
         surveyId: survey._id,
-        accountId: new ObjectId(accountId),
+        userId: new ObjectId(user.id),
         answer: survey.answers[0].answer,
         date: new Date()
       })
       const surveyId = survey._id.toString()
-      const surveyLoaded = await sut.loadSurvey({ surveyId, accountId })
+      const surveyLoaded = await sut.loadSurvey({ surveyId, userId: user.id })
       expect(surveyLoaded).toBeTruthy()
       expect(surveyLoaded.id).toBeTruthy()
       expect(surveyLoaded.id).toBe(surveyId)
@@ -196,11 +196,11 @@ describe('Survey Mongo Repository', () => {
     })
 
     test("Must load the survey even if the user hasn't answered it yet", async () => {
-      const { accountId } = await makeAccount()
+      const { user } = await makeAccount()
       const res = await surveyCollection.insertOne(mockAddSurveyRepositoryParams())
       const { sut } = makeSut()
       const surveyId = res.insertedId.toString()
-      const surveyLoaded = await sut.loadSurvey({ surveyId, accountId })
+      const surveyLoaded = await sut.loadSurvey({ surveyId, userId: user.id })
       expect(surveyLoaded).toBeTruthy()
       expect(surveyLoaded.id).toBeTruthy()
       expect(surveyLoaded.id).toBe(surveyId)
@@ -221,7 +221,7 @@ describe('Survey Mongo Repository', () => {
         survey.id,
         null,
         'any_answer',
-        (await makeAccount()).accountId
+        (await makeAccount()).user.id
       )
 
       let expectedAnswers = mockAddSurveyRepositoryParams().answers.map((a: AnswerToUserContext) => {
@@ -247,7 +247,7 @@ describe('Survey Mongo Repository', () => {
         survey.id,
         null,
         'other_answer',
-        (await makeAccount()).accountId
+        (await makeAccount()).user.id
       )
 
       expectedAnswers = expectedAnswers.map(a => {
@@ -273,7 +273,7 @@ describe('Survey Mongo Repository', () => {
         survey.id,
         null,
         'other_answer',
-        account.accountId
+        account.user.id
       )
 
       expectedAnswers = expectedAnswers.map(a => {
@@ -297,7 +297,7 @@ describe('Survey Mongo Repository', () => {
         survey.id,
         'other_answer',
         'any_answer',
-        account.accountId
+        account.user.id
       )
 
       expectedAnswers = expectedAnswers.map(a => {
@@ -322,7 +322,7 @@ describe('Survey Mongo Repository', () => {
         survey.id,
         'any_answer',
         'any_answer',
-        account.accountId
+        account.user.id
       )
 
       expect(updatedSurvey).toEqual({

@@ -1,34 +1,41 @@
+import { type Collection } from 'mongodb'
+import { type User } from '@/domain/entities'
 import { type Account } from '@/application/entities'
-import { type Collection, ObjectId } from 'mongodb'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
-import app from '@/main/config/app'
+import { InMemoryAuthenticatedUserAccountsRepository } from '@/infra/in-memory/authenticated-user-accounts-repository'
 import env from '@/main/config/env'
-import request from 'supertest'
+import app from '@/main/config/app'
 import { sign } from 'jsonwebtoken'
+import request from 'supertest'
 
 let surveyCollection: Collection
 let accountCollection: Collection
 let userCollection: Collection
 
-const makeAccessToken = async (role?: Account.BaseDataModel.Roles): Promise<string> => {
-  const user = await userCollection.insertOne({
+const authenticatedUserAccounts = new InMemoryAuthenticatedUserAccountsRepository()
+
+const makeAccessToken = async (role: Account.BaseDataModel.Roles): Promise<string> => {
+  const user = await userCollection.findOneAndReplace({}, {
     name: 'Luan',
     email: 'teste123@gmail.com'
-  })
-  const account = await accountCollection.insertOne({
-    userId: user.insertedId,
+  }, { upsert: true, returnDocument: 'after' })
+
+  const account = await accountCollection.findOneAndReplace({}, {
+    userId: user.value._id,
     password: '123',
     role
+  }, { upsert: true, returnDocument: 'after' })
+
+  const accessToken = sign(user.value._id.toString(), env.jwtSecret)
+
+  await authenticatedUserAccounts.authenticate({
+    ip: '::ffff:127.0.0.1',
+    accountId: account.value._id.toString(),
+    user: MongoHelper.mapOneDocumentWithId(user.value) as User.Model,
+    accessToken,
+    role
   })
-  const { id } = MongoHelper.mapInsertOneResult(account, {})
-  const accessToken = sign({ id }, env.jwtSecret)
-  await accountCollection.updateOne({
-    _id: new ObjectId(id)
-  }, {
-    $set: {
-      accessToken
-    }
-  })
+
   return accessToken
 }
 
@@ -74,7 +81,7 @@ describe('Survey Vote Routes', () => {
         totalAmountVotes: 0,
         date: new Date()
       })
-      const accessToken = await makeAccessToken()
+      const accessToken = await makeAccessToken('basic_user')
       await request(app)
         .put(`/api/surveys/${res.insertedId.toString()}/results`)
         .set('x-access-token', accessToken)

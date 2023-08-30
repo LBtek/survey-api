@@ -23,22 +23,22 @@ export class PublisherAddSurveySpy implements PublisherAddSurveyUsecase {
 
 export class UserLoadAllSurveysSpy implements UserLoadAllSurveysUsecase {
   surveys = mockAllSurveysToUserContext()
-  accountId: string
+  userId: string
 
   async load (data: UserLoadAllSurveys.Params): Promise<UserLoadAllSurveys.Result> {
-    this.accountId = data.accountId
+    this.userId = data.userId
     return this.surveys
   }
 }
 
 export class UserLoadOneSurveySpy implements UserLoadOneSurveyUsecase {
   surveyId: string
-  accountId: string
+  userId: string
   survey = mockSurveyToUserContext()
 
   async load (data: UserLoadOneSurvey.Params): Promise<UserLoadOneSurvey.Result> {
     this.surveyId = data.surveyId
-    this.accountId = data.accountId
+    this.userId = data.userId
     return this.survey
   }
 }

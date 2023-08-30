@@ -5,7 +5,7 @@ import { mockAllSurveysToUserContext } from '#/domain/mocks/models'
 import { noContent, ok, serverError } from '@/presentation/helpers/http/http-helper'
 import MockDate from 'mockdate'
 
-const mockRequest = (): UserLoadAllSurveys.Params => ({ accountId: 'any_account_id' })
+const mockRequest = (): UserLoadAllSurveys.Params => ({ userId: 'any_user_id' })
 
 type SutTypes = {
   sut: UserLoadAllSurveysController
@@ -30,11 +30,11 @@ describe('LoadSurveys Controller', () => {
     MockDate.reset()
   })
 
-  test('Should call LoadSurveys with correct accountId', async () => {
+  test('Should call LoadSurveys with correct userId', async () => {
     const { sut, loadSurveysSpy } = makeSut()
     const httpRequest = mockRequest()
     await sut.handle(httpRequest)
-    expect(loadSurveysSpy.accountId).toBe(httpRequest.accountId)
+    expect(loadSurveysSpy.userId).toBe(httpRequest.userId)
   })
 
   test('Should return 200 on success', async () => {

@@ -19,25 +19,24 @@ const makeSurvey = async (): Promise<any> => {
   return MongoHelper.mapInsertOneResult(res, mockAddSurveyRepositoryParams())
 }
 
-const makeAccount = async (): Promise<AccountRepository.LoadUserAccountByToken.Result> => {
+const makeAccount = async (): Promise<AccountRepository.LoadUserAccountByEmail.Result> => {
   const userData = {
     name: mockAddAccountParams().name,
     email: mockAddAccountParams().email
   }
-  const user = await userCollection.insertOne(userData)
+  const insertedUser = await userCollection.insertOne(userData)
   const accountData = {
-    userId: user.insertedId,
+    userId: insertedUser.insertedId,
     password: mockAddAccountParams().password
   }
   const account = await accountCollection.insertOne(accountData)
-  const { id: userId } = MongoHelper.mapInsertOneResult(user, userData)
+  const user = MongoHelper.mapInsertOneResult(insertedUser, userData)
   const { id: accountId } = MongoHelper.mapInsertOneResult(account, accountData)
 
   return {
     accountId,
     ...accountData,
-    userId,
-    ...userData
+    user
   }
 }
 
@@ -68,7 +67,7 @@ describe('Survey Mongo Repository', () => {
       const survey = await makeSurvey()
       const surveyVote = await sut.save({
         surveyId: survey.id,
-        accountId: account.accountId,
+        userId: account.user.id,
         answer: survey.answers[1].answer,
         date: new Date()
       })
@@ -81,14 +80,14 @@ describe('Survey Mongo Repository', () => {
       const survey = await makeSurvey()
       const oldData = {
         surveyId: survey.id,
-        accountId: account.accountId,
+        userId: account.user.id,
         answer: survey.answers[1].answer,
         date: new Date()
       }
       await sut.save(oldData)
       const newData = {
         surveyId: survey.id,
-        accountId: account.accountId,
+        userId: account.user.id,
         answer: survey.answers[0].answer,
         date: new Date()
       }

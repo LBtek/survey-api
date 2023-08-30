@@ -16,15 +16,15 @@ const makeSut = (): SutTypes => {
   }
 }
 const surveyId = 'any_survey_id'
-const accountId = 'any_account_id'
-const sutLoadParams = { surveyId, accountId }
+const userId = 'any_user_id'
+const sutLoadParams = { surveyId, userId }
 
 describe('DbLoadSurveys', () => {
   test('Should call LoadSurveysRepository', async () => {
     const { sut, loadSurveyRepositorySpy } = makeSut()
     await sut.load(sutLoadParams)
     expect(loadSurveyRepositorySpy.surveyId).toBe(surveyId)
-    expect(loadSurveyRepositorySpy.accountId).toBe(accountId)
+    expect(loadSurveyRepositorySpy.userId).toBe(userId)
   })
 
   test('Should return a survey on success', async () => {

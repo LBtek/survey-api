@@ -40,6 +40,7 @@ describe('Authentication Service', () => {
     const authenticationData = mockAuthenticationParams()
     await sut.auth(authenticationData)
     expect(loadUserAccountByEmailRepositorySpy.email).toBe(authenticationData.email)
+    expect(loadUserAccountByEmailRepositorySpy.role).toBe(authenticationData.role)
   })
 
   test('Should throw if LoadAccountByEmailRepository throws', async () => {
@@ -86,11 +87,15 @@ describe('Authentication Service', () => {
     expect(authenticationResult).toEqual(new UnauthorizedError())
   })
 
-  test('Should call TokenGenerator with correct id', async () => {
+  test('Should call TokenGenerator with correct value', async () => {
     const { sut, tokenGeneratorSpy } = makeSut()
     const account = mockAccount()
     await sut.auth(mockAuthenticationParams())
-    expect(tokenGeneratorSpy.content).toBe(account.user.id)
+    expect(tokenGeneratorSpy.content).toEqual({
+      accountId: account.accountId,
+      userId: account.user.id,
+      role: account.role
+    })
   })
 
   test('Should throw if TokenGenerator throws', async () => {

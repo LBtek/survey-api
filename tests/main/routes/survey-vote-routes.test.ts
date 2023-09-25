@@ -26,7 +26,12 @@ const makeAccessToken = async (role: Account.BaseDataModel.Roles): Promise<strin
     role
   }, { upsert: true, returnDocument: 'after' })
 
-  const accessToken = sign(user.value._id.toString(), env.jwtSecret)
+  const accessToken = sign({
+    userId: user.value._id.toString(),
+    accountId: account.value._id.toString(),
+    willExpireIn: (Date.now() / 1000) + 180,
+    role
+  }, env.jwtSecret)
 
   await authenticatedUserAccounts.authenticate({
     ip: '::ffff:127.0.0.1',

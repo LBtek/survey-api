@@ -43,7 +43,8 @@ const makeAccount = async (): Promise<AccountRepository.LoadUserAccountByEmail.R
   const insertedUser = await userCollection.insertOne(userData)
   const accountData = {
     userId: insertedUser.insertedId,
-    password: mockAddAccountParams().password
+    password: mockAddAccountParams().password,
+    role: mockAddAccountParams().role
   }
   const account = await accountCollection.insertOne(accountData)
   const user = MongoHelper.mapInsertOneResult(insertedUser, userData)

@@ -15,7 +15,7 @@ export namespace AccountRepository {
   }
 
   export namespace LoadUserAccountByEmail {
-    export type Params = { email: Email }
+    export type Params = { email: Email, role?: Account.BaseDataModel.Roles }
 
     export type Result =
     { accountId: AccountID } & Omit<Account.BaseDataModel.Body, 'userId'> &

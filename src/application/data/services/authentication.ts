@@ -15,20 +15,23 @@ export class Authentication implements IAuthenticationService {
   ) { }
 
   async auth (authentication: AuthParams): Promise<AuthResult | UnauthorizedError> {
-    const { ip, email } = authentication
-    const account = await this.loadUserAccountByEmailRepository.loadByEmail({ email })
+    const { ip, email, role } = authentication
+    const account = role
+      ? await this.loadUserAccountByEmailRepository.loadByEmail({ email, role })
+      : await this.loadUserAccountByEmailRepository.loadByEmail({ email })
 
     if (account) {
       const { accountId, user, ...rest } = account
       const isValid = await this.hashComparer.compare(authentication.password, account.password)
 
       if (isValid) {
-        const accessToken = await this.tokenGenerator.generate(user.id)
+        const role = rest.role || 'basic_user'
+        const accessToken = await this.tokenGenerator.generate({ userId: user.id, accountId, role })
         await this.authenticateUserRepository.authenticate({
           accountId,
           ip,
           accessToken,
-          role: rest.role || 'basic_user',
+          role,
           user
         })
 

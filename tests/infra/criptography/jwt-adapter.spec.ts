@@ -1,4 +1,5 @@
 import { JwtAdapter } from '@/infra/criptography'
+import MockDate from 'mockdate'
 import jwt from 'jsonwebtoken'
 
 const TOKEN = 'any_token'
@@ -14,18 +15,37 @@ const makeSut = (): JwtAdapter => {
   return new JwtAdapter(SECRET)
 }
 
+const payload = {
+  accountId: 'any_account_id',
+  userId: 'any_user_id',
+  role: 'any_role'
+}
+
+const expiresIn = (): number => Math.ceil(Date.now() / 1000) + (60 * 60)
+
 describe('Jwt Adapter', () => {
+  beforeAll(() => {
+    MockDate.set(new Date())
+  })
+
+  afterAll(() => {
+    MockDate.reset()
+  })
   describe('sign()', () => {
     test('Should call sign with correct values', async () => {
       const sut = makeSut()
       const signSpy = jest.spyOn(jwt, 'sign')
-      await sut.generate('any_id')
-      expect(signSpy).toHaveBeenCalledWith({ id: 'any_id' }, SECRET)
+      await sut.generate(payload)
+      expect(signSpy).toHaveBeenCalledWith(
+        { ...payload, willExpireIn: expiresIn() },
+        SECRET,
+        { expiresIn: (60 * 60 * 3) }
+      )
     })
 
     test('Should return a token on sign success', async () => {
       const sut = makeSut()
-      const accessToken = await sut.generate('any_id')
+      const accessToken = await sut.generate(payload)
       expect(accessToken).toBe(TOKEN)
     })
 
@@ -34,7 +54,7 @@ describe('Jwt Adapter', () => {
       jest.spyOn(jwt, 'sign').mockImplementationOnce(() => {
         throw new Error()
       })
-      const promise = sut.generate('any_id')
+      const promise = sut.generate(payload)
       await expect(promise).rejects.toThrow()
     })
   })

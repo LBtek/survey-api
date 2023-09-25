@@ -1,15 +1,15 @@
-import { DbCheckSurveyContainsAnswer } from '@/application/data/services'
+import { CheckSurveyContainsAnswer } from '@/application/data/services'
 import { LoadSurveyByIdRepositorySpy } from '../mocks/repository-mocks'
 import { InvalidParamError } from '@/presentation/errors'
 
 type SutTypes = {
-  sut: DbCheckSurveyContainsAnswer
+  sut: CheckSurveyContainsAnswer
   loadSurveyByIdRepositorySpy: LoadSurveyByIdRepositorySpy
 }
 
 const makeSut = (): SutTypes => {
   const loadSurveyByIdRepositorySpy = new LoadSurveyByIdRepositorySpy()
-  const sut = new DbCheckSurveyContainsAnswer(loadSurveyByIdRepositorySpy)
+  const sut = new CheckSurveyContainsAnswer(loadSurveyByIdRepositorySpy)
   return {
     sut,
     loadSurveyByIdRepositorySpy

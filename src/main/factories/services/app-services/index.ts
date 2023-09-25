@@ -1,3 +1,4 @@
-export * from './db-authentication-factory'
-export * from './db-load-account-by-token-factory'
-export * from './db-check-survey-contains-answer-factory'
+export * from './authentication-factory'
+export * from './load-authenticated-user-by-token-factory'
+export * from './check-survey-contains-answer-factory'
+export * from './extract-access-token-payload-factory'

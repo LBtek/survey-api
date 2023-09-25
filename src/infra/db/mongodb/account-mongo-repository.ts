@@ -11,13 +11,13 @@ export class AccountMongoRepository implements IAddUserAccountRepository, ICheck
     const userCollection = await MongoHelper.getCollection('users')
     const accountCollection = await MongoHelper.getCollection('accounts')
 
-    const { password, ...userData } = accountData
+    const { password, role, ...userData } = accountData
 
     const user = await userCollection.insertOne(userData)
 
     const account = await accountCollection.insertOne({
       userId: user.insertedId,
-      role: 'basic_user',
+      role,
       password
     })
 
@@ -43,20 +43,19 @@ export class AccountMongoRepository implements IAddUserAccountRepository, ICheck
 
     const userFound = await userCollection.findOne({ email: data.email })
     const user = userFound && MongoHelper.mapOneDocumentWithId(userFound)
-    const accountFound = user && await accountCollection.findOne({ userId: userFound._id })
+    const accountFound = user && (data.role
+      ? await accountCollection.findOne({ userId: userFound._id, role: data.role })
+      : await accountCollection.findOne({ userId: userFound._id })
+    )
     const account = accountFound && MongoHelper.mapOneDocumentWithId(accountFound)
 
     if (account) {
       const { id: accountId, userId, ...accountData } = account
-      const { id, ...userData } = user
 
       return {
         accountId,
         ...accountData,
-        user: {
-          id: userId,
-          ...userData
-        }
+        user
       }
     }
     return null

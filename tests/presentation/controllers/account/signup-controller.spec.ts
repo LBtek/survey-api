@@ -45,7 +45,8 @@ describe('SignUp Controller', () => {
     expect(addAccountSpy.addAccountData).toEqual({
       name: 'any_name',
       email: 'any_email@mail.com',
-      password: 'any_password'
+      password: 'any_password',
+      role: 'basic_user'
     })
   })
 
@@ -81,8 +82,8 @@ describe('SignUp Controller', () => {
   test('Should call Authentication with correct values', async () => {
     const { sut, authenticationSpy } = makeSut()
     await sut.handle(mockRequest())
-    const { ip, email, password } = mockRequest()
-    expect(authenticationSpy.authenticationData).toEqual({ ip, email, password })
+    const { ip, email, password, role } = mockRequest()
+    expect(authenticationSpy.authenticationData).toEqual({ ip, email, password, role })
   })
 
   test('Should return 500 if Authentication throws', async () => {

@@ -16,20 +16,22 @@ import {
   type LogTypeError,
   type AuthenticationRepository,
   type ILoadAuthenticatedUserRepository,
-  type IAuthenticateUserRepository
+  type IAuthenticateUserRepository,
+  type IDeleteAccessTokenRepository,
+  type IRefreshAccessTokenRepository
 } from '@/application/data/protocols/repositories'
 import { mockAccount, mockSurvey, mockUserLoadOneSurveyRepositoryResult, mockUserLoadAllSurveysRepositoryResult } from '#/domain/mocks/models'
 
 export class AddAccountRepositorySpy implements IAddUserAccountRepository {
   addAccountData: AccountRepository.AddUserAccount.Params
-  response: AccountRepository.AddUserAccount.Result = {
+  result: AccountRepository.AddUserAccount.Result = {
     accountId: 'any_accountId',
     userId: 'any_user_id'
   }
 
   async add (accountData: AccountRepository.AddUserAccount.Params): Promise<AccountRepository.AddUserAccount.Result> {
     this.addAccountData = accountData
-    return this.response
+    return this.result
   }
 }
 
@@ -48,16 +50,18 @@ export class CheckUserAccountByEmailRepositorySpy implements ICheckUserAccountBy
 export class LoadUserAccountByEmailRepositorySpy implements ILoadUserAccountByEmailRepository {
   account = mockAccount()
   email: string
+  role: string
 
   async loadByEmail (
     data: AccountRepository.LoadUserAccountByEmail.Params
   ): Promise<AccountRepository.LoadUserAccountByEmail.Result> {
     this.email = data.email
+    this.role = data.role
     return this.account
   }
 }
 
-export class LoadUserAccountByTokenRepositorySpy implements ILoadAuthenticatedUserRepository {
+export class LoadAuthenticatedUserRepositorySpy implements ILoadAuthenticatedUserRepository {
   loadUserData: AuthenticationRepository.LoadUser.Params
   account = mockAccount()
 
@@ -68,8 +72,29 @@ export class LoadUserAccountByTokenRepositorySpy implements ILoadAuthenticatedUs
 
     return {
       accountId: account.accountId,
+      role: account.role,
       user
     }
+  }
+}
+
+export class DeleteAccessTokenRepositorySpy implements IDeleteAccessTokenRepository {
+  deleteAccessTokenData: AuthenticationRepository.LoadUser.Params
+  result = true
+
+  async deleteAccessToken (data: AuthenticationRepository.LoadUser.Params): Promise<boolean> {
+    this.deleteAccessTokenData = data
+    return this.result
+  }
+}
+
+export class RefreshAccessTokenRepositorySpy implements IRefreshAccessTokenRepository {
+  refreshTokenData: AuthenticationRepository.RefreshAccessToken.Params
+  result = true
+
+  async refreshToken (data: AuthenticationRepository.RefreshAccessToken.Params): Promise<boolean> {
+    this.refreshTokenData = data
+    return this.result
   }
 }
 

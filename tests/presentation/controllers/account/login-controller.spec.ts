@@ -32,8 +32,8 @@ describe('Login Controller', () => {
   test('Should call Authentication with correct values', async () => {
     const { sut, authenticationSpy } = makeSut()
     await sut.handle(mockRequest())
-    const { ip, email, password } = mockRequest()
-    expect(authenticationSpy.authenticationData).toEqual({ ip, email, password })
+    const { ip, email, password, role } = mockRequest()
+    expect(authenticationSpy.authenticationData).toEqual({ ip, email, password, role })
   })
 
   test('Should return 401 if invalid credentials are provided', async () => {

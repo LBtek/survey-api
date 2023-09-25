@@ -12,22 +12,24 @@ export class SignUpController implements Controller {
     private readonly authentication: IAuthenticationService
   ) { }
 
-  async handle (request: { ip: IP } & AddUserAccountModel.Params): Promise<HttpResponse> {
+  async handle (request: { ip: IP } & Omit<AddUserAccountModel.Params, 'role'>): Promise<HttpResponse> {
     try {
       const error = this.validation.validate(request)
       if (error) {
         return badRequest(error)
       }
+      const role: AddUserAccountModel.Params['role'] = 'basic_user'
       const { name, email, password, ip } = request
       const result = await this.addUserAccount.add({
         name,
         email,
-        password
+        password,
+        role
       })
       if (result instanceof EmailInUserError) {
         return forbidden(result)
       }
-      const authenticationResponse = await this.authentication.auth({ ip, email, password })
+      const authenticationResponse = await this.authentication.auth({ ip, email, password, role })
       return ok(authenticationResponse)
     } catch (error) {
       return serverError(error)

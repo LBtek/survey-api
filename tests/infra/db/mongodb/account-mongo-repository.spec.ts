@@ -1,7 +1,7 @@
 import { AccountMongoRepository } from '@/infra/db/mongodb/account-mongo-repository'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import { mockAddAccountParams } from '#/domain/mocks/models'
-import { type Collection } from 'mongodb'
+import { ObjectId, type Collection } from 'mongodb'
 import env from '@/main/config/env'
 
 let accountCollection: Collection
@@ -30,10 +30,13 @@ describe('Account Mongo Repository', () => {
   describe('add()', () => {
     test('Should return an account on add success', async () => {
       const sut = makeSut()
-      const account = await sut.add(mockAddAccountParams())
-      expect(account).toBeTruthy()
-      expect(account.userId).toBeTruthy()
-      expect(account.accountId).toBeTruthy()
+      const addData = mockAddAccountParams()
+      const result = await sut.add(addData)
+      expect(result).toBeTruthy()
+      expect(result.userId).toBeTruthy()
+      expect(result.accountId).toBeTruthy()
+      const foundAccount = await accountCollection.findOne({ _id: new ObjectId(result.accountId) })
+      expect(foundAccount.role).toBe(addData.role)
     })
   })
 

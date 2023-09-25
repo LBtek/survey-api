@@ -1,44 +1,119 @@
-import { type ILoadAuthenticatedUserRepository, type AuthenticationRepository, type IAuthenticateUserRepository } from '@/application/data/protocols/repositories'
-import { type IP, type AuthenticatedAccount } from '@/application/entities'
-import { type UserID } from '@/domain/entities'
+import {
+  type AuthenticationRepository,
+  type IAuthenticateUserRepository,
+  type ILoadAuthenticatedUserRepository,
+  type IDeleteAccessTokenRepository,
+  type IRefreshAccessTokenRepository
+} from '@/application/data/protocols/repositories'
+import { type AccessToken, type AccountID, type AuthenticatedAccount } from '@/application/entities'
+import { type UserID, type User } from '@/domain/entities'
 
-type IPsMapper = Map<IP, Set<string>>
-type AuthenticatedUserAccountsMapper = Map<UserID, { ips: IPsMapper, authenticatedUser: AuthenticatedAccount.UserAccount }>
+type AccountsMapper = Map<AccountID, AuthenticatedAccount.BaseDataModel.Body>
+export type UserAccountsMapper = Map<UserID, { accounts: AccountsMapper, user: User.Model }>
 
-const authenticatedUserAccounts: AuthenticatedUserAccountsMapper = new Map()
+export const authenticatedUserAccounts: UserAccountsMapper = new Map()
 
-export class InMemoryAuthenticatedUserAccountsRepository implements ILoadAuthenticatedUserRepository, IAuthenticateUserRepository {
-  async authenticate (data: AuthenticationRepository.AuthenticateUser.Params): Promise<AuthenticationRepository.AuthenticateUser.Result> {
+export type TokenPayload = { userId: UserID, accountId: AccountID, role: AuthenticatedAccount.BaseDataModel.Body['role'] }
+
+export const authenticatedTokens = new Map<AccessToken, TokenPayload>()
+
+type IPsMapper = AuthenticatedAccount.BaseDataModel.Body['ips']
+
+export class InMemoryAuthenticatedUserAccountsRepository implements ILoadAuthenticatedUserRepository, IAuthenticateUserRepository, IRefreshAccessTokenRepository, IDeleteAccessTokenRepository {
+  async authenticate (
+    data: AuthenticationRepository.AuthenticateUser.Params
+  ): Promise<AuthenticationRepository.AuthenticateUser.Result> {
     const { ip, accessToken, role, accountId, user } = data
-    const authenticatedUserAccount = authenticatedUserAccounts.get(user.id)
-    if (authenticatedUserAccount) {
-      const userAccountKeysByIp = authenticatedUserAccount.ips.get(ip)
-      if (userAccountKeysByIp) {
-        userAccountKeysByIp.add(JSON.stringify({ accessToken, role }))
-      } else {
-        authenticatedUserAccount.ips.set(
-          ip,
-          new Set<string>().add(JSON.stringify({ accessToken, role }))
-        )
-      }
+    const userAccountTokens = new Set<AccessToken>()
+    userAccountTokens.add(accessToken)
+    const ips: IPsMapper = new Map()
+    ips.set(ip, userAccountTokens)
+    const accounts: AccountsMapper = new Map()
+    accounts.set(accountId, { ips, role })
+
+    authenticatedTokens.set(accessToken, { userId: user.id, accountId, role })
+
+    const authenticatedUser = authenticatedUserAccounts.get(user.id)
+    if (!authenticatedUser) {
+      authenticatedUserAccounts.set(user.id, { accounts, user })
     } else {
-      const userAccountKeys = new Set<string>()
-      userAccountKeys.add(JSON.stringify({ accessToken, role }))
-      const ips: IPsMapper = new Map()
-      ips.set(ip, userAccountKeys)
-      authenticatedUserAccounts.set(user.id, { ips, authenticatedUser: { accountId, user } })
+      const authenticatedUserAccount = authenticatedUser.accounts.get(accountId)
+      if (!authenticatedUserAccount) {
+        authenticatedUser.accounts.set(accountId, { ips, role })
+      } else {
+        const userAccountTokensByIp = authenticatedUserAccount.ips.get(ip)
+        if (!userAccountTokensByIp) {
+          authenticatedUserAccount.ips.set(ip, userAccountTokens)
+        } else {
+          userAccountTokensByIp.add(accessToken)
+        }
+      }
     }
   }
 
   async loadUser (data: AuthenticationRepository.LoadUser.Params): Promise<AuthenticationRepository.LoadUser.Result> {
-    const { ip, accessToken, role, userId } = data
-    const authenticatedUserAccount = authenticatedUserAccounts.get(userId)
-    if (authenticatedUserAccount) {
-      const userAccountKeysByIp = authenticatedUserAccount.ips.get(ip)
-      if (userAccountKeysByIp && userAccountKeysByIp.has(JSON.stringify({ accessToken, role }))) {
-        return authenticatedUserAccount.authenticatedUser
+    const { ip, accessToken, role, userId, accountId } = data
+    const authenticatedUser = authenticatedUserAccounts.get(userId)
+    const authenticatedUserAccount = authenticatedUser?.accounts.get(accountId)
+    const userAccountTokensByIp = authenticatedUserAccount?.ips.get(ip)
+    if (
+      userAccountTokensByIp &&
+      role === authenticatedUserAccount.role &&
+      userAccountTokensByIp.has(accessToken)
+    ) {
+      return {
+        accountId,
+        role,
+        user: authenticatedUser.user
       }
     }
     return null
+  }
+
+  async deleteAccessToken (
+    data: AuthenticationRepository.DeleteAccessToken.Params
+  ): Promise<AuthenticationRepository.DeleteAccessToken.Result> {
+    const { ip, accessToken } = data
+    let payload: TokenPayload
+    if (!data.userId || !data.accountId || !data.role) {
+      payload = authenticatedTokens.get(accessToken)
+    }
+    const userId = data.userId || payload?.userId
+    const accountId = data.accountId || payload?.accountId
+    const role = data.role || payload?.role
+
+    const authenticatedUserAccount = authenticatedUserAccounts.get(userId)?.accounts.get(accountId)
+    const userAccountTokensByIp = authenticatedUserAccount?.ips.get(ip)
+    if (
+      userAccountTokensByIp &&
+      role === authenticatedUserAccount.role &&
+      userAccountTokensByIp.has(accessToken)
+    ) {
+      userAccountTokensByIp.delete(accessToken)
+      authenticatedTokens.delete(accessToken)
+      return true
+    }
+    return false
+  }
+
+  async refreshToken (
+    data: AuthenticationRepository.RefreshAccessToken.Params
+  ): Promise<AuthenticationRepository.RefreshAccessToken.Result> {
+    const { ip, oldAccessToken: accessToken, role, userId, newAccessToken, accountId } = data
+
+    const wasRemoved = await this.deleteAccessToken({ ip, accessToken, userId, accountId, role })
+
+    if (wasRemoved) {
+      authenticatedUserAccounts
+        .get(userId).accounts
+        .get(accountId).ips
+        .get(ip).add(newAccessToken)
+
+      authenticatedTokens.set(newAccessToken, { userId, accountId, role })
+
+      return true
+    }
+
+    return false
   }
 }

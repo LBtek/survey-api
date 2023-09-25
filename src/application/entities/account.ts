@@ -10,7 +10,7 @@ export namespace Account {
     export type Body = {
       userId: UserID
       password: Password
-      role?: Roles
+      role: Roles
     }
 
     export type Roles = 'admin' | 'publisher' | 'basic_user'
@@ -20,23 +20,13 @@ export namespace Account {
 export namespace AuthenticatedAccount {
   export namespace BaseDataModel {
     export type Body = {
-      accountId: AccountID
-      accessKeys: BaseAccessKey.Body[]
-    }
-  }
-  export namespace BaseAccessKey {
-    export type Body = {
-      ip: IP
-      keys: Key[]
-    }
-
-    export type Key = {
-      accessToken: AccessToken
+      ips: Map<IP, Set<AccessToken>>
       role: Account.BaseDataModel.Roles
     }
   }
   export type UserAccount = {
     accountId: AccountID
     user: User.Model
+    role: Account.BaseDataModel.Roles
   }
 }

@@ -26,17 +26,22 @@ export class TokenGeneratorSpy implements TokenGenerator {
   token = 'any_token'
   content: any
 
-  async generate (id: string): Promise<string> {
-    this.content = id
+  async generate (payload: object): Promise<string> {
+    this.content = payload
     return this.token
   }
 }
 
 export class TokenDecrypterSpy implements TokenDecrypter {
   token: string
-  decrypted = 'any_user_id'
+  decrypted: any = {
+    accountId: 'any_account_id',
+    userId: 'any_user_id',
+    role: 'any_role',
+    willExpireIn: Date.now() / 1000
+  }
 
-  async decrypt (token: string): Promise<string> {
+  async decrypt (token: string): Promise<object> {
     this.token = token
     return this.decrypted
   }

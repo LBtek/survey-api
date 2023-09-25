@@ -9,7 +9,8 @@ const userName = 'any_name'
 export const mockAuthenticationParams = (): AuthParams => ({
   ip,
   email,
-  password: 'any_password'
+  password: 'any_password',
+  role: 'basic_user'
 })
 
 export const mockAddAccountParams = (): AddUserAccountModel.Params => ({
@@ -19,6 +20,7 @@ export const mockAddAccountParams = (): AddUserAccountModel.Params => ({
 
 export const mockAccount = (): AccountRepository.LoadUserAccountByEmail.Result => ({
   accountId: 'any_account_id',
+  role: 'any_role' as AccountRepository.LoadUserAccountByEmail.Result['role'],
   user: {
     id: 'any_user_id',
     name: userName,

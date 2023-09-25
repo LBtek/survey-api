@@ -10,8 +10,16 @@ export interface IAuthenticationService {
   auth: (data: AuthParams) => Promise<AuthResult | UnauthorizedError>
 }
 
+export interface IExtractAccessTokenPayloadService {
+  extract: (data: AuthenticationModel.ExtractAccessTokenPayload.Params) => Promise<AuthenticationModel.ExtractAccessTokenPayload.Result>
+}
+
 export interface ILoadAuthenticatedUserByTokenService {
   loadByToken: (data: AuthenticationModel.LoadUserByToken.Params) => Promise<AuthenticationModel.LoadUserByToken.Result>
+}
+
+export interface ICheckAndRefreshAccessTokenService {
+  checkAndRefresh: (data: AuthenticationModel.CheckAndRefreshToken.Params) => Promise<AuthenticationModel.CheckAndRefreshToken.Result>
 }
 
 export type CheckSurveyAnswerParams = {

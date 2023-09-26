@@ -1,1 +1,1 @@
-export * from './db-add-account-factory'
+export * from './add-account-factory'

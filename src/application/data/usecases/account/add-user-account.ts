@@ -1,5 +1,5 @@
 import { type AddUserAccountModel } from '@/domain/models'
-import { type IAddUserAccount as IAddUserAccountUsecase } from '@/domain/usecases/user-context'
+import { type IAddUserAccount as IAddUserAccountUsecase } from '@/domain/usecases'
 import { type ICheckUserAccountByEmailRepository, type IAddUserAccountRepository } from '@/application/data/protocols/repositories/account-repository'
 import { type Hasher } from '@/application/data/protocols/criptography'
 import { EmailInUserError } from '@/domain/errors'

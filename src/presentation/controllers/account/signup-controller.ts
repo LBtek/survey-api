@@ -1,5 +1,5 @@
 import { type AddUserAccountModel } from '@/domain/models'
-import { type IAddUserAccount as IAddUserAccountUsecase } from '@/domain/usecases/user-context'
+import { type IAddUserAccount as IAddUserAccountUsecase } from '@/domain/usecases'
 import { type HttpResponse, type Controller, type Validation, type IAuthenticationService } from '@/presentation/protocols'
 import { type IP } from '@/application/entities'
 import { badRequest, forbidden, ok, serverError } from '@/presentation/helpers/http/http-helper'

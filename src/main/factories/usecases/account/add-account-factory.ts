@@ -1,4 +1,4 @@
-import { type IAddUserAccount } from '@/domain/usecases/user-context'
+import { type IAddUserAccount } from '@/domain/usecases'
 import { AddUserAccount } from '@/application/data/usecases/account'
 import { AccountMongoRepository } from '@/infra/db/mongodb/account-mongo-repository'
 import { BcryptAdapter } from '@/infra/criptography'

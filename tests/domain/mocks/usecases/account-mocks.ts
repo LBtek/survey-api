@@ -1,5 +1,5 @@
 import { type AddUserAccountModel } from '@/domain/models'
-import { type IAddUserAccount as IAddUserAccountUsecase } from '@/domain/usecases/user-context'
+import { type IAddUserAccount as IAddUserAccountUsecase } from '@/domain/usecases'
 
 export class AddUserAccountSpy implements IAddUserAccountUsecase {
   addAccountData: AddUserAccountModel.Params

@@ -1,7 +1,7 @@
-import { type HttpRequest, type HttpResponse, type Middleware } from '@/presentation/protocols'
+import { type HttpRequest, type HttpResponse, type IMiddleware } from '@/presentation/protocols'
 import { ok } from '@/presentation/helpers/http/http-helper'
 
-export class AuthMiddlewareSpy implements Middleware {
+export class AuthMiddlewareSpy implements IMiddleware {
   httpRequest: HttpRequest
   bodyResponse = { res: 'any_response' }
   httpHelper = ok

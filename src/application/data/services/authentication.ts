@@ -1,5 +1,5 @@
 import { type IAuthenticationService, type AuthParams, type AuthResult } from '@/presentation/protocols/services'
-import { type HashComparer, type TokenGenerator } from '@/application/data/protocols/criptography'
+import { type IHashComparer, type ITokenGenerator } from '@/application/data/protocols/criptography'
 import {
   type IAuthenticateUserRepository,
   type ILoadUserAccountByEmailRepository
@@ -10,8 +10,8 @@ export class Authentication implements IAuthenticationService {
   constructor (
     private readonly loadUserAccountByEmailRepository: ILoadUserAccountByEmailRepository,
     private readonly authenticateUserRepository: IAuthenticateUserRepository,
-    private readonly hashComparer: HashComparer,
-    private readonly tokenGenerator: TokenGenerator
+    private readonly hashComparer: IHashComparer,
+    private readonly tokenGenerator: ITokenGenerator
   ) { }
 
   async auth (authentication: AuthParams): Promise<AuthResult | UnauthorizedError> {

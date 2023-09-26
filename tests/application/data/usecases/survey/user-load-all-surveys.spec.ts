@@ -1,15 +1,15 @@
-import { DbUserLoadAllSurveys } from '@/application/data/usecases/survey'
+import { UserLoadAllSurveys } from '@/application/data/usecases/survey'
 import { UserLoadAllSurveysRepositorySpy } from '#/application/data/mocks/repository-mocks'
 import { mockAllSurveysToUserContext } from '#/domain/mocks/models'
 
 type SutTypes = {
-  sut: DbUserLoadAllSurveys
+  sut: UserLoadAllSurveys
   loadSurveysRepositorySpy: UserLoadAllSurveysRepositorySpy
 }
 
 const makeSut = (): SutTypes => {
   const loadSurveysRepositorySpy = new UserLoadAllSurveysRepositorySpy()
-  const sut = new DbUserLoadAllSurveys(loadSurveysRepositorySpy)
+  const sut = new UserLoadAllSurveys(loadSurveysRepositorySpy)
   return {
     sut,
     loadSurveysRepositorySpy

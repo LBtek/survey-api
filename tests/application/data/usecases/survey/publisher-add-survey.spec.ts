@@ -1,23 +1,23 @@
-import { DbPublisherAddSurvey } from '@/application/data/usecases/survey'
+import { PublisherAddSurvey } from '@/application/data/usecases/survey'
 import { PublisherAddSurveyRepositorySpy } from '#/application/data/mocks/repository-mocks'
 import { mockAddSurveyParams, mockAddSurveyRepositoryParams } from '#/domain/mocks/models'
 import { AnswersLengthError } from '@/domain/errors'
 
 type SutTypes = {
-  sut: DbPublisherAddSurvey
+  sut: PublisherAddSurvey
   publisherAddSurveyRepositorySpy: PublisherAddSurveyRepositorySpy
 }
 
 const makeSut = (): SutTypes => {
   const publisherAddSurveyRepositorySpy = new PublisherAddSurveyRepositorySpy()
-  const sut = new DbPublisherAddSurvey(publisherAddSurveyRepositorySpy)
+  const sut = new PublisherAddSurvey(publisherAddSurveyRepositorySpy)
   return {
     sut,
     publisherAddSurveyRepositorySpy
   }
 }
 
-describe('DbPublisherAddSurvey UseCase', () => {
+describe('PublisherAddSurvey UseCase', () => {
   test('Should call AddSurveyRepository with correct values', async () => {
     const { sut, publisherAddSurveyRepositorySpy } = makeSut()
     await sut.add(mockAddSurveyParams())

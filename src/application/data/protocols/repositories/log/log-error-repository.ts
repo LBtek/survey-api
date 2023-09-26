@@ -1,5 +1,5 @@
 export type LogTypeError = 'server' | 'auth'
 
-export interface LogErrorRepository {
+export interface ILogErrorRepository {
   logError: (stack: string, typeError: LogTypeError) => Promise<void>
 }

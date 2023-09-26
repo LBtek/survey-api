@@ -8,6 +8,6 @@ export namespace SurveyVoteRepository {
   }
 }
 
-export interface SaveSurveyVoteRepository {
+export interface ISaveSurveyVoteRepository {
   save: (data: SurveyVoteRepository.Save.Params) => Promise<SurveyVoteRepository.Save.Result>
 }

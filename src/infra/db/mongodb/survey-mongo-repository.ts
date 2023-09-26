@@ -1,10 +1,10 @@
 import {
   type SurveyRepository,
-  type PublisherAddSurveyRepository,
-  type UserLoadAllSurveysRepository,
-  type UserLoadOneSurveyRepository,
-  type UserUpdateSurveyRepository,
-  type LoadSurveyByIdRepository,
+  type IPublisherAddSurveyRepository,
+  type IUserLoadAllSurveysRepository,
+  type IUserLoadOneSurveyRepository,
+  type IUserUpdateSurveyRepository,
+  type ILoadSurveyByIdRepository,
   type LoadSurveyByIdParams,
   type LoadSurveyByIdResult
 } from '@/application/data/protocols/repositories'
@@ -81,7 +81,7 @@ const makeFindSurveysQuery = (userId: UserID, surveyId: SurveyID = null): object
   return query
 }
 
-export class SurveyMongoRepository implements PublisherAddSurveyRepository, UserLoadOneSurveyRepository, UserLoadAllSurveysRepository, LoadSurveyByIdRepository, UserUpdateSurveyRepository {
+export class SurveyMongoRepository implements IPublisherAddSurveyRepository, IUserLoadOneSurveyRepository, IUserLoadAllSurveysRepository, ILoadSurveyByIdRepository, IUserUpdateSurveyRepository {
   async add (surveyData: SurveyRepository.PublisherAddSurvey.Params): Promise<SurveyRepository.PublisherAddSurvey.Result> {
     const surveyCollection = await MongoHelper.getCollection('surveys')
     const result = await surveyCollection.insertOne(surveyData)

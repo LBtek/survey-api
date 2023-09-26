@@ -1,6 +1,6 @@
-import { type Validation } from '@/presentation/protocols'
+import { type IValidation } from '@/presentation/protocols'
 
-export class ValidationSpy implements Validation {
+export class ValidationSpy implements IValidation {
   input: object
   res = null
 

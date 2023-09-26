@@ -1,9 +1,9 @@
 import { type ICheckSurveyContainsAnswerService, type CheckSurveyAnswerParams } from '@/presentation/protocols/services'
-import { type LoadSurveyByIdRepository } from '@/application/data/protocols/repositories'
+import { type ILoadSurveyByIdRepository } from '@/application/data/protocols/repositories'
 import { InvalidParamError } from '@/presentation/errors'
 
 export class CheckSurveyContainsAnswer implements ICheckSurveyContainsAnswerService {
-  constructor (private readonly loadSurveyByIdRepository: LoadSurveyByIdRepository) {}
+  constructor (private readonly loadSurveyByIdRepository: ILoadSurveyByIdRepository) {}
 
   async verify (data: CheckSurveyAnswerParams): Promise<InvalidParamError> {
     const { surveyId, answer } = data

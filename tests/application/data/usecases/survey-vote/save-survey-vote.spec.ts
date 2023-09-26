@@ -1,7 +1,7 @@
 import { type AnswerToUserContext } from '@/domain/models'
 import { SaveSurveyVoteRepositorySpy, UserUpdateSurveyRepositorySpy } from '#/application/data/mocks/repository-mocks'
 import { mockSaveSurveyVoteParams, mockSurvey } from '#/domain/mocks/models'
-import { DbSaveSurveyVote } from '@/application/data/usecases/survey-vote'
+import { SaveSurveyVote } from '@/application/data/usecases/survey-vote'
 
 const surveyMocked = mockSurvey()
 const saveSurveyVoteData = mockSaveSurveyVoteParams()
@@ -22,7 +22,7 @@ class UpdatedSurveyReference {
 }
 
 type SutTypes = {
-  sut: DbSaveSurveyVote
+  sut: SaveSurveyVote
   saveSurveyVoteRepositorySpy: SaveSurveyVoteRepositorySpy
   userUpdateSurveyRepositorySpy: UserUpdateSurveyRepositorySpy
 }
@@ -30,7 +30,7 @@ type SutTypes = {
 const makeSut = (): SutTypes => {
   const saveSurveyVoteRepositorySpy = new SaveSurveyVoteRepositorySpy()
   const userUpdateSurveyRepositorySpy = new UserUpdateSurveyRepositorySpy()
-  const sut = new DbSaveSurveyVote(saveSurveyVoteRepositorySpy, userUpdateSurveyRepositorySpy)
+  const sut = new SaveSurveyVote(saveSurveyVoteRepositorySpy, userUpdateSurveyRepositorySpy)
   return {
     sut,
     saveSurveyVoteRepositorySpy,
@@ -38,7 +38,7 @@ const makeSut = (): SutTypes => {
   }
 }
 
-describe('DbSaveSurveyVote UseCase', () => {
+describe('SaveSurveyVote UseCase', () => {
   test('Should call SaveSurveyVoteRepository with correct values', async () => {
     const { sut, saveSurveyVoteRepositorySpy } = makeSut()
     await sut.save(saveSurveyVoteData)

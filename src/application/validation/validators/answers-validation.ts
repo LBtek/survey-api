@@ -1,8 +1,8 @@
 import { type PublisherAddSurvey } from '@/domain/models'
-import { type Validation } from '@/presentation/protocols'
+import { type IValidation } from '@/presentation/protocols'
 import { AnswerFormatError, AnswersInstanceTypeError } from '@/presentation/errors'
 
-export class AnswersValidation implements Validation {
+export class AnswersValidation implements IValidation {
   validate (survey: PublisherAddSurvey.Params): Error {
     if (!(survey.answers instanceof Array)) {
       return new AnswersInstanceTypeError()

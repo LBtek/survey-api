@@ -1,4 +1,4 @@
-import { type Validation } from '@/presentation/protocols'
+import { type IValidation } from '@/presentation/protocols'
 import {
   CompareFieldsValidation,
   EmailValidation,
@@ -13,7 +13,7 @@ jest.mock('@/application/validation/validators/validation-composite')
 describe('SignUpValidation Factory', () => {
   test('Should call ValidationComposite with all validations', () => {
     makeSignUpValidation()
-    const validations: Validation[] = []
+    const validations: IValidation[] = []
     for (const field of ['name', 'email', 'password', 'passwordConfirmation']) {
       validations.push(new RequiredFieldValidation(field))
     }

@@ -3,14 +3,14 @@ import {
   type UserLoadAllSurveys,
   type UserLoadOneSurvey
 } from '@/domain/models'
-import { type PublisherAddSurvey as PublisherAddSurveyUsecase } from '@/domain/usecases/publisher-context'
+import { type IPublisherAddSurvey as IPublisherAddSurveyUsecase } from '@/domain/usecases/publisher-context'
 import {
-  type UserLoadOneSurvey as UserLoadOneSurveyUsecase,
-  type UserLoadAllSurveys as UserLoadAllSurveysUsecase
+  type IUserLoadOneSurvey as IUserLoadOneSurveyUsecase,
+  type IUserLoadAllSurveys as IUserLoadAllSurveysUsecase
 } from '@/domain/usecases/user-context'
 import { mockAllSurveysToUserContext, mockSurveyToUserContext } from '../models'
 
-export class PublisherAddSurveySpy implements PublisherAddSurveyUsecase {
+export class PublisherAddSurveySpy implements IPublisherAddSurveyUsecase {
   addSurveyData: PublisherAddSurvey.Params
   result: PublisherAddSurvey.Result = 'Ok'
 
@@ -21,7 +21,7 @@ export class PublisherAddSurveySpy implements PublisherAddSurveyUsecase {
   }
 }
 
-export class UserLoadAllSurveysSpy implements UserLoadAllSurveysUsecase {
+export class UserLoadAllSurveysSpy implements IUserLoadAllSurveysUsecase {
   surveys = mockAllSurveysToUserContext()
   userId: string
 
@@ -31,7 +31,7 @@ export class UserLoadAllSurveysSpy implements UserLoadAllSurveysUsecase {
   }
 }
 
-export class UserLoadOneSurveySpy implements UserLoadOneSurveyUsecase {
+export class UserLoadOneSurveySpy implements IUserLoadOneSurveyUsecase {
   surveyId: string
   userId: string
   survey = mockSurveyToUserContext()

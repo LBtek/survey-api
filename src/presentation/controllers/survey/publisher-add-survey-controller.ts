@@ -1,12 +1,12 @@
 import { type PublisherAddSurvey } from '@/domain/models'
-import { type PublisherAddSurvey as PublisherAddSurveyUsecase } from '@/domain/usecases/publisher-context'
-import { type Validation, type Controller, type HttpResponse } from '@/presentation/protocols'
+import { type IPublisherAddSurvey as IPublisherAddSurveyUsecase } from '@/domain/usecases/publisher-context'
+import { type IValidation, type IController, type HttpResponse } from '@/presentation/protocols'
 import { badRequest, noContent, serverError } from '@/presentation/helpers/http/http-helper'
 
-export class PublisherAddSurveyController implements Controller {
+export class PublisherAddSurveyController implements IController {
   constructor (
-    private readonly validation: Validation,
-    private readonly publisherAddSurvey: PublisherAddSurveyUsecase
+    private readonly validation: IValidation,
+    private readonly publisherAddSurvey: IPublisherAddSurveyUsecase
   ) { }
 
   async handle (request: PublisherAddSurvey.Params): Promise<HttpResponse> {

@@ -1,7 +1,7 @@
-import { type HttpRequest, type Controller, type HttpResponse } from '@/presentation/protocols'
+import { type HttpRequest, type IController, type HttpResponse } from '@/presentation/protocols'
 import { ok } from '@/presentation/helpers/http/http-helper'
 
-export class ControllerSpy implements Controller {
+export class ControllerSpy implements IController {
   httpRequest: HttpRequest
   bodyResponse: any = { res: 'any_response' }
   httpHelper = ok

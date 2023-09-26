@@ -1,6 +1,6 @@
-import { type EmailValidator } from '@/application/validation/protocols/email-validator'
+import { type IEmailValidator } from '@/application/validation/protocols/email-validator'
 
-export class EmailValidatorSpy implements EmailValidator {
+export class EmailValidatorSpy implements IEmailValidator {
   email: string
   res = true
 
@@ -10,7 +10,7 @@ export class EmailValidatorSpy implements EmailValidator {
   }
 }
 
-export class EmailValidatorStub implements EmailValidator {
+export class EmailValidatorStub implements IEmailValidator {
   isValid (): boolean {
     return true
   }

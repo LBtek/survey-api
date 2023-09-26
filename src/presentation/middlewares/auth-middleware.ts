@@ -1,6 +1,6 @@
 import { type Account } from '@/application/entities'
 import {
-  type Middleware,
+  type IMiddleware,
   type HttpResponse,
   type IExtractAccessTokenPayloadService,
   type ILoadAuthenticatedUserByTokenService,
@@ -10,7 +10,7 @@ import { AccessDeniedError, InvalidTokenPayload, UnauthorizedError } from '@/app
 import { JsonWebTokenError, TokenExpiredError, NotBeforeError } from '@/infra/errors'
 import { badRequest, forbidden, ok, serverError, unauthorized } from '../helpers/http/http-helper'
 
-export class AuthMiddleware implements Middleware {
+export class AuthMiddleware implements IMiddleware {
   constructor (
     private readonly extractAccessTokenPayload: IExtractAccessTokenPayloadService,
     private readonly loadAuthenticatedUserByToken: ILoadAuthenticatedUserByTokenService,

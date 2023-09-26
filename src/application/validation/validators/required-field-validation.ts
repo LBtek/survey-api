@@ -1,7 +1,7 @@
-import { type Validation } from '@/presentation/protocols'
+import { type IValidation } from '@/presentation/protocols'
 import { MissingParamError } from '@/presentation/errors'
 
-export class RequiredFieldValidation implements Validation {
+export class RequiredFieldValidation implements IValidation {
   constructor (private readonly fieldName: string) { }
 
   validate (input: object): Error {

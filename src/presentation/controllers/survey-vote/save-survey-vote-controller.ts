@@ -1,13 +1,13 @@
 import { type SaveSurveyVote } from '@/domain/models'
-import { type SaveSurveyVote as SaveSurveyVoteUsecase } from '@/domain/usecases/user-context'
-import { type Controller, type HttpResponse } from '@/presentation/protocols'
+import { type ISaveSurveyVote as ISaveSurveyVoteUsecase } from '@/domain/usecases/user-context'
+import { type IController, type HttpResponse } from '@/presentation/protocols'
 import { type ICheckSurveyContainsAnswerService } from '@/presentation/protocols/services'
 import { forbidden, ok, serverError } from '@/presentation/helpers/http/http-helper'
 
-export class SaveSurveyVoteController implements Controller {
+export class SaveSurveyVoteController implements IController {
   constructor (
     private readonly checkSurveyContainsAnswerService: ICheckSurveyContainsAnswerService,
-    private readonly useSaveSurveyVote: SaveSurveyVoteUsecase
+    private readonly useSaveSurveyVote: ISaveSurveyVoteUsecase
   ) { }
 
   async handle (request: SaveSurveyVote.Params): Promise<HttpResponse> {

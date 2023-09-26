@@ -6,13 +6,13 @@ import {
   type IAddUserAccountRepository,
   type ICheckUserAccountByEmailRepository,
   type ILoadUserAccountByEmailRepository,
-  type PublisherAddSurveyRepository,
-  type SaveSurveyVoteRepository,
-  type UserUpdateSurveyRepository,
-  type UserLoadOneSurveyRepository,
-  type UserLoadAllSurveysRepository,
-  type LoadSurveyByIdRepository,
-  type LogErrorRepository,
+  type IPublisherAddSurveyRepository,
+  type ISaveSurveyVoteRepository,
+  type IUserUpdateSurveyRepository,
+  type IUserLoadOneSurveyRepository,
+  type IUserLoadAllSurveysRepository,
+  type ILoadSurveyByIdRepository,
+  type ILogErrorRepository,
   type LogTypeError,
   type AuthenticationRepository,
   type ILoadAuthenticatedUserRepository,
@@ -106,7 +106,7 @@ export class AuthenticateUserRepositorySpy implements IAuthenticateUserRepositor
   }
 }
 
-export class PublisherAddSurveyRepositorySpy implements PublisherAddSurveyRepository {
+export class PublisherAddSurveyRepositorySpy implements IPublisherAddSurveyRepository {
   addSurveyData: SurveyRepository.PublisherAddSurvey.Params
   result: SurveyRepository.PublisherAddSurvey.Result = { surveyId: 'any_survey_id' }
 
@@ -116,7 +116,7 @@ export class PublisherAddSurveyRepositorySpy implements PublisherAddSurveyReposi
   }
 }
 
-export class SaveSurveyVoteRepositorySpy implements SaveSurveyVoteRepository {
+export class SaveSurveyVoteRepositorySpy implements ISaveSurveyVoteRepository {
   saveSurveyVoteData: SurveyVoteRepository.Save.Params
   oldSurveyVote: SurveyVoteRepository.Save.Result = undefined
 
@@ -126,7 +126,7 @@ export class SaveSurveyVoteRepositorySpy implements SaveSurveyVoteRepository {
   }
 }
 
-export class UserUpdateSurveyRepositorySpy implements UserUpdateSurveyRepository {
+export class UserUpdateSurveyRepositorySpy implements IUserUpdateSurveyRepository {
   oldSurvey = mockSurvey()
   newSurvey: SurveyRepository.UserUpdateSurvey.Result
   oldAnswer: string
@@ -158,7 +158,7 @@ export class UserUpdateSurveyRepositorySpy implements UserUpdateSurveyRepository
   }
 }
 
-export class UserLoadOneSurveyRepositorySpy implements UserLoadOneSurveyRepository {
+export class UserLoadOneSurveyRepositorySpy implements IUserLoadOneSurveyRepository {
   survey = mockUserLoadOneSurveyRepositoryResult()
   surveyId: string
   userId: string
@@ -170,7 +170,7 @@ export class UserLoadOneSurveyRepositorySpy implements UserLoadOneSurveyReposito
   }
 }
 
-export class UserLoadAllSurveysRepositorySpy implements UserLoadAllSurveysRepository {
+export class UserLoadAllSurveysRepositorySpy implements IUserLoadAllSurveysRepository {
   surveys = mockUserLoadAllSurveysRepositoryResult()
   userId: string
 
@@ -180,7 +180,7 @@ export class UserLoadAllSurveysRepositorySpy implements UserLoadAllSurveysReposi
   }
 }
 
-export class LoadSurveyByIdRepositorySpy implements LoadSurveyByIdRepository {
+export class LoadSurveyByIdRepositorySpy implements ILoadSurveyByIdRepository {
   surveyId: string
   surveyResult: SurveyRepository.LoadSurveyById.Result = mockSurvey()
 
@@ -190,7 +190,7 @@ export class LoadSurveyByIdRepositorySpy implements LoadSurveyByIdRepository {
   }
 }
 
-export class LogErrorRepositorySpy implements LogErrorRepository {
+export class LogErrorRepositorySpy implements ILogErrorRepository {
   stack: string
   typeError: LogTypeError
 

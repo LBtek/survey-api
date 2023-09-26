@@ -1,9 +1,9 @@
-import { type Controller } from '@/presentation/protocols'
+import { type IController } from '@/presentation/protocols'
 import { makeLogControllerDecorator } from '@/main/factories/decorators'
-import { makeDbUserLoadOneSurvey } from '@/main/factories/usecases/survey'
+import { makeUserLoadOneSurveyUsecase } from '@/main/factories/usecases/survey'
 import { UserLoadOneSurveyController } from '@/presentation/controllers'
 
-export const makeUserLoadOneSurveyController = (): Controller => {
-  const controller = new UserLoadOneSurveyController(makeDbUserLoadOneSurvey())
+export const makeUserLoadOneSurveyController = (): IController => {
+  const controller = new UserLoadOneSurveyController(makeUserLoadOneSurveyUsecase())
   return makeLogControllerDecorator(controller)
 }

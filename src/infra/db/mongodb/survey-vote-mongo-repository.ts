@@ -1,8 +1,8 @@
-import { type SurveyVoteRepository, type SaveSurveyVoteRepository } from '@/application/data/protocols/repositories'
+import { type SurveyVoteRepository, type ISaveSurveyVoteRepository } from '@/application/data/protocols/repositories'
 import { MongoHelper } from './helpers/mongo-helper'
 import { ObjectId } from 'mongodb'
 
-export class SurveyVoteMongoRepository implements SaveSurveyVoteRepository {
+export class SurveyVoteMongoRepository implements ISaveSurveyVoteRepository {
   async save (data: SurveyVoteRepository.Save.Params): Promise<SurveyVoteRepository.Save.Result> {
     const surveyVotesCollection = await MongoHelper.getCollection('surveyVotes')
     const res = await surveyVotesCollection.findOneAndUpdate({

@@ -1,12 +1,12 @@
 import { type AddUserAccountModel } from '@/domain/models'
 import { type IAddUserAccount as IAddUserAccountUsecase } from '@/domain/usecases'
 import { type ICheckUserAccountByEmailRepository, type IAddUserAccountRepository } from '@/application/data/protocols/repositories/account-repository'
-import { type Hasher } from '@/application/data/protocols/criptography'
+import { type IHasher } from '@/application/data/protocols/criptography'
 import { EmailInUserError } from '@/domain/errors'
 
 export class AddUserAccount implements IAddUserAccountUsecase {
   constructor (
-    private readonly hasher: Hasher,
+    private readonly hasher: IHasher,
     private readonly addUserAccountRepository: IAddUserAccountRepository,
     private readonly checkUserAccountByEmailRepository: ICheckUserAccountByEmailRepository
   ) { }

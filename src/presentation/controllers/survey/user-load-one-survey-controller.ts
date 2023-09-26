@@ -1,11 +1,11 @@
 import { type UserLoadOneSurvey } from '@/domain/models'
-import { type UserLoadOneSurvey as UserLoadOneSurveyUsecase } from '@/domain/usecases/user-context'
-import { type Controller, type HttpResponse } from '@/presentation/protocols'
+import { type IUserLoadOneSurvey as IUserLoadOneSurveyUsecase } from '@/domain/usecases/user-context'
+import { type IController, type HttpResponse } from '@/presentation/protocols'
 import { forbidden, ok, serverError } from '@/presentation/helpers/http/http-helper'
 import { InvalidParamError } from '@/presentation/errors'
 
-export class UserLoadOneSurveyController implements Controller {
-  constructor (private readonly userLoadOneSurvey: UserLoadOneSurveyUsecase) {}
+export class UserLoadOneSurveyController implements IController {
+  constructor (private readonly userLoadOneSurvey: IUserLoadOneSurveyUsecase) {}
 
   async handle (request: UserLoadOneSurvey.Params): Promise<HttpResponse> {
     try {

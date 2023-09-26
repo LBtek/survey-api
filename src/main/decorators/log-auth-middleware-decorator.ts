@@ -1,11 +1,11 @@
-import { type LogErrorRepository } from '@/application/data/protocols/repositories/log'
-import { type Middleware, type HttpRequest, type HttpResponse } from '@/presentation/protocols'
+import { type ILogErrorRepository } from '@/application/data/protocols/repositories/log'
+import { type IMiddleware, type HttpRequest, type HttpResponse } from '@/presentation/protocols'
 import { JsonWebTokenError, NotBeforeError, TokenExpiredError } from 'jsonwebtoken'
 
-export class LogAuthMiddlewareDecorator implements Middleware {
+export class LogAuthMiddlewareDecorator implements IMiddleware {
   constructor (
-    private readonly middleware: Middleware,
-    private readonly logErrorRepository: LogErrorRepository
+    private readonly middleware: IMiddleware,
+    private readonly logErrorRepository: ILogErrorRepository
   ) { }
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {

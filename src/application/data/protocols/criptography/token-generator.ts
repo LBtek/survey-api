@@ -1,3 +1,3 @@
-export interface TokenGenerator {
+export interface ITokenGenerator {
   generate: (payload: object) => Promise<string>
 }

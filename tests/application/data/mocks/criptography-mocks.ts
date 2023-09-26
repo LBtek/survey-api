@@ -1,6 +1,6 @@
-import { type HashComparer, type TokenGenerator, type Hasher, type TokenDecrypter } from '@/application/data/protocols/criptography'
+import { type IHashComparer, type ITokenGenerator, type IHasher, type ITokenDecrypter } from '@/application/data/protocols/criptography'
 
-export class HasherSpy implements Hasher {
+export class HasherSpy implements IHasher {
   hashed = 'hash'
   plaintext: string
 
@@ -10,7 +10,7 @@ export class HasherSpy implements Hasher {
   }
 }
 
-export class HashComparerSpy implements HashComparer {
+export class HashComparerSpy implements IHashComparer {
   plaintext: string
   hash: string
   isValid = true
@@ -22,7 +22,7 @@ export class HashComparerSpy implements HashComparer {
   }
 }
 
-export class TokenGeneratorSpy implements TokenGenerator {
+export class TokenGeneratorSpy implements ITokenGenerator {
   token = 'any_token'
   content: any
 
@@ -32,7 +32,7 @@ export class TokenGeneratorSpy implements TokenGenerator {
   }
 }
 
-export class TokenDecrypterSpy implements TokenDecrypter {
+export class TokenDecrypterSpy implements ITokenDecrypter {
   token: string
   decrypted: any = {
     accountId: 'any_account_id',

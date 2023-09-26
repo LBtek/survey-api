@@ -1,14 +1,14 @@
 import { type AddUserAccountModel } from '@/domain/models'
 import { type IAddUserAccount as IAddUserAccountUsecase } from '@/domain/usecases'
-import { type HttpResponse, type Controller, type Validation, type IAuthenticationService } from '@/presentation/protocols'
+import { type HttpResponse, type IController, type IValidation, type IAuthenticationService } from '@/presentation/protocols'
 import { type IP } from '@/application/entities'
 import { badRequest, forbidden, ok, serverError } from '@/presentation/helpers/http/http-helper'
 import { EmailInUserError } from '@/domain/errors'
 
-export class SignUpController implements Controller {
+export class SignUpController implements IController {
   constructor (
     private readonly addUserAccount: IAddUserAccountUsecase,
-    private readonly validation: Validation,
+    private readonly validation: IValidation,
     private readonly authentication: IAuthenticationService
   ) { }
 

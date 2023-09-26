@@ -1,12 +1,12 @@
 import { type AuthenticationModel } from '@/application/models'
-import { type IAuthenticationService, type Controller, type HttpResponse, type Validation } from '@/presentation/protocols'
+import { type IAuthenticationService, type IController, type HttpResponse, type IValidation } from '@/presentation/protocols'
 import { badRequest, ok, serverError, unauthorized } from '@/presentation/helpers/http/http-helper'
 import { UnauthorizedError } from '@/application/errors'
 
-export class LoginController implements Controller {
+export class LoginController implements IController {
   constructor (
     private readonly authentication: IAuthenticationService,
-    private readonly validation: Validation
+    private readonly validation: IValidation
   ) { }
 
   async handle (request: AuthenticationModel.Login.Params): Promise<HttpResponse> {

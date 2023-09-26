@@ -1,3 +1,3 @@
-export * from './db-publisher-add-survey'
-export * from './db-user-load-one-survey'
-export * from './db-user-load-all-surveys'
+export * from './publisher-add-survey'
+export * from './user-load-one-survey'
+export * from './user-load-all-surveys'

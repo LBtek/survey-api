@@ -1,12 +1,12 @@
 import { type AuthenticationModel } from '@/application/models'
 import { type ICheckAndRefreshAccessTokenService } from '@/presentation/protocols'
 import { type IRefreshAccessTokenRepository } from '../protocols/repositories'
-import { type TokenGenerator } from '../protocols/criptography'
+import { type ITokenGenerator } from '../protocols/criptography'
 import { UnauthorizedError } from '@/application/errors'
 
 export class CheckAndRefreshAccessToken implements ICheckAndRefreshAccessTokenService {
   constructor (
-    private readonly tokenGenerator: TokenGenerator,
+    private readonly tokenGenerator: ITokenGenerator,
     private readonly refreshAccessTokenRepository: IRefreshAccessTokenRepository
   ) { }
 

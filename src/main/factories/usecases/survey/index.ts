@@ -1,3 +1,3 @@
-export * from './db-publisher-add-survey-factory'
-export * from './db-user-load-survey-factory'
-export * from './db-user-load-surveys-factory'
+export * from './publisher-add-survey-factory'
+export * from './user-load-one-survey-factory'
+export * from './user-load-all-surveys-factory'

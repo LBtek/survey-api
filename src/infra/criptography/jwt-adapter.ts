@@ -1,7 +1,7 @@
-import { type TokenDecrypter, type TokenGenerator } from '@/application/data/protocols/criptography'
+import { type ITokenDecrypter, type ITokenGenerator } from '@/application/data/protocols/criptography'
 import jwt from 'jsonwebtoken'
 
-export class JwtAdapter implements TokenGenerator, TokenDecrypter {
+export class JwtAdapter implements ITokenGenerator, ITokenDecrypter {
   constructor (private readonly secret: string) { }
 
   async generate (payload: object): Promise<string> {

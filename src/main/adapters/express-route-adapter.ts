@@ -1,7 +1,7 @@
 import { type Response, type Request } from 'express'
-import { type Controller } from '@/presentation/protocols'
+import { type IController } from '@/presentation/protocols'
 
-export const adaptRoute = (controller: Controller) => {
+export const adaptRoute = (controller: IController) => {
   return async (req: Request, res: Response) => {
     const request = {
       ...(req.body),

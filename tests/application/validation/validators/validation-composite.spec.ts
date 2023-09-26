@@ -1,11 +1,11 @@
-import { type Validation } from '@/presentation/protocols'
+import { type IValidation } from '@/presentation/protocols'
 import { MissingParamError } from '@/presentation/errors'
 import { ValidationComposite } from '@/application/validation/validators'
 import { ValidationSpy } from '#/presentation/_mocks'
 
 type SutTypes = {
   sut: ValidationComposite
-  validationStubs: Validation[]
+  validationStubs: IValidation[]
 }
 
 const makeSut = (): SutTypes => {
@@ -18,7 +18,7 @@ const makeSut = (): SutTypes => {
   }
 }
 
-describe('Validation Composite', () => {
+describe('IValidation Composite', () => {
   test('Should return an error if any validation fails', () => {
     const { sut, validationStubs } = makeSut()
     jest.spyOn(validationStubs[1], 'validate').mockReturnValueOnce(new MissingParamError('field'))

@@ -41,22 +41,22 @@ export namespace SurveyRepository {
 export type LoadSurveyByIdResult = SurveyRepository.LoadSurveyById.Result
 export type LoadSurveyByIdParams = SurveyRepository.LoadSurveyById.Params
 
-export interface LoadSurveyByIdRepository {
+export interface ILoadSurveyByIdRepository {
   loadById: (data: LoadSurveyByIdParams) => Promise<LoadSurveyByIdResult>
 }
 
-export interface PublisherAddSurveyRepository {
+export interface IPublisherAddSurveyRepository {
   add: (data: SurveyRepository.PublisherAddSurvey.Params) => Promise<SurveyRepository.PublisherAddSurvey.Result>
 }
 
-export interface UserLoadOneSurveyRepository {
+export interface IUserLoadOneSurveyRepository {
   loadSurvey: (data: SurveyRepository.UserLoadOneSurvey.Params) => Promise<SurveyRepository.UserLoadOneSurvey.Result>
 }
 
-export interface UserLoadAllSurveysRepository {
+export interface IUserLoadAllSurveysRepository {
   loadAll: (data: SurveyRepository.UserLoadAllSurveys.Params) => Promise<SurveyRepository.UserLoadAllSurveys.Result>
 }
 
-export interface UserUpdateSurveyRepository {
+export interface IUserUpdateSurveyRepository {
   update: (data: SurveyRepository.UserUpdateSurvey.Params) => Promise<SurveyRepository.UserUpdateSurvey.Result>
 }

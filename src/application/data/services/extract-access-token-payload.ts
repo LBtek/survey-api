@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { type IDeleteAccessTokenRepository } from '../protocols/repositories'
 import { type IExtractAccessTokenPayloadService } from '@/presentation/protocols'
-import { type TokenDecrypter } from '../protocols/criptography'
+import { type ITokenDecrypter } from '../protocols/criptography'
 import { type AuthenticationModel } from '@/application/models'
 import { AccessDeniedError, InvalidTokenPayload } from '@/application/errors'
 import { TokenExpiredError } from '@/infra/errors'
@@ -9,7 +9,7 @@ import { setOfAllRoles } from '../helpers'
 
 export class ExtractAccessTokenPayload implements IExtractAccessTokenPayloadService {
   constructor (
-    private readonly tokenDecrypter: TokenDecrypter,
+    private readonly tokenDecrypter: ITokenDecrypter,
     private readonly deleteAccessTokenRepository: IDeleteAccessTokenRepository
   ) { }
 

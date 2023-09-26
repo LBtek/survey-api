@@ -1,9 +1,9 @@
-import { type Validation } from '@/presentation/protocols'
+import { type IValidation } from '@/presentation/protocols'
 import { EmailValidation, RequiredFieldValidation, ValidationComposite } from '@/application/validation/validators'
 import { EmailValidatorAdapter } from '@/infra/validators/email-validator-adapter'
 
 export const makeLoginValidation = (): ValidationComposite => {
-  const validations: Validation[] = []
+  const validations: IValidation[] = []
   for (const field of ['email', 'password']) {
     validations.push(new RequiredFieldValidation(field))
   }

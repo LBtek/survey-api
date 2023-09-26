@@ -1,9 +1,9 @@
 import { type SurveyVote } from '@/domain/entities'
 import { type SaveSurveyVote, type AnswerToUserContext } from '@/domain/models'
-import { type SaveSurveyVote as SaveSurveyVoteUsecase } from '@/domain/usecases/user-context'
+import { type ISaveSurveyVote as ISaveSurveyVoteUsecase } from '@/domain/usecases/user-context'
 import { mockSurvey } from '../models'
 
-export class SaveSurveyVoteSpy implements SaveSurveyVoteUsecase {
+export class SaveSurveyVoteSpy implements ISaveSurveyVoteUsecase {
   saveSurveyVoteData: SurveyVote.BaseDataModel.Body
   afterSurvey: SaveSurveyVote.Result = {
     ...mockSurvey(),

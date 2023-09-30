@@ -5,6 +5,7 @@ import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import { InMemoryAuthenticatedUserAccountsRepository } from '@/infra/in-memory/authenticated-user-accounts-repository'
 import env from '@/main/config/env'
 import app from '@/main/config/app'
+import { hash } from 'bcrypt'
 import { sign } from 'jsonwebtoken'
 import request from 'supertest'
 
@@ -41,7 +42,7 @@ const makeAccessToken = async (role: Account.BaseDataModel.Roles): Promise<strin
 
   const account = await accountCollection.findOneAndReplace({}, {
     userId: user.value._id,
-    password: '123',
+    password: await hash('123', 12),
     role
   }, { upsert: true, returnDocument: 'after' })
 

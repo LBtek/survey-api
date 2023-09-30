@@ -16,6 +16,14 @@ export namespace AuthenticationModel {
     }
   }
 
+  export namespace Logout {
+    export type Params = {
+      ip: IP
+      accessToken: AccessToken
+    }
+    export type Result = void
+  }
+
   export type AccessTokenPayload = {
     userId: UserID
     accountId: AccountID

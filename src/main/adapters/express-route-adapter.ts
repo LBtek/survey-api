@@ -4,8 +4,10 @@ import { type IController } from '@/presentation/protocols'
 export const adaptRoute = (controller: IController) => {
   return async (req: Request, res: Response) => {
     const request = {
+      accessToken: req.headers?.['x-access-token'],
       ...(req.body),
       ...(req.params),
+      ...(req.query),
       ip: req.ip,
       userId: req.userId || null,
       accountId: req.accountId || null,

@@ -1,5 +1,5 @@
 import { type IController } from '@/presentation/protocols'
-import { LoginController } from '@/presentation/controllers/account/login-controller'
+import { LoginController } from '@/presentation/controllers/account'
 import { makeLoginValidation } from './login-validation-factory'
 import { makeAuthenticationService } from '@/main/factories/services/app-services'
 import { makeLogControllerDecorator } from '@/main/factories/decorators'

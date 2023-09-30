@@ -4,10 +4,10 @@ import { type IMiddleware } from '@/presentation/protocols'
 export const adaptMiddleware = (middleware: IMiddleware) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const request = {
-      accessToken: req.headers['x-access-token'],
       ...(req.headers),
       ...(req.body),
-      ip: req.ip
+      ip: req.ip,
+      accessToken: req.headers['x-access-token']
     }
     const httpResponse = await middleware.handle(request)
     if (httpResponse.statusCode >= 200 && httpResponse.statusCode <= 299) {

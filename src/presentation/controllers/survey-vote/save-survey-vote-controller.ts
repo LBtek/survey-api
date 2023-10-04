@@ -6,14 +6,14 @@ import { forbidden, ok, serverError } from '@/presentation/helpers/http/http-hel
 
 export class SaveSurveyVoteController implements IController {
   constructor (
-    private readonly checkSurveyContainsAnswerService: ICheckSurveyContainsAnswerService,
+    private readonly checkSurveyContainsAnswer: ICheckSurveyContainsAnswerService,
     private readonly useSaveSurveyVote: ISaveSurveyVoteUsecase
   ) { }
 
   async handle (request: SaveSurveyVote.Params): Promise<HttpResponse> {
     try {
       const { surveyId, answer, userId } = request
-      const error = await this.checkSurveyContainsAnswerService.verify({ surveyId, answer })
+      const error = await this.checkSurveyContainsAnswer.verify({ surveyId, answer })
       if (error) {
         return forbidden(error)
       }

@@ -54,7 +54,7 @@ describe('Auth Middleware', () => {
     expect(loadAuthenticatedUserByTokenSpy.loadData).toEqual({ ...mockRequest(), roles, tokenPayload })
   })
 
-  test('Should call LoadAccountByToken with correct data if no rules are provided', async () => {
+  test('Should call LoadAccountByToken with correct data if no roles are provided', async () => {
     const roles = new Set<string>()
     const { sut, loadAuthenticatedUserByTokenSpy, extractAccessTokenPayloadSpy } = makeSut(roles)
     await sut.handle(mockRequest())

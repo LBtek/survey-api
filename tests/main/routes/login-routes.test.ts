@@ -14,10 +14,11 @@ let userCollection: Collection
 
 const authenticatedUserAccounts = new InMemoryAuthenticatedUserAccountsRepository()
 
-const makeAccessToken = async (role: Account.BaseDataModel.Roles): Promise<{
+const makeAccessToken = async (role: Account.BaseDataModel.Roles):
+Promise<AuthenticatedAccount.UserAccount & {
   ip: string
   accessToken: string
-} & AuthenticatedAccount.UserAccount> => {
+}> => {
   const user = await userCollection.findOneAndReplace({}, {
     name: 'Luan',
     email: 'teste123@gmail.com'
@@ -38,21 +39,16 @@ const makeAccessToken = async (role: Account.BaseDataModel.Roles): Promise<{
 
   const ip = '::ffff:127.0.0.1'
 
-  await authenticatedUserAccounts.authenticate({
+  const authenticationData = {
     ip,
+    accessToken,
     accountId: account.value._id.toString(),
     user: MongoHelper.mapOneDocumentWithId(user.value) as User.Model,
-    accessToken,
-    role
-  })
-
-  return {
-    ip,
-    accessToken,
-    accountId: account.value._id.toString(),
-    user: MongoHelper.mapOneDocumentWithId(user.value),
     role
   }
+  await authenticatedUserAccounts.authenticate(authenticationData)
+
+  return authenticationData
 }
 
 describe('Login Routes', () => {
@@ -85,6 +81,7 @@ describe('Login Routes', () => {
           passwordConfirmation: '123'
         })
         .expect(200)
+
       expect(response.body.accessToken).toBeTruthy()
       expect(response.body.username).toBeTruthy()
       expect(response.body.username).toBe('Luan')
@@ -127,6 +124,7 @@ describe('Login Routes', () => {
         userId: user.insertedId,
         password
       })
+
       const response = await request(app)
         .post('/api/login')
         .send({
@@ -167,6 +165,7 @@ describe('Login Routes', () => {
   describe('GET /logout', () => {
     test('Should ', async () => {
       let { accessToken, user, ...rest } = await makeAccessToken('basic_user')
+
       let authenticatedUserAccount = await authenticatedUserAccounts.loadUser({
         accessToken,
         ...rest,
@@ -179,6 +178,7 @@ describe('Login Routes', () => {
         .set('x-access-token', accessToken)
         .send()
         .expect(204)
+
       authenticatedUserAccount = await authenticatedUserAccounts.loadUser({
         accessToken,
         ...rest,
@@ -199,6 +199,7 @@ describe('Login Routes', () => {
         .get(`/api/logout?accessToken=${accessToken}`)
         .send()
         .expect(204)
+
       authenticatedUserAccount = await authenticatedUserAccounts.loadUser({
         accessToken,
         ...rest,
@@ -219,6 +220,7 @@ describe('Login Routes', () => {
         .get(`/api/logout/${accessToken}`)
         .send()
         .expect(204)
+
       authenticatedUserAccount = await authenticatedUserAccounts.loadUser({
         accessToken,
         ...rest,
@@ -231,6 +233,7 @@ describe('Login Routes', () => {
   describe('POST /logout', () => {
     test('Should ', async () => {
       let { accessToken, user, ...rest } = await makeAccessToken('basic_user')
+
       let userAccount = await authenticatedUserAccounts.loadUser({
         accessToken,
         ...rest,
@@ -243,6 +246,7 @@ describe('Login Routes', () => {
         .set('x-access-token', accessToken)
         .send()
         .expect(204)
+
       userAccount = await authenticatedUserAccounts.loadUser({
         accessToken,
         ...rest,
@@ -263,6 +267,7 @@ describe('Login Routes', () => {
         .post('/api/logout')
         .send({ accessToken })
         .expect(204)
+
       userAccount = await authenticatedUserAccounts.loadUser({
         accessToken,
         ...rest,
@@ -283,6 +288,7 @@ describe('Login Routes', () => {
         .post(`/api/logout/${accessToken}`)
         .send()
         .expect(204)
+
       userAccount = await authenticatedUserAccounts.loadUser({
         accessToken,
         ...rest,

@@ -30,10 +30,10 @@ const mockData = (secondsToExpireToken: number = 0): AuthenticationModel.LoadUse
 })
 
 describe('LoadAuthenticatedUserByToken Application Service', () => {
-  test('Should return null if the ruleset does not contain the token rule', async () => {
+  test('Should return null if the roleset does not contain the token role', async () => {
     const { sut } = makeSut()
     const data = mockData()
-    data.tokenPayload.role = 'rule_not_included' as AuthenticationModel.AccessTokenPayload['role']
+    data.tokenPayload.role = 'role_not_included' as AuthenticationModel.AccessTokenPayload['role']
     const account = await sut.loadByToken(data)
     expect(account).toBeNull()
   })

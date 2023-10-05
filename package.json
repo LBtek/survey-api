@@ -31,6 +31,7 @@
     "@types/jsonwebtoken": "^9.0.2",
     "@types/mongodb": "^4.0.7",
     "@types/node": "^20.5.0",
+    "@types/swagger-ui-express": "^4.1.4",
     "@types/validator": "^13.11.1",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "eslint": "^8.47.0",
@@ -56,6 +57,7 @@
     "jsonwebtoken": "^9.0.1",
     "module-alias": "^2.2.3",
     "mongodb": "^5.7.0",
+    "swagger-ui-express": "^5.0.0",
     "validator": "^13.11.0"
   },
   "_moduleAliases": {

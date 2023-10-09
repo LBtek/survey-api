@@ -7,6 +7,7 @@ module.exports = {
     'domain/value-objects',
     '/entities/',
     '/models/',
+    '/docs/',
     'server.ts',
     'env.ts',
     'infra/http/requests',

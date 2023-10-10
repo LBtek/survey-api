@@ -5,7 +5,7 @@ export class RequiredFieldValidation implements IValidation {
   constructor (private readonly fieldName: string) { }
 
   validate (input: object): Error {
-    if (!input[this.fieldName]) {
+    if (typeof input[this.fieldName] !== 'boolean' && !input[this.fieldName]) {
       return new MissingParamError(this.fieldName)
     }
   }

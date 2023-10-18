@@ -3,7 +3,7 @@ import { type AddUserAccountModel } from '@/domain/models'
 import { SignUpController } from '@/presentation/controllers/account/signup-controller'
 import { ValidationSpy } from '#/presentation/_mocks'
 import { ok, serverError, badRequest, forbidden } from '@/presentation/helpers/http/http-helper'
-import { EmailInUserError } from '@/domain/errors'
+import { EmailInUseError } from '@/domain/errors'
 import { MissingParamError, ServerError } from '@/presentation/errors'
 import { mockAddAccountParams } from '#/domain/mocks/models'
 import { AddUserAccountSpy } from '#/domain/mocks/usecases'
@@ -95,9 +95,9 @@ describe('SignUp Controller', () => {
   test('Should return 403 if AddAccount returns null', async () => {
     const { sut, addAccountSpy } = makeSut()
     jest.spyOn(addAccountSpy, 'add').mockReturnValueOnce(
-      Promise.resolve(new EmailInUserError())
+      Promise.resolve(new EmailInUseError())
     )
     const httpResponse = await sut.handle(mockRequest())
-    expect(httpResponse).toEqual(forbidden(new EmailInUserError()))
+    expect(httpResponse).toEqual(forbidden(new EmailInUseError()))
   })
 })

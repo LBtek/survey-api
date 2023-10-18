@@ -2,7 +2,7 @@ import { AddUserAccount } from '@/application/data/usecases/account'
 import { HasherSpy } from '#/application/data/mocks/criptography-mocks'
 import { AddAccountRepositorySpy, CheckUserAccountByEmailRepositorySpy } from '#/application/data/mocks/repository-mocks'
 import { mockAccount, mockAddAccountParams } from '#/domain/mocks/models'
-import { EmailInUserError } from '@/domain/errors'
+import { EmailInUseError } from '@/domain/errors'
 
 type SutTypes = {
   sut: AddUserAccount
@@ -67,12 +67,12 @@ describe('DbAddUserAccount Usecase', () => {
     expect(checkUserAccountByEmailRepositorySpy.email).toBe(account.user.email)
   })
 
-  test('Should return EmailInUserError if CheckAccountByEmailRepository return true', async () => {
+  test('Should return EmailInUseError if CheckAccountByEmailRepository return true', async () => {
     const { sut, checkUserAccountByEmailRepositorySpy } = makeSut()
     jest.spyOn(checkUserAccountByEmailRepositorySpy, 'checkByEmail').mockReturnValueOnce(
       Promise.resolve(true)
     )
     const account = await sut.add(mockAddAccountParams())
-    expect(account).toEqual(new EmailInUserError())
+    expect(account).toEqual(new EmailInUseError())
   })
 })

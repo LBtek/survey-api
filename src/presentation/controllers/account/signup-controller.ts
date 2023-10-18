@@ -3,7 +3,7 @@ import { type IAddUserAccount as IAddUserAccountUsecase } from '@/domain/usecase
 import { type HttpResponse, type IController, type IValidation, type IAuthenticationService } from '@/presentation/protocols'
 import { type IP } from '@/application/entities'
 import { badRequest, forbidden, ok, serverError } from '@/presentation/helpers/http/http-helper'
-import { EmailInUserError } from '@/domain/errors'
+import { EmailInUseError } from '@/domain/errors'
 
 export class SignUpController implements IController {
   constructor (
@@ -26,7 +26,7 @@ export class SignUpController implements IController {
         password,
         role
       })
-      if (result instanceof EmailInUserError) {
+      if (result instanceof EmailInUseError) {
         return forbidden(result)
       }
       const authenticationResponse = await this.authentication.auth({ ip, email, password, role })

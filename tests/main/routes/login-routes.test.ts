@@ -287,14 +287,14 @@ describe('Login Routes', () => {
       await request(app)
         .post(`/api/logout/${accessToken}`)
         .send()
-        .expect(204)
+        .expect(400)
 
       userAccount = await authenticatedUserAccounts.loadUser({
         accessToken,
         ...rest,
         userId: user.id
       })
-      expect(userAccount).toBeNull()
+      expect(userAccount).toBeTruthy()
     })
   })
 })

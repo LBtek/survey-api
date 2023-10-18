@@ -5,12 +5,9 @@ import { ValidationSpy } from '#/presentation/_mocks'
 import { ok, serverError, badRequest, forbidden } from '@/presentation/helpers/http/http-helper'
 import { EmailInUserError } from '@/domain/errors'
 import { MissingParamError, ServerError } from '@/presentation/errors'
-import { adaptRoute } from '@/main/adapters/express-route-adapter'
 import { mockAddAccountParams } from '#/domain/mocks/models'
 import { AddUserAccountSpy } from '#/domain/mocks/usecases'
 import { AuthenticationSpy } from '#/presentation/_mocks/services-mocks'
-import app from '@/main/config/app'
-import request from 'supertest'
 
 const mockRequest = (): { ip: string } & AddUserAccountModel.Params & { passwordConfirmation: string } => ({
   ip: 'any_ip',
@@ -102,19 +99,5 @@ describe('SignUp Controller', () => {
     )
     const httpResponse = await sut.handle(mockRequest())
     expect(httpResponse).toEqual(forbidden(new EmailInUserError()))
-  })
-})
-
-describe('Express RouteAdapter', () => {
-  test('Should adaptRoute() returns the error message if controller throws', async () => {
-    const { sut: controller } = makeSut()
-    app.post('/api/signup', adaptRoute(controller))
-
-    await request(app)
-      .post('/api/signup')
-      .send({})
-      .expect({
-        error: 'Missing param: name'
-      })
   })
 })

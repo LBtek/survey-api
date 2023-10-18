@@ -1,6 +1,11 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-confusing-void-expression */
 import { ControllerSpy } from '#/presentation/_mocks'
 import { adaptRoute } from '@/main/adapters/express-route-adapter'
+import { badRequest } from '@/presentation/helpers/http/http-helper'
+import { MissingParamError } from '@/presentation/errors'
+import app from '@/main/config/app'
+import request from 'supertest'
 
 describe('Express Route Adapter', () => {
   test('Should return newAccessToken if auth middleware refreshes the token', async () => {
@@ -28,5 +33,19 @@ describe('Express Route Adapter', () => {
     expect(response.body.newAccessToken).toBeTruthy()
     expect(response.body.res).toBeNull()
     expect(response.body.newAccessToken).toBe(newAccessToken)
+  })
+
+  test('Should adaptRoute() returns the error message if controller throws', async () => {
+    const controller = new ControllerSpy()
+    controller.httpHelper = badRequest
+    controller.bodyResponse = new MissingParamError('any_field')
+    app.post('/api/adapt-route-test', adaptRoute(controller))
+
+    const result = await request(app)
+      .post('/api/adapt-route-test')
+      .send({})
+      .expect(400)
+
+    expect(result.body).toEqual({ error: 'Missing param: any_field' })
   })
 })

@@ -1,6 +1,6 @@
 export const signUpPath = {
   post: {
-    tags: ['Login'],
+    tags: ['Conta de Acesso'],
     summary: 'API para criar conta de um usuário',
     requestBody: {
       required: true,
@@ -27,7 +27,8 @@ export const signUpPath = {
         $ref: '#/components/badRequest'
       },
       403: {
-        $ref: '#/components/forbidden'
+        $ref: '#/components/forbidden',
+        description: 'Email in use'
       },
       500: {
         $ref: '#/components/serverError'

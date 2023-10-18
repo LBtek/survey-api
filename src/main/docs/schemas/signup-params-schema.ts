@@ -1,4 +1,9 @@
-export const signUpParamsSchema = {
+import { signUpZodSchema } from '@/infra/validators/zod-schemas'
+import { generateSchema } from '@anatine/zod-openapi'
+
+export const signUpParamsSchema = generateSchema(signUpZodSchema)
+
+/* export const signUpParamsSchema = {
   type: 'object',
   properties: {
     name: {
@@ -15,4 +20,4 @@ export const signUpParamsSchema = {
     }
   },
   required: ['name', 'email', 'password', 'passwordConfirmation']
-}
+} */

@@ -1,4 +1,9 @@
-export const addSurveyParamsSchema = {
+import { addSurveyZodSchema } from '@/infra/validators/zod-schemas'
+import { generateSchema } from '@anatine/zod-openapi'
+
+export const addSurveyParamsSchema = generateSchema(addSurveyZodSchema)
+
+/* export const addSurveyParamsSchema = {
   type: 'object',
   properties: {
     question: {
@@ -12,4 +17,4 @@ export const addSurveyParamsSchema = {
     }
   },
   required: ['question', 'answers']
-}
+} */

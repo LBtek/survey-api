@@ -1,34 +1,9 @@
 export const surveyPath = {
-  get: {
-    security: [{
-      apiKeyAuth: []
-    }],
-    tags: ['Enquete'],
-    summary: 'API para listar todas as enquetes',
-    responses: {
-      200: {
-        description: 'Sucesso',
-        content: {
-          'application/json': {
-            schema: {
-              $ref: '#/schemas/surveys'
-            }
-          }
-        }
-      },
-      403: {
-        $ref: '#/components/forbidden'
-      },
-      500: {
-        $ref: '#/components/serverError'
-      }
-    }
-  },
   post: {
     security: [{
       apiKeyAuth: []
     }],
-    tags: ['Enquete'],
+    tags: ['Enquetes'],
     summary: 'API para criar uma enquete',
     requestBody: {
       required: true,
@@ -46,6 +21,31 @@ export const surveyPath = {
       },
       400: {
         $ref: '#/components/badRequest'
+      },
+      500: {
+        $ref: '#/components/serverError'
+      }
+    }
+  },
+  get: {
+    security: [{
+      apiKeyAuth: []
+    }],
+    tags: ['Enquetes'],
+    summary: 'API para listar todas as enquetes',
+    responses: {
+      200: {
+        description: 'Sucesso',
+        content: {
+          'application/json': {
+            schema: {
+              $ref: '#/schemas/surveys'
+            }
+          }
+        }
+      },
+      403: {
+        $ref: '#/components/forbidden'
       },
       500: {
         $ref: '#/components/serverError'

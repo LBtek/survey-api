@@ -1,5 +1,5 @@
-import { loginPath, signUpPath, surveyPath } from './paths'
-import { addSurveyParamsSchema, apiKeyAuthSchema, errorSchema, loginParamsSchema, loginResponseSchema, signUpParamsSchema, surveyAnswerSchema, surveySchema, surveysSchema } from './schemas'
+import { loginPath, logoutByQueryPath, logoutPathGet, logoutPathPostAndPut, signUpPath, surveyPath } from './paths'
+import { addSurveyParamsSchema, apiKeyAuthSchema, errorSchema, loginParamsSchema, loginResponseSchema, logoutParamsSchema, signUpParamsSchema, surveyAnswerSchema, surveySchema, surveysSchema } from './schemas'
 import { badRequest, serverError, unauthorized, forbidden } from './components'
 
 export default {
@@ -13,19 +13,23 @@ export default {
     url: '/api'
   }],
   tags: [{
-    name: 'Login'
+    name: 'Conta de Acesso'
   }, {
-    name: 'Enquete'
+    name: 'Enquetes'
   }],
   paths: {
-    '/login': loginPath,
     '/signup': signUpPath,
+    '/login': loginPath,
+    '/logout': logoutPathPostAndPut,
+    '/logout/{accessToken}': logoutPathGet,
+    '/logout?accessToken={accessToken}': logoutByQueryPath,
     '/surveys': surveyPath
   },
   schemas: {
+    signUpParams: signUpParamsSchema,
+    logoutParams: logoutParamsSchema,
     loginParams: loginParamsSchema,
     loginResponse: loginResponseSchema,
-    signUpParams: signUpParamsSchema,
     addSurveyParams: addSurveyParamsSchema,
     error: errorSchema,
     surveys: surveysSchema,

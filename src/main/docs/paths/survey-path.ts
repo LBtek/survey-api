@@ -44,6 +44,9 @@ export const surveyPath = {
           }
         }
       },
+      204: {
+        description: 'Nenhuma enquete encontrada'
+      },
       403: {
         $ref: '#/components/forbidden'
       },

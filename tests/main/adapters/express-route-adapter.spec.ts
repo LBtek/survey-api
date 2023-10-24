@@ -46,6 +46,6 @@ describe('Express Route Adapter', () => {
       .send({})
       .expect(400)
 
-    expect(result.body).toEqual({ error: 'Missing param: any_field' })
+    expect(result.body).toEqual({ error: new MissingParamError('any_field').message })
   })
 })

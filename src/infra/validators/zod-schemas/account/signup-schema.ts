@@ -5,9 +5,9 @@ import { emailSchema, userNameSchema } from '../user/common'
 
 export const signUpZodSchema = z.object({
   email: emailSchema(),
-  name: userNameSchema(),
+  name: userNameSchema('name'),
   password: passwordSchema(),
-  passwordConfirmation: extendApi(passwordSchema(), {
+  passwordConfirmation: extendApi(passwordSchema('passwordConfirmation'), {
     description: 'Must be the same password as the password field'
   })
 })

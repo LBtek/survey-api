@@ -3,6 +3,7 @@ module.exports = {
   collectCoverageFrom: ['<rootDir>/src/**/*.ts'],
   coveragePathIgnorePatterns: [
     '^(?=.*protocol).*',
+    'main/config',
     'domain/usecases',
     'domain/value-objects',
     '/entities/',

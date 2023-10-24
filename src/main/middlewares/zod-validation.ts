@@ -22,7 +22,7 @@ export const zodValidation = (
     } catch (error) {
       if (error instanceof ZodError) {
         res.status(400).json({
-          error: error.errors[0]?.message || error.message
+          error: error.errors[0].message
         })
       } else {
         logErrorRepository.logError(error.stack, 'server')

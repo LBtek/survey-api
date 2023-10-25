@@ -82,10 +82,10 @@ describe('Survey Routes', () => {
     await userCollection.deleteMany({})
   })
 
-  describe('POST /surveys', () => {
+  describe('POST /publisher/surveys', () => {
     test('Should return 403 on add survey without accessToken', async () => {
       await request(app)
-        .post('/api/surveys')
+        .post('/api/publisher/surveys')
         .send(surveyRequest)
         .expect(403)
     })
@@ -93,24 +93,24 @@ describe('Survey Routes', () => {
     test('Should return 204 on add survey with valid accessToken', async () => {
       const accessToken = await makeAccessToken('publisher')
       await request(app)
-        .post('/api/surveys')
+        .post('/api/publisher/surveys')
         .set('x-access-token', accessToken)
         .send(surveyRequest)
         .expect(204)
     })
   })
 
-  describe('GET /surveys', () => {
+  describe('GET /user/surveys', () => {
     test('Should return 403 on load surveys without accessToken', async () => {
       await request(app)
-        .get('/api/surveys')
+        .get('/api/user/surveys')
         .expect(403)
     })
 
     test('Should return 204 on load surveys with valid accessToken', async () => {
       const accessToken = await makeAccessToken('basic_user')
       await request(app)
-        .get('/api/surveys')
+        .get('/api/user/surveys')
         .set('x-access-token', accessToken)
         .expect(204)
     })
@@ -119,16 +119,16 @@ describe('Survey Routes', () => {
       await surveyCollection.insertOne(surveyToInsertOnDatabase)
       const accessToken = await makeAccessToken('basic_user')
       await request(app)
-        .get('/api/surveys')
+        .get('/api/user/surveys')
         .set('x-access-token', accessToken)
         .expect(200)
     })
   })
 
-  describe('GET /surveys/:surveyId', () => {
+  describe('GET /user/surveys/:surveyId', () => {
     test('Should return 403 on load survey without accessToken', async () => {
       await request(app)
-        .get('/api/surveys/survey_id')
+        .get('/api/user/surveys/survey_id')
         .expect(403)
     })
 
@@ -136,7 +136,7 @@ describe('Survey Routes', () => {
       const res = await surveyCollection.insertOne(surveyToInsertOnDatabase)
       const accessToken = await makeAccessToken('basic_user')
       await request(app)
-        .get(`/api/surveys/${res.insertedId.toString()}`)
+        .get(`/api/user/surveys/${res.insertedId.toString()}`)
         .set('x-access-token', accessToken)
         .expect(200)
     })

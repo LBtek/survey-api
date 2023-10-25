@@ -5,5 +5,5 @@ import { makeSaveSurveyVoteController } from '../factories/controllers'
 import { authUser } from '../middlewares/auth'
 
 export default (router: Router): void => {
-  router.put('/surveys/:surveyId/results', authUser, adaptRoute(makeSaveSurveyVoteController()))
+  router.put('/user/surveys/:surveyId', authUser, adaptRoute(makeSaveSurveyVoteController()))
 }

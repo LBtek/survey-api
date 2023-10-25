@@ -63,10 +63,10 @@ describe('Survey Vote Routes', () => {
     await userCollection.deleteMany({})
   })
 
-  describe('PUT /surveys/:surveyId/results', () => {
+  describe('PUT /user/surveys/:surveyId', () => {
     test('Should return 403 on save survey vote without accessToken', async () => {
       await request(app)
-        .put('/api/surveys/any_id/results')
+        .put('/api/user/surveys/any_id')
         .send({
           answer: 'any_answer'
         })
@@ -89,7 +89,7 @@ describe('Survey Vote Routes', () => {
       })
       const accessToken = await makeAccessToken('basic_user')
       await request(app)
-        .put(`/api/surveys/${res.insertedId.toString()}/results`)
+        .put(`/api/user/surveys/${res.insertedId.toString()}`)
         .set('x-access-token', accessToken)
         .send({
           answer: 'Answer 2'

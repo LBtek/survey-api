@@ -1,5 +1,5 @@
-import { loginPath, logoutByQueryPath, logoutPathGet, logoutPathPostAndPut, signUpPath, surveyPath } from './paths'
-import { addSurveyParamsSchema, apiKeyAuthSchema, errorSchema, loginParamsSchema, loginResponseSchema, logoutParamsSchema, signUpParamsSchema, surveyAnswerSchema, surveySchema, surveysSchema } from './schemas'
+import { loginPath, logoutByQueryPath, logoutPathGet, logoutPathPostAndPut, publisherAddSurvey, signUpPath, userLoadAllSurveysPath, userLoadOneSurveyPath, userSurveyVotePath } from './paths'
+import { addSurveyParamsSchema, apiKeyAuthSchema, errorSchema, loginParamsSchema, loginResponseSchema, logoutParamsSchema, signUpParamsSchema, surveyAnswerSchema, surveyIdParamSchema, surveySchema, surveyVoteParamsSchema, surveysSchema } from './schemas'
 import { badRequest, serverError, unauthorized, forbidden } from './components'
 
 export default {
@@ -23,7 +23,9 @@ export default {
     '/logout': logoutPathPostAndPut,
     '/logout/{accessToken}': logoutPathGet,
     '/logout?accessToken={accessToken}': logoutByQueryPath,
-    '/surveys': surveyPath
+    '/publisher/surveys': publisherAddSurvey,
+    '/user/surveys': userLoadAllSurveysPath,
+    '/user/surveys/{surveyId}': { ...userLoadOneSurveyPath, ...userSurveyVotePath }
   },
   schemas: {
     signUpParams: signUpParamsSchema,
@@ -31,10 +33,12 @@ export default {
     loginParams: loginParamsSchema,
     loginResponse: loginResponseSchema,
     addSurveyParams: addSurveyParamsSchema,
-    error: errorSchema,
+    surveyVoteParams: surveyVoteParamsSchema,
     surveys: surveysSchema,
     survey: surveySchema,
-    surveyAnswer: surveyAnswerSchema
+    surveyIdParam: surveyIdParamSchema,
+    surveyAnswer: surveyAnswerSchema,
+    error: errorSchema
   },
   components: {
     securitySchemes: {

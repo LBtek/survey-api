@@ -7,7 +7,7 @@ export const userNameSchema = (fieldName = 'username'): OpenApiZodAny => (extend
     required_error: new MissingParamError(fieldName).message
   }).trim().min(3), {
     title: 'User Name Param',
-    description: 'User Name Param',
+    description: 'Must not be empty and must be at least three characters long',
     example: 'Fulano Ciclano das Quantas'
   }
 ))

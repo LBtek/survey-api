@@ -1,38 +1,41 @@
-export const surveyPath = {
-  post: {
-    security: [{
-      apiKeyAuth: []
-    }],
-    tags: ['Enquetes'],
-    summary: 'API para criar uma enquete',
-    requestBody: {
-      required: true,
-      content: {
-        'application/json': {
-          schema: {
-            $ref: '#/schemas/addSurveyParams'
-          }
-        }
-      }
-    },
-    responses: {
-      204: {
-        description: 'Sucesso'
-      },
-      400: {
-        $ref: '#/components/badRequest'
-      },
-      500: {
-        $ref: '#/components/serverError'
-      }
-    }
-  },
+export const userLoadOneSurveyPath = {
   get: {
     security: [{
       apiKeyAuth: []
     }],
     tags: ['Enquetes'],
-    summary: 'API para listar todas as enquetes',
+    summary: 'API para um usuário comum buscar uma enquete',
+    responses: {
+      200: {
+        description: 'Sucesso',
+        content: {
+          'application/json': {
+            schema: {
+              $ref: '#/schemas/survey'
+            }
+          }
+        }
+      },
+      204: {
+        description: 'Nenhuma enquete encontrada'
+      },
+      403: {
+        $ref: '#/components/forbidden'
+      },
+      500: {
+        $ref: '#/components/serverError'
+      }
+    }
+  }
+}
+
+export const userLoadAllSurveysPath = {
+  get: {
+    security: [{
+      apiKeyAuth: []
+    }],
+    tags: ['Enquetes'],
+    summary: 'API para um usuário comum listar todas as enquetes',
     responses: {
       200: {
         description: 'Sucesso',

@@ -256,7 +256,7 @@ describe('Login Routes', () => {
 
       /* --------------------------------------------------------------------------- */
 
-      let loginResponse = await request(app)
+      const loginResponse = await request(app)
         .post('/api/login').send({
           email: user.email,
           password: '123'
@@ -276,25 +276,6 @@ describe('Login Routes', () => {
       expect(userAccount).toBeNull()
 
       /* --------------------------------------------------------------------------- */
-
-      loginResponse = await request(app)
-        .post('/api/login').send({
-          email: user.email,
-          password: '123'
-        })
-      accessToken = loginResponse.body.accessToken
-
-      await request(app)
-        .post(`/api/logout/${accessToken}`)
-        .send()
-        .expect(400)
-
-      userAccount = await authenticatedUserAccounts.loadUser({
-        accessToken,
-        ...rest,
-        userId: user.id
-      })
-      expect(userAccount).toBeTruthy()
     })
   })
 })

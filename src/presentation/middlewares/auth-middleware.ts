@@ -36,9 +36,9 @@ export class AuthMiddleware implements IMiddleware {
             tokenPayload
           })
           if (!newAccessToken) {
-            return ok({ userId: account.user.id, accountId: account.accountId })
+            return ok({ userId: account.user.id, accountId: account.accountId, role: account.role })
           } else if (typeof newAccessToken === 'string') {
-            return ok({ userId: account.user.id, accountId: account.accountId, newAccessToken })
+            return ok({ userId: account.user.id, accountId: account.accountId, role: account.role, newAccessToken })
           }
         }
       }

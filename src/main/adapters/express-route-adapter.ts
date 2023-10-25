@@ -11,7 +11,7 @@ export const adaptRoute = (controller: IController) => {
       ip: req.ip,
       userId: req.userId || null,
       accountId: req.accountId || null,
-      role: req.body.role || null
+      role: req.role || req.body.role || null
     }
     const httpResponse = await controller.handle(request)
     if (httpResponse.statusCode >= 200 && httpResponse.statusCode <= 299) {

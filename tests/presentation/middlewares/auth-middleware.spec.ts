@@ -132,7 +132,7 @@ describe('Auth Middleware', () => {
     const { sut, checkAndRefreshAccessTokenSpy } = makeSut(new Set())
     checkAndRefreshAccessTokenSpy.result = null
     const httpResponse = await sut.handle(mockRequest())
-    expect(httpResponse).toEqual(ok({ accountId: 'any_account_id', userId: 'any_user_id' }))
+    expect(httpResponse).toEqual(ok({ accountId: 'any_account_id', userId: 'any_user_id', role: 'any_role' }))
   })
 
   test('Should return 200 with newAccessToken if token update', async () => {
@@ -141,6 +141,7 @@ describe('Auth Middleware', () => {
     expect(httpResponse).toEqual(ok({
       accountId: 'any_account_id',
       userId: 'any_user_id',
+      role: 'any_role',
       newAccessToken: 'new_access_token'
     }))
   })

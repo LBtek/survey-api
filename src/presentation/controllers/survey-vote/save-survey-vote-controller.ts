@@ -2,7 +2,7 @@ import { type SaveSurveyVote } from '@/domain/models'
 import { type ISaveSurveyVote as ISaveSurveyVoteUsecase } from '@/domain/usecases/user-context'
 import { type IController, type HttpResponse } from '@/presentation/protocols'
 import { type ICheckSurveyContainsAnswerService } from '@/presentation/protocols/services'
-import { forbidden, ok, serverError } from '@/presentation/helpers/http/http-helper'
+import { badRequest, ok, serverError } from '@/presentation/helpers/http/http-helper'
 
 export class SaveSurveyVoteController implements IController {
   constructor (
@@ -15,7 +15,7 @@ export class SaveSurveyVoteController implements IController {
       const { surveyId, answer, userId } = request
       const error = await this.checkSurveyContainsAnswer.verify({ surveyId, answer })
       if (error) {
-        return forbidden(error)
+        return badRequest(error)
       }
       const survey = await this.useSaveSurveyVote.save(
         {

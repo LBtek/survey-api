@@ -1,7 +1,7 @@
 import { type SaveSurveyVote, type AnswerToUserContext } from '@/domain/models'
 import { SaveSurveyVoteController } from '@/presentation/controllers/survey-vote/save-survey-vote-controller'
 import { CheckSurveyAnswerServiceSpy } from '#/presentation/_mocks/services-mocks'
-import { forbidden, ok, serverError } from '@/presentation/helpers/http/http-helper'
+import { badRequest, ok, serverError } from '@/presentation/helpers/http/http-helper'
 import { SaveSurveyVoteSpy } from '#/domain/mocks/usecases'
 import { mockSurvey } from '#/domain/mocks/models'
 import MockDate from 'mockdate'
@@ -49,11 +49,11 @@ describe('SaveSurveyVote Controller', () => {
     expect(checkSurveyContainsAnswerServiceSpy.id).toBe('any_survey_id')
   })
 
-  test('Should return 403 if CheckSurveyAnswerService returns an InvalidParamError', async () => {
+  test('Should return 400 if CheckSurveyContainsAnswerService returns an InvalidParamError', async () => {
     const { sut, checkSurveyContainsAnswerServiceSpy } = makeSut()
     checkSurveyContainsAnswerServiceSpy.error = originalError
     const httpResponse = await sut.handle(mockRequest())
-    expect(httpResponse).toEqual(forbidden(originalError))
+    expect(httpResponse).toEqual(badRequest(originalError))
   })
 
   test('Should return 500 if CheckSurveyAnswerService trows', async () => {
@@ -63,18 +63,6 @@ describe('SaveSurveyVote Controller', () => {
     )
     const httpResponse = await sut.handle(mockRequest())
     expect(httpResponse).toEqual(serverError(new Error()))
-  })
-
-  test('Should return 403 if an invalid answer is provided', async () => {
-    const { sut, checkSurveyContainsAnswerServiceSpy } = makeSut()
-    checkSurveyContainsAnswerServiceSpy.error = originalError
-    const httpResponse = await sut.handle({
-      userId: 'any_user_id',
-      surveyId: 'any_survey_id',
-      answer: 'wrong_answer',
-      date: new Date()
-    })
-    expect(httpResponse).toEqual(forbidden(originalError))
   })
 
   test('Should call SaveSurveyVote usecase with correct values', async () => {

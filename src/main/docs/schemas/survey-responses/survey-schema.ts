@@ -13,8 +13,12 @@ export const surveySchema = {
         $ref: '#/schemas/surveyAnswer'
       }
     },
+    totalAmountVotes: {
+      type: 'boolean'
+    },
     date: {
       type: 'string'
     }
-  }
+  },
+  required: ['id', 'question', 'answers', 'totalAmountVotes', 'date']
 }

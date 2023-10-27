@@ -1,3 +1,5 @@
+import { surveyForBasicUserExample } from '../../schemas'
+
 export const userLoadOneSurveyPath = {
   get: {
     security: [{
@@ -5,13 +7,26 @@ export const userLoadOneSurveyPath = {
     }],
     tags: ['Enquetes'],
     summary: 'API para um usuário comum buscar uma enquete',
+    parameters: [{
+      name: 'surveyId',
+      in: 'path',
+      schema: {
+        $ref: '#/schemas/surveyIdParam'
+      },
+      required: true
+    }],
     responses: {
       200: {
         description: 'Sucesso',
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/survey'
+              $ref: '#/schemas/surveyForBasicUser'
+            },
+            examples: {
+              example01: {
+                value: surveyForBasicUserExample
+              }
             }
           }
         }
@@ -42,7 +57,12 @@ export const userLoadAllSurveysPath = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/surveys'
+              $ref: '#/schemas/surveysForBasicUser'
+            },
+            examples: {
+              example01: {
+                value: [surveyForBasicUserExample]
+              }
             }
           }
         }

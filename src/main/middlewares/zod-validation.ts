@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { type ILogErrorRepository } from '@/application/data/protocols/repositories'
 import { type Response, type Request, type NextFunction } from 'express'
-import { ZodError, type ZodTypeAny } from 'zod'
+import { ZodError, type AnyZodObject } from 'zod'
 import { LogMongoRepository } from '@/infra/db/mongodb/log'
 import { ServerError } from '@/presentation/errors'
 
 export const zodValidation = (
-  zodValidatorSchema: ZodTypeAny,
+  zodValidatorSchema: AnyZodObject,
   logErrorRepository: ILogErrorRepository = new LogMongoRepository()
 ) => {
   return async (req: Request, res: Response, next: NextFunction) => {

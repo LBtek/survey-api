@@ -6,6 +6,10 @@ export const surveyAnswerSchema = {
     },
     answer: {
       type: 'string'
+    },
+    amountVotes: {
+      type: 'number'
     }
-  }
+  },
+  required: ['answer', 'amountVotes']
 }

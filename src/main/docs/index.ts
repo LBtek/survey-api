@@ -1,5 +1,5 @@
 import { loginPath, logoutByQueryPath, logoutPathGet, logoutPathPostAndPut, publisherAddSurvey, signUpPath, userLoadAllSurveysPath, userLoadOneSurveyPath, userSurveyVotePath } from './paths'
-import { addSurveyParamsSchema, apiKeyAuthSchema, errorSchema, loginParamsSchema, loginResponseSchema, logoutParamsSchema, signUpParamsSchema, surveyAnswerSchema, surveyIdParamSchema, surveySchema, surveyVoteParamsSchema, surveysSchema } from './schemas'
+import { addSurveyParamsSchema, apiKeyAuthSchema, errorSchema, loginParamsSchema, loginResponseSchema, logoutParamsSchema, signUpParamsSchema, surveyAnswerForBasicUserSchema, surveyForBasicUserSchema, surveyIdParamSchema, surveyVoteParamsSchema, surveysForBasicUserSchema } from './schemas'
 import { badRequest, serverError, unauthorized, forbidden } from './components'
 
 export default {
@@ -34,10 +34,10 @@ export default {
     loginResponse: loginResponseSchema,
     addSurveyParams: addSurveyParamsSchema,
     surveyVoteParams: surveyVoteParamsSchema,
-    surveys: surveysSchema,
-    survey: surveySchema,
     surveyIdParam: surveyIdParamSchema,
-    surveyAnswer: surveyAnswerSchema,
+    surveyAnswerForBasicUser: surveyAnswerForBasicUserSchema,
+    surveyForBasicUser: surveyForBasicUserSchema,
+    surveysForBasicUser: surveysForBasicUserSchema,
     error: errorSchema
   },
   components: {

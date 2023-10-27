@@ -1,3 +1,5 @@
+import { surveyForBasicUserExample } from '../schemas'
+
 export const userSurveyVotePath = {
   put: {
     security: [{
@@ -10,7 +12,8 @@ export const userSurveyVotePath = {
       in: 'path',
       schema: {
         $ref: '#/schemas/surveyIdParam'
-      }
+      },
+      required: true
     }],
     requestBody: {
       required: true,
@@ -28,7 +31,12 @@ export const userSurveyVotePath = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/survey'
+              $ref: '#/schemas/surveyForBasicUser'
+            },
+            examples: {
+              example01: {
+                value: surveyForBasicUserExample
+              }
             }
           }
         }

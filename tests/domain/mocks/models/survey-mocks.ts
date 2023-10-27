@@ -9,7 +9,7 @@ import { type SurveyRepository } from '@/application/data/protocols/repositories
 
 const date = new Date()
 
-const mockAnswers = (): Array<Omit<Survey.BaseDataModel.BaseAnswer, 'amountVotes'>> => {
+const mockAnswers = (): Array<Omit<Survey.BaseDataModel.BaseAnswer, 'numberOfVotes'>> => {
   return [{
     image: 'any_image',
     answer: 'any_answer'
@@ -26,13 +26,13 @@ export const mockAddSurveyParams = (): PublisherAddSurvey.Params => ({
 
 export const mockAddSurveyRepositoryParams = (): SurveyRepository.PublisherAddSurvey.Params => {
   const answers = mockAnswers().map((answer: Survey.BaseDataModel.BaseAnswer) => {
-    answer.amountVotes = 0
+    answer.numberOfVotes = 0
     return answer
   })
   return {
     ...mockAddSurveyParams(),
     answers,
-    totalAmountVotes: 0
+    totalNumberOfVotes: 0
   }
 }
 
@@ -60,10 +60,10 @@ export const mockUserLoadAllSurveysRepositoryResult = (): SurveyRepository.UserL
         image: 'other_image',
         answer: 'other_answer',
         isCurrentAccountAnswer: false,
-        amountVotes: 0
+        numberOfVotes: 0
       }],
       date,
-      totalAmountVotes: 0,
+      totalNumberOfVotes: 0,
       didAnswer: false
     }]
 }

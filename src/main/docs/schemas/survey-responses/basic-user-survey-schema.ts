@@ -23,19 +23,19 @@ export const surveyForBasicUserExample = {
   answers: [
     {
       answer: 'Any answer',
-      amountVotes: 0,
+      numberOfVotes: 0,
       percent: 0,
       isCurrentAccountAnswer: false
     },
     {
       image: 'Any image',
       answer: 'Other answer',
-      amountVotes: 1,
+      numberOfVotes: 1,
       percent: 100,
       isCurrentAccountAnswer: true
     }
   ],
-  totalAmountVotes: 1,
+  totalNumberOfVotes: 1,
   didAnswer: true,
   date: 'Date'
 }

@@ -26,10 +26,10 @@ const surveyRequest = {
 const surveyToInsertOnDatabase = {
   ...surveyRequest,
   answers: surveyRequest.answers.map((a: any) => {
-    a.amountVotes = 0
+    a.numberOfVotes = 0
     return a
   }),
-  totalAmountVotes: 0
+  totalNumberOfVotes: 0
 }
 
 const authenticatedUserAccounts = new InMemoryAuthenticatedUserAccountsRepository()

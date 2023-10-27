@@ -9,8 +9,8 @@ export type AnswerToUserContext =
 
 export namespace PublisherAddSurvey {
   export type Params =
-    Omit<Survey.BaseDataModel.Body, 'totalAmountVotes' | 'answers'>
-    & { answers: Array<Omit<Survey.BaseDataModel.BaseAnswer, 'amountVotes'>> }
+    Omit<Survey.BaseDataModel.Body, 'totalNumberOfVotes' | 'answers'>
+    & { answers: Array<Omit<Survey.BaseDataModel.BaseAnswer, 'numberOfVotes'>> }
 
   export type Result = 'Ok' | AnswersLengthError
 }

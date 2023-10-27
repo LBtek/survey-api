@@ -64,7 +64,7 @@ describe('SaveSurveyVote UseCase', () => {
       newAnswer.percent = 0
       newAnswer.isCurrentAccountAnswer = false
       if (a.answer === saveSurveyVoteData.answer) {
-        newAnswer.amountVotes = 1
+        newAnswer.numberOfVotes = 1
         newAnswer.percent = 100
         newAnswer.isCurrentAccountAnswer = true
       }
@@ -74,7 +74,7 @@ describe('SaveSurveyVote UseCase', () => {
     expect(updatedSurveyRef.updatedSurvey).toEqual({
       ...surveyMocked,
       answers: expectedAnswers,
-      totalAmountVotes: 1,
+      totalNumberOfVotes: 1,
       didAnswer: true
     })
 
@@ -87,7 +87,7 @@ describe('SaveSurveyVote UseCase', () => {
 
     expectedAnswers = surveyMocked.answers.map((a: AnswerToUserContext) => {
       const newAnswer = { ...a }
-      newAnswer.amountVotes = 1
+      newAnswer.numberOfVotes = 1
       newAnswer.percent = 50
       newAnswer.isCurrentAccountAnswer = false
       if (a.answer === 'other_answer') { newAnswer.isCurrentAccountAnswer = true }
@@ -97,7 +97,7 @@ describe('SaveSurveyVote UseCase', () => {
     expect(updatedSurveyRef.updatedSurvey).toEqual({
       ...surveyMocked,
       answers: expectedAnswers,
-      totalAmountVotes: 2,
+      totalNumberOfVotes: 2,
       didAnswer: true
     })
 
@@ -155,11 +155,11 @@ describe('SaveSurveyVote UseCase', () => {
       newAnswer.isCurrentAccountAnswer = false
       if (a.answer === 'any_answer') {
         newAnswer.isCurrentAccountAnswer = true
-        newAnswer.amountVotes = 3
+        newAnswer.numberOfVotes = 3
         newAnswer.percent = 42.86
       }
       if (a.answer === 'other_answer') {
-        newAnswer.amountVotes = 4
+        newAnswer.numberOfVotes = 4
         newAnswer.percent = 57.14
       }
       return newAnswer
@@ -168,7 +168,7 @@ describe('SaveSurveyVote UseCase', () => {
     expect(updatedSurveyRef.updatedSurvey).toEqual({
       ...surveyMocked,
       answers: expectedAnswers,
-      totalAmountVotes: 7,
+      totalNumberOfVotes: 7,
       didAnswer: true
     })
   })

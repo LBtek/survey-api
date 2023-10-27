@@ -10,13 +10,13 @@ export class SaveSurveyVoteSpy implements ISaveSurveyVoteUsecase {
     answers: mockSurvey().answers.map((answer: AnswerToUserContext) => {
       answer.isCurrentAccountAnswer = false
       if (answer.answer === 'any_answer') {
-        answer.amountVotes = 1
+        answer.numberOfVotes = 1
         answer.percent = 100
         answer.isCurrentAccountAnswer = true
       }
       return answer
     }),
-    totalAmountVotes: 1,
+    totalNumberOfVotes: 1,
     didAnswer: true
   }
 

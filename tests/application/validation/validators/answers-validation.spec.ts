@@ -6,7 +6,7 @@ const makeSut = (): AnswersValidation => {
   return new AnswersValidation()
 }
 
-const mockSurvey = (): Omit<Survey.BaseDataModel.Body, 'totalAmountVotes' | 'answers'> & { answers: any } => ({
+const mockSurvey = (): Omit<Survey.BaseDataModel.Body, 'totalNumberOfVotes' | 'answers'> & { answers: any } => ({
   question: 'any_question',
   answers: [{ answer: 'any_answer' }],
   date: new Date()

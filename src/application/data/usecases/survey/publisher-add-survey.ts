@@ -11,8 +11,8 @@ export class PublisherAddSurvey implements IPublisherAddSurveyUsecase {
     }
     const addSurveyRepositoryData: SurveyRepository.PublisherAddSurvey.Params = {
       ...addSurveyData,
-      answers: addSurveyData.answers.map(answer => ({ ...answer, amountVotes: 0 })),
-      totalAmountVotes: 0
+      answers: addSurveyData.answers.map(answer => ({ ...answer, numberOfVotes: 0 })),
+      totalNumberOfVotes: 0
     }
     await this.publisherAddSurveyRepository.add(addSurveyRepositoryData)
 

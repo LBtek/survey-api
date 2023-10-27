@@ -143,15 +143,15 @@ export class UserUpdateSurveyRepositorySpy implements IUserUpdateSurveyRepositor
         const answer = { ...a }
         answer.isCurrentAccountAnswer = false
         if (oldAnswer && answer.answer === oldAnswer) {
-          answer.amountVotes = answer.amountVotes - 1
+          answer.numberOfVotes = answer.numberOfVotes - 1
         }
         if (answer.answer === newAnswer) {
-          answer.amountVotes = answer.amountVotes + 1
+          answer.numberOfVotes = answer.numberOfVotes + 1
           answer.isCurrentAccountAnswer = true
         }
         return answer
       }),
-      totalAmountVotes: oldAnswer ? this.oldSurvey.totalAmountVotes : this.oldSurvey.totalAmountVotes + 1,
+      totalNumberOfVotes: oldAnswer ? this.oldSurvey.totalNumberOfVotes : this.oldSurvey.totalNumberOfVotes + 1,
       didAnswer: true
     }
     return this.newSurvey

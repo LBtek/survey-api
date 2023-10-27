@@ -7,9 +7,9 @@ export const surveyAnswerSchema = {
     answer: {
       type: 'string'
     },
-    amountVotes: {
+    numberOfVotes: {
       type: 'number'
     }
   },
-  required: ['answer', 'amountVotes']
+  required: ['answer', 'numberOfVotes']
 }

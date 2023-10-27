@@ -79,12 +79,12 @@ describe('Survey Vote Routes', () => {
         answers: [{
           answer: 'Answer 1',
           image: 'http://image-name.com',
-          amountVotes: 0
+          numberOfVotes: 0
         }, {
           answer: 'Answer 2',
-          amountVotes: 0
+          numberOfVotes: 0
         }],
-        totalAmountVotes: 0,
+        totalNumberOfVotes: 0,
         date: new Date()
       })
       const accessToken = await makeAccessToken('basic_user')

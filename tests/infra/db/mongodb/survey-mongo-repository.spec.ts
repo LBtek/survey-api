@@ -119,10 +119,10 @@ describe('Survey Mongo Repository', () => {
         answers: [{
           image: 'other_image',
           answer: 'other_answer',
-          amountVotes: 0
+          numberOfVotes: 0
         }],
         date: new Date(),
-        totalAmountVotes: 0
+        totalNumberOfVotes: 0
       })
 
       const firstSurvey = firstSurveyAdded.value
@@ -229,7 +229,7 @@ describe('Survey Mongo Repository', () => {
         const answer = { ...a }
         answer.isCurrentAccountAnswer = false
         if (answer.answer === 'any_answer') {
-          answer.amountVotes = 1
+          answer.numberOfVotes = 1
           answer.isCurrentAccountAnswer = true
         }
         return answer
@@ -240,7 +240,7 @@ describe('Survey Mongo Repository', () => {
       expect(updatedSurvey).toEqual({
         ...survey,
         answers: expectedAnswers,
-        totalAmountVotes: 1,
+        totalNumberOfVotes: 1,
         didAnswer: true
       })
 
@@ -256,7 +256,7 @@ describe('Survey Mongo Repository', () => {
         answer.isCurrentAccountAnswer = false
         if (answer.answer === 'other_answer') {
           answer.isCurrentAccountAnswer = true
-          answer.amountVotes = 1
+          answer.numberOfVotes = 1
         }
         return answer
       })
@@ -264,7 +264,7 @@ describe('Survey Mongo Repository', () => {
       expect(updatedSurvey).toEqual({
         ...survey,
         answers: expectedAnswers,
-        totalAmountVotes: 2,
+        totalNumberOfVotes: 2,
         didAnswer: true
       })
 
@@ -282,7 +282,7 @@ describe('Survey Mongo Repository', () => {
         answer.isCurrentAccountAnswer = false
         if (answer.answer === 'other_answer') {
           answer.isCurrentAccountAnswer = true
-          answer.amountVotes = answer.amountVotes + 1
+          answer.numberOfVotes = answer.numberOfVotes + 1
         }
         return answer
       })
@@ -290,7 +290,7 @@ describe('Survey Mongo Repository', () => {
       expect(updatedSurvey).toEqual({
         ...survey,
         answers: expectedAnswers,
-        totalAmountVotes: 3,
+        totalNumberOfVotes: 3,
         didAnswer: true
       })
 
@@ -304,10 +304,10 @@ describe('Survey Mongo Repository', () => {
       expectedAnswers = expectedAnswers.map(a => {
         const answer = { ...a }
         answer.isCurrentAccountAnswer = false
-        if (answer.answer === 'other_answer') answer.amountVotes = answer.amountVotes - 1
+        if (answer.answer === 'other_answer') answer.numberOfVotes = answer.numberOfVotes - 1
         if (answer.answer === 'any_answer') {
           answer.isCurrentAccountAnswer = true
-          answer.amountVotes = answer.amountVotes + 1
+          answer.numberOfVotes = answer.numberOfVotes + 1
         }
         return answer
       })
@@ -315,7 +315,7 @@ describe('Survey Mongo Repository', () => {
       expect(updatedSurvey).toEqual({
         ...survey,
         answers: expectedAnswers,
-        totalAmountVotes: 3,
+        totalNumberOfVotes: 3,
         didAnswer: true
       })
 
@@ -329,7 +329,7 @@ describe('Survey Mongo Repository', () => {
       expect(updatedSurvey).toEqual({
         ...survey,
         answers: expectedAnswers,
-        totalAmountVotes: 3,
+        totalNumberOfVotes: 3,
         didAnswer: true
       })
     })

@@ -37,7 +37,7 @@ const makeFindSurveysQuery = (userId: UserID, surveyId: SurveyID = null): object
       question: 1,
       answers: 1,
       date: 1,
-      totalAmountVotes: 1,
+      totalNumberOfVotes: 1,
       didAnswer: {
         $gte: [{
           $size: '$result'
@@ -71,7 +71,7 @@ const makeFindSurveysQuery = (userId: UserID, surveyId: SurveyID = null): object
         }
       },
       date: 1,
-      totalAmountVotes: 1,
+      totalNumberOfVotes: 1,
       didAnswer: 1
     })
     .build()
@@ -129,7 +129,7 @@ export class SurveyMongoRepository implements IPublisherAddSurveyRepository, IUs
                 {
                   $mergeObjects: [
                     '$$answer',
-                    { amountVotes: { $add: ['$$answer.amountVotes', 1] } }
+                    { numberOfVotes: { $add: ['$$answer.numberOfVotes', 1] } }
                   ]
                 },
                 '$$answer'
@@ -154,7 +154,7 @@ export class SurveyMongoRepository implements IPublisherAddSurveyRepository, IUs
                 {
                   $mergeObjects: [
                     '$$answer',
-                    { amountVotes: { $subtract: ['$$answer.amountVotes', 1] } }
+                    { numberOfVotes: { $subtract: ['$$answer.numberOfVotes', 1] } }
                   ]
                 },
                 '$$answer'
@@ -162,13 +162,13 @@ export class SurveyMongoRepository implements IPublisherAddSurveyRepository, IUs
             }
           }
         },
-        totalAmountVotes: {
+        totalNumberOfVotes: {
           $cond: [
             {
               $eq: [toHaveOldAnswer, false]
             },
-            { $add: ['$totalAmountVotes', 1] },
-            '$totalAmountVotes'
+            { $add: ['$totalNumberOfVotes', 1] },
+            '$totalNumberOfVotes'
           ]
         }
       })

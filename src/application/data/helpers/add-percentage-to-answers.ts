@@ -5,8 +5,8 @@ export const addPercentageToAnswers = (survey: SurveyRepository.UserLoadOneSurve
   const newAnswers = survey.answers.map((a: AnswerToUserContext) => {
     const answer = { ...a }
 
-    answer.percent = answer.amountVotes && survey.totalAmountVotes
-      ? Number(((answer.amountVotes / survey.totalAmountVotes) * 100).toFixed(2))
+    answer.percent = answer.numberOfVotes && survey.totalNumberOfVotes
+      ? Number(((answer.numberOfVotes / survey.totalNumberOfVotes) * 100).toFixed(2))
       : 0.00
 
     return answer

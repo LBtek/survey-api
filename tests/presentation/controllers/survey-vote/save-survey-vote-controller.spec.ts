@@ -93,13 +93,13 @@ describe('SaveSurveyVote Controller', () => {
       answers: mockSurvey().answers.map((a: AnswerToUserContext) => {
         a.isCurrentAccountAnswer = false
         if (a.answer === 'any_answer') {
-          a.amountVotes = 1
+          a.numberOfVotes = 1
           a.percent = 100
           a.isCurrentAccountAnswer = true
         }
         return a
       }),
-      totalAmountVotes: 1,
+      totalNumberOfVotes: 1,
       didAnswer: true
     }))
   })

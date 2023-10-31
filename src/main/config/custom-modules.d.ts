@@ -3,6 +3,7 @@ declare module Express {
     userId?: string
     accountId?: string
     role?: string
+    filteredData?: any
     newAccessToken?: string
   }
 }

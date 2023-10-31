@@ -11,11 +11,15 @@ export const zodValidation = (
 ) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      let objToParse: any = req.headers['x-access-token'] ? { accessToken: req.headers['x-access-token'] } : { }
+      let objToParse: any =
+        req.headers['x-access-token']
+          ? { accessToken: req.headers['x-access-token'] }
+          : { }
+
       if (req.method === 'GET') {
         objToParse = { ...objToParse, ...req.params, ...req.query }
       } else if (req.method === 'POST' || req.method === 'PUT') {
-        objToParse = { ...objToParse, ...req.params, ...req.body }
+        objToParse = { ...objToParse, ...req.body, ...req.params }
       }
       zodValidatorSchema.parse(objToParse)
       next()

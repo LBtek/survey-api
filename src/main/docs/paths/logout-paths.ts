@@ -1,3 +1,6 @@
+import { accessTokenSchema } from '@/infra/validators/zod-schemas/account/common'
+import { generateSchema } from '@anatine/zod-openapi'
+
 const pathData = {
   security: [{
     apiKeyAuth: []
@@ -5,7 +8,6 @@ const pathData = {
   tags: ['Conta de Acesso'],
   summary: 'API para deslogar o usuário',
   requestBody: {
-    required: true,
     content: {
       'application/json': {
         schema: {
@@ -36,30 +38,42 @@ export const logoutPathPostAndPut = {
   }
 }
 
-export const logoutPathGet = {
+const pathParams = [{
+  name: 'accessToken',
+  in: 'path',
+  schema: generateSchema(accessTokenSchema())
+}]
+
+export const logoutPathByParams = {
   get: {
     ...pathData,
-    parameters: [{
-      name: 'accessToken',
-      in: 'path',
-      schema: {
-        $ref: '#/schemas/logoutParams'
-      }
-    }],
+    parameters: pathParams,
+    requestBody: null
+  },
+  post: {
+    ...pathData,
+    parameters: pathParams,
+    requestBody: null
+  },
+  put: {
+    ...pathData,
+    parameters: pathParams,
     requestBody: null
   }
 }
 
-export const logoutByQueryPath = {
+const queryParams = [{
+  name: 'accessToken',
+  in: 'query',
+  schema: {
+    $ref: '#/schemas/logoutParams'
+  }
+}]
+
+export const logoutPathByQuery = {
   get: {
     ...pathData,
-    parameters: [{
-      name: 'accessToken',
-      in: 'query',
-      schema: {
-        $ref: '#/schemas/logoutParams'
-      }
-    }],
+    parameters: queryParams,
     requestBody: null
   }
 }

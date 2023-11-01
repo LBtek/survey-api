@@ -13,6 +13,8 @@ export default (router: Router): void => {
   router.post('/login', zodValidation(loginZodSchema), adaptRoute(makeLoginController()))
   router.get('/logout', zodLogoutValidation, logout)
   router.get('/logout/:accessToken', zodLogoutValidation, logout)
+  router.put('/logout', zodLogoutValidation, logout)
+  router.put('/logout/:accessToken', zodLogoutValidation, logout)
   router.post('/logout', zodLogoutValidation, logout)
   router.post('/logout/:accessToken', zodLogoutValidation, logout)
 }

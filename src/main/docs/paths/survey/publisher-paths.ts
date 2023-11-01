@@ -1,4 +1,4 @@
-export const publisherAddSurvey = {
+export const publisherAddSurveyPath = {
   post: {
     security: [{
       apiKeyAuth: []

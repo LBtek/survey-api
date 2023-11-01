@@ -1,4 +1,4 @@
-import { loginPath, logoutByQueryPath, logoutPathGet, logoutPathPostAndPut, publisherAddSurvey, signUpPath, userLoadAllSurveysPath, userLoadOneSurveyPath, userSurveyVotePath } from './paths'
+import { loginPath, logoutPathByQuery, logoutPathByParams, logoutPathPostAndPut, publisherAddSurveyPath, signUpPath, userLoadAllSurveysPath, userLoadOneSurveyPath, userSurveyVotePath } from './paths'
 import { addSurveyParamsSchema, apiKeyAuthSchema, errorSchema, loginParamsSchema, loginResponseSchema, logoutParamsSchema, signUpParamsSchema, surveyAnswerForBasicUserSchema, surveyForBasicUserSchema, surveyIdParamSchema, surveyVoteParamsSchema, surveysForBasicUserSchema } from './schemas'
 import { badRequest, serverError, unauthorized, forbidden } from './components'
 
@@ -21,9 +21,9 @@ export default {
     '/signup': signUpPath,
     '/login': loginPath,
     '/logout': logoutPathPostAndPut,
-    '/logout/{accessToken}': logoutPathGet,
-    '/logout?accessToken={accessToken}': logoutByQueryPath,
-    '/publisher/surveys': publisherAddSurvey,
+    '/logout/{accessToken}': logoutPathByParams,
+    '/logout?accessToken={accessToken}': logoutPathByQuery,
+    '/publisher/surveys': publisherAddSurveyPath,
     '/user/surveys': userLoadAllSurveysPath,
     '/user/surveys/{surveyId}': { ...userLoadOneSurveyPath, ...userSurveyVotePath }
   },

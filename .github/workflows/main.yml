@@ -40,4 +40,16 @@ jobs:
     - name: Coveralls
       uses: coverallsapp/github-action@v2
       
-
+    - name: Deploy using ssh
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.PRIVATE_KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          cd /usr/local/lsws/clean-ts-api
+          git pull origin dev
+          git status
+          npm pkg delete scripts.prepare
+          npm install --omit=dev

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "rimraf dist && tsc -p tsconfig-build.json",
-    "postbuild": "cp -r src/main/docs/redoc dist/main/docs/redoc",
+    "postbuild": "cp -r src/main/docs/redoc dist/main/docs/redoc && mkdir -p ../survey-api-deploy && cp -r dist ../survey-api-deploy",
     "start": "npm run build && node dist/main/server.js",
     "dev": "npm run build && node --watch dist/main/server.js & tsc --watch -p tsconfig-build.json",
     "up": "npm run build && docker-compose up --build --abort-on-container-exit",

@@ -48,8 +48,9 @@ jobs:
         key: ${{ secrets.PRIVATE_KEY }}
         port: ${{ secrets.PORT }}
         script: |
-          cd /usr/local/lsws/clean-ts-api
+          cd /usr/src/survey-api
+          git checkout dev
           git pull origin dev
-          git status
           npm pkg delete scripts.prepare
-          npm install --omit=dev
+          npm install
+          npm run build

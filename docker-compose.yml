@@ -17,7 +17,7 @@ services:
     build: .
     image: clean-node-api
     working_dir: /usr/src/clean-node-api
-    entrypoint: npm rum debug
+    entrypoint: npm run debug
     environment:
       - MONGO_URL=mongodb://mongo:27017/clean-node-api
       - API_HOST=api

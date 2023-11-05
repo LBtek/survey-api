@@ -54,3 +54,5 @@ jobs:
           npm pkg delete scripts.prepare
           npm install
           npm run build
+          cd ../survey-api-deploy
+          docker compose restart

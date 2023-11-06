@@ -49,10 +49,10 @@ jobs:
         port: ${{ secrets.PORT }}
         script: |
           cd /usr/src/survey-api
-          git checkout dev
           git pull origin dev
           npm pkg delete scripts.prepare
           npm install
           npm run build
           cd ../survey-api-deploy
-          docker compose restart
+          docker compose down
+          docker compose up --build -d

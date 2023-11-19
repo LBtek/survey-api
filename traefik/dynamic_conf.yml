@@ -1,0 +1,24 @@
+http:
+  routers:
+    proxy-dashboard:
+      rule: Host(`infra.localhost`)
+      service: api@internal
+
+    to-survey-api:
+      rule: "Host(`localhost`) && PathPrefix(`/api`)"
+      service: survey-api
+
+    to-dbgate:
+      rule: "Host(`dbgate.localhost`)"
+      service: dbgate
+
+  services:
+    survey-api:
+      loadBalancer:
+        servers:
+        - url: http://api:7000
+
+    dbgate:
+      loadBalancer:
+        servers:
+        - url: http://dbgate:3000

@@ -6,7 +6,7 @@ import {
   type IRefreshAccessTokenRepository,
   type AuthenticationRepository
 } from '@/application/data/protocols/repositories'
-import { InMemoryAuthenticatedUserAccountsRepository, authenticatedTokens, authenticatedUserAccounts } from '@/infra/in-memory/authenticated-user-accounts-repository'
+import { InMemoryAuthenticatedUserAccountsRepository, authenticatedTokens, authenticatedUserAccounts } from '@/infra/db/in-memory/authenticated-user-accounts-repository'
 
 const { password, ...userAccount } = mockAccount()
 

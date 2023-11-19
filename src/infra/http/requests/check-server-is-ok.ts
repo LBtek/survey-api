@@ -1,9 +1,9 @@
 import env from '../../../main/config/env'
 
 const sendRequest = async (port?: string | number, host?: string): Promise<void> => {
-  const url = new URL(`http://localhost:${port || env.port}/api`)
+  const url = new URL(`http://localhost:${port || env.api.port}/api`)
 
-  url.host = host || env.apiHost
+  url.host = host || env.api.host
 
   const response = await fetch(url, {
     method: 'get'

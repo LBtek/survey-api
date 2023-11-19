@@ -43,7 +43,7 @@ const makeAccount = async (): Promise<AccountRepository.LoadUserAccountByEmail.R
 
 describe('Survey Mongo Repository', () => {
   beforeAll(async () => {
-    await MongoHelper.connect(env.mongoUrl)
+    await MongoHelper.connect(env.mongodb.url)
   })
 
   afterAll(async () => {

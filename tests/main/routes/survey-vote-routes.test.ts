@@ -2,7 +2,7 @@ import { type Collection } from 'mongodb'
 import { type User } from '@/domain/entities'
 import { type Account } from '@/application/entities'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
-import { InMemoryAuthenticatedUserAccountsRepository } from '@/infra/in-memory/authenticated-user-accounts-repository'
+import { InMemoryAuthenticatedUserAccountsRepository } from '@/infra/db/in-memory/authenticated-user-accounts-repository'
 import env from '@/main/config/env'
 import app from '@/main/config/app'
 import { hash } from 'bcrypt'
@@ -32,7 +32,7 @@ const makeAccessToken = async (role: Account.BaseDataModel.Roles): Promise<strin
     accountId: account.value._id.toString(),
     willExpireIn: (Date.now() / 1000) + 180,
     role
-  }, env.jwtSecret)
+  }, env.api.jwtSecret)
 
   await authenticatedUserAccounts.authenticate({
     ip: '::ffff:127.0.0.1',
@@ -47,7 +47,7 @@ const makeAccessToken = async (role: Account.BaseDataModel.Roles): Promise<strin
 
 describe('Survey Vote Routes', () => {
   beforeAll(async () => {
-    await MongoHelper.connect(env.mongoUrl)
+    await MongoHelper.connect(env.mongodb.url)
   })
 
   afterAll(async () => {

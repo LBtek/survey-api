@@ -1,7 +1,7 @@
 import { type Collection } from 'mongodb'
 import { type User } from '@/domain/entities'
 import { type AuthenticatedAccount, type Account } from '@/application/entities'
-import { InMemoryAuthenticatedUserAccountsRepository } from '@/infra/in-memory/authenticated-user-accounts-repository'
+import { InMemoryAuthenticatedUserAccountsRepository } from '@/infra/db/in-memory/authenticated-user-accounts-repository'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import env from '@/main/config/env'
 import app from '@/main/config/app'
@@ -35,7 +35,7 @@ Promise<AuthenticatedAccount.UserAccount & {
     accountId: account.value._id.toString(),
     willExpireIn: (Date.now() / 1000) + 180,
     role
-  }, env.jwtSecret)
+  }, env.api.jwtSecret)
 
   const ip = '::ffff:127.0.0.1'
 
@@ -53,7 +53,7 @@ Promise<AuthenticatedAccount.UserAccount & {
 
 describe('Login Routes', () => {
   beforeAll(async () => {
-    await MongoHelper.connect(env.mongoUrl)
+    await MongoHelper.connect(env.mongodb.url)
   })
 
   afterAll(async () => {

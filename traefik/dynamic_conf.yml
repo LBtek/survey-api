@@ -5,7 +5,7 @@ http:
       service: api@internal
 
     to-survey-api:
-      rule: "Host(`localhost`) && PathPrefix(`/api`)"
+      rule: "(Host(`localhost`) || Host(`127.0.0.1`) ) && PathPrefix(`/api`)"
       service: survey-api
 
     to-dbgate:

@@ -38,14 +38,15 @@ services:
     build: .
     image: survey-api
     hostname: api
-    working_dir: /usr/src/clean-node-api
+    working_dir: /usr/src/survey-api
     entrypoint: npm run debug
     environment:
-      - MONGO_URL=mongodb://mongo:27017/clean-node-api
+      - MONGO_URL=mongodb://mongo:27017/survey-api
+      - REDIS_URL=redis://default:AbcD1234@redis:6379
       - API_HOST=api
       - PORT=7000
     volumes: 
-      - ./dist/:/usr/src/clean-node-api/dist/
+      - ./dist/:/usr/src/survey-api/dist/
     ports: 
       - 7000
       - '9222:9222'

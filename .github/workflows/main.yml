@@ -33,12 +33,12 @@ jobs:
       uses: supercharge/redis-github-action@1.7.0
 
     - name: Starting and check if the server is ok
-      run: npm start & sleep 20 && node dist/infra/http/requests/check-server-is-ok.js pipeline_action
+      run: npm start & sleep 15 && node dist/infra/http/requests/check-server-is-ok.js pipeline_action
 
     - name: Run docker
       run: |
-        docker-compose up --build -d mongo api
-        sleep 25 && node dist/infra/http/requests/check-server-is-ok.js pipeline_action 80
+        docker-compose up --build -d mongo redis api traefik
+        sleep 25 && node dist/infra/http/requests/check-server-is-ok.js pipeline_action 80 127.0.0.1
 
     - name: Coveralls
       uses: coverallsapp/github-action@v2

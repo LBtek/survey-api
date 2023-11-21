@@ -29,8 +29,11 @@ jobs:
     - name: Start MongoDB
       uses: supercharge/mongodb-github-action@1.9.0
 
+    - name: Start Redis
+      uses: supercharge/redis-github-action@1.7.0
+
     - name: Starting and check if the server is ok
-      run: npm start & sleep 12 && node dist/infra/http/requests/check-server-is-ok.js pipeline_action
+      run: npm start & sleep 20 && node dist/infra/http/requests/check-server-is-ok.js pipeline_action
 
     - name: Run docker
       run: |

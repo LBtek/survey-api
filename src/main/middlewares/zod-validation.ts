@@ -5,6 +5,13 @@ import { ZodError, type AnyZodObject } from 'zod'
 import { LogMongoRepository } from '@/infra/db/mongodb/log'
 import { ServerError } from '@/presentation/errors'
 
+/**
+ * @deprecated
+ * This middleware is not used anymore
+ *
+ * Instead of using this middleware, try injecting a validation composition into the controller
+ * with the zodValidation validator found in the '@/application/validation/validators' folder
+ */
 export const zodValidation = (
   zodValidatorSchema: AnyZodObject,
   logErrorRepository: ILogErrorRepository = new LogMongoRepository()

@@ -1,4 +1,4 @@
-import { EmailValidatorSpy } from '../mocks'
+/* import { EmailValidatorSpy } from '../mocks'
 import { EmailValidation } from '@/application/validation/validators'
 import { InvalidParamError } from '@/presentation/errors'
 
@@ -38,3 +38,4 @@ describe('Email Validation', () => {
     expect(sut.validate).toThrow()
   })
 })
+ */

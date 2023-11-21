@@ -9,8 +9,8 @@ export class CheckSurveyContainsAnswer implements ICheckSurveyContainsAnswerServ
     const { surveyId, answer } = data
     const survey = await this.loadSurveyByIdRepository.loadById({ id: surveyId })
     if (survey) {
-      const answers = survey.answers.map(a => a.answer)
-      if (!answers.includes(answer)) {
+      const hasAnswer = survey.answers.some(a => a.answer === answer)
+      if (!hasAnswer) {
         return new InvalidParamError('answer')
       }
     } else {

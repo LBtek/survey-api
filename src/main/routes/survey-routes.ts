@@ -7,11 +7,9 @@ import {
   makeUserLoadAllSurveysController
 } from '../factories/controllers'
 import { authUser, authPublisher } from '../middlewares/auth'
-import { zodValidation } from '../middlewares/zod-validation'
-import { addSurveyZodSchema, userLoadOneSurveyZodSchema } from '@/infra/validators/zod-schemas'
 
 export default (router: Router): void => {
-  router.post('/publisher/surveys', zodValidation(addSurveyZodSchema), authPublisher, adaptRoute(makePublisherAddSurveyController()))
-  router.get('/user/surveys/:surveyId', zodValidation(userLoadOneSurveyZodSchema), authUser, adaptRoute(makeUserLoadOneSurveyController()))
+  router.post('/publisher/surveys', authPublisher, adaptRoute(makePublisherAddSurveyController()))
+  router.get('/user/surveys/:surveyId', authUser, adaptRoute(makeUserLoadOneSurveyController()))
   router.get('/user/surveys', authUser, adaptRoute(makeUserLoadAllSurveysController()))
 }

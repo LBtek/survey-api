@@ -1,4 +1,4 @@
-import { type Survey } from '@/domain/entities'
+/* import { type Survey } from '@/domain/entities'
 import { AnswersValidation } from '@/application/validation/validators'
 import { AnswerFormatError, AnswersInstanceTypeError } from '@/presentation/errors'
 
@@ -55,3 +55,4 @@ describe('RequiredField Validation', () => {
     expect(error).toBeFalsy()
   })
 })
+ */

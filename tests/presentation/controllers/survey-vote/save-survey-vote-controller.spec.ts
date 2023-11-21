@@ -1,7 +1,9 @@
 import { type SaveSurveyVote, type AnswerToUserContext } from '@/domain/models'
+import { InvalidParamError } from '@/presentation/errors'
 import { SaveSurveyVoteController } from '@/presentation/controllers/survey-vote/save-survey-vote-controller'
-import { CheckSurveyAnswerServiceSpy } from '#/presentation/_mocks/services-mocks'
 import { badRequest, ok, serverError } from '@/presentation/helpers/http/http-helper'
+import { CheckSurveyAnswerServiceSpy } from '#/presentation/_mocks/services-mocks'
+import { ValidationSpy } from '#/presentation/_mocks'
 import { SaveSurveyVoteSpy } from '#/domain/mocks/usecases'
 import { mockSurvey } from '#/domain/mocks/models'
 import MockDate from 'mockdate'
@@ -19,6 +21,7 @@ type SutTypes = {
   sut: SaveSurveyVoteController
   checkSurveyContainsAnswerServiceSpy: CheckSurveyAnswerServiceSpy
   saveSurveyVoteSpy: SaveSurveyVoteSpy
+  validationSpy: ValidationSpy
 }
 
 const makeSut = (): SutTypes => {
@@ -26,11 +29,13 @@ const makeSut = (): SutTypes => {
   originalError = checkSurveyContainsAnswerServiceSpy.error
   checkSurveyContainsAnswerServiceSpy.error = null
   const saveSurveyVoteSpy = new SaveSurveyVoteSpy()
-  const sut = new SaveSurveyVoteController(checkSurveyContainsAnswerServiceSpy, saveSurveyVoteSpy)
+  const validationSpy = new ValidationSpy()
+  const sut = new SaveSurveyVoteController(validationSpy, checkSurveyContainsAnswerServiceSpy, saveSurveyVoteSpy)
   return {
     sut,
     checkSurveyContainsAnswerServiceSpy,
-    saveSurveyVoteSpy
+    saveSurveyVoteSpy,
+    validationSpy
   }
 }
 
@@ -41,6 +46,20 @@ describe('SaveSurveyVote Controller', () => {
 
   afterAll(() => {
     MockDate.reset()
+  })
+
+  test('Should call Validation with correct value', async () => {
+    const { sut, validationSpy } = makeSut()
+    const request = mockRequest()
+    await sut.handle(request)
+    expect(validationSpy.input).toBe(request)
+  })
+
+  test('Should return 400 if Validation returns an error', async () => {
+    const { sut, validationSpy } = makeSut()
+    jest.spyOn(validationSpy, 'validate').mockReturnValueOnce(new InvalidParamError('any_field'))
+    const httpResponse = await sut.handle(mockRequest())
+    expect(httpResponse).toEqual(badRequest(new InvalidParamError('any_field')))
   })
 
   test('Should call CheckSurveyAnswerService with correct values', async () => {

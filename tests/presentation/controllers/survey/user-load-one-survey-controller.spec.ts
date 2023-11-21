@@ -1,9 +1,10 @@
 import { type UserLoadOneSurvey } from '@/domain/models'
+import { InvalidParamError } from '@/presentation/errors'
 import { UserLoadOneSurveyController } from '@/presentation/controllers'
+import { badRequest, forbidden, ok, serverError } from '@/presentation/helpers/http/http-helper'
+import { ValidationSpy } from '#/presentation/_mocks'
 import { UserLoadOneSurveySpy } from '#/domain/mocks/usecases'
 import { mockSurveyToUserContext } from '#/domain/mocks/models'
-import { forbidden, ok, serverError } from '@/presentation/helpers/http/http-helper'
-import { InvalidParamError } from '@/presentation/errors'
 import MockDate from 'mockdate'
 
 const mockRequest = (): UserLoadOneSurvey.Params => ({
@@ -13,15 +14,18 @@ const mockRequest = (): UserLoadOneSurvey.Params => ({
 
 type SutTypes = {
   sut: UserLoadOneSurveyController
+  validationSpy: ValidationSpy
   loadSurveySpy: UserLoadOneSurveySpy
 }
 
 const makeSut = (): SutTypes => {
   const loadSurveySpy = new UserLoadOneSurveySpy()
-  const sut = new UserLoadOneSurveyController(loadSurveySpy)
+  const validationSpy = new ValidationSpy()
+  const sut = new UserLoadOneSurveyController(loadSurveySpy, validationSpy)
   return {
     sut,
-    loadSurveySpy
+    loadSurveySpy,
+    validationSpy
   }
 }
 
@@ -32,6 +36,20 @@ describe('LoadSurveys Controller', () => {
 
   afterAll(() => {
     MockDate.reset()
+  })
+
+  test('Should call Validation with correct value', async () => {
+    const { sut, validationSpy } = makeSut()
+    const request = mockRequest()
+    await sut.handle(request)
+    expect(validationSpy.input).toBe(request)
+  })
+
+  test('Should return 400 if Validation returns an error', async () => {
+    const { sut, validationSpy } = makeSut()
+    jest.spyOn(validationSpy, 'validate').mockReturnValueOnce(new InvalidParamError('any_field'))
+    const httpResponse = await sut.handle(mockRequest())
+    expect(httpResponse).toEqual(badRequest(new InvalidParamError('any_field')))
   })
 
   test('Should call LoadSurvey with correct values', async () => {

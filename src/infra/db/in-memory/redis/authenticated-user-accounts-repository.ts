@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import { type AuthenticationRepository, type IAuthenticateUserRepository, type IDeleteAccessTokenRepository, type ILoadAuthenticatedUserRepository, type IRefreshAccessTokenRepository } from '@/application/data/protocols/repositories'
 import { type AuthenticatedAccount } from '@/application/entities'
 

@@ -1,12 +1,9 @@
 import { type IValidation } from '@/presentation/protocols'
-import { EmailValidation, RequiredFieldValidation, ValidationComposite } from '@/application/validation/validators'
-import { EmailValidatorAdapter } from '@/infra/validators/email-validator-adapter'
+import { ValidationComposite, ZodValidation } from '@/application/validation/validators'
+import { loginZodSchema } from '@/infra/validators/zod-schemas'
 
 export const makeLoginValidation = (): ValidationComposite => {
   const validations: IValidation[] = []
-  for (const field of ['email', 'password']) {
-    validations.push(new RequiredFieldValidation(field))
-  }
-  validations.push(new EmailValidation('email', new EmailValidatorAdapter()))
+  validations.push(new ZodValidation(loginZodSchema))
   return new ValidationComposite(validations)
 }

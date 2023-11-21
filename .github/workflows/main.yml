@@ -35,7 +35,7 @@ jobs:
     - name: Run docker
       run: |
         docker-compose up --build -d mongo api
-        sleep 25 && node dist/infra/http/requests/check-server-is-ok.js pipeline_action 5000
+        sleep 25 && node dist/infra/http/requests/check-server-is-ok.js pipeline_action 80
 
     - name: Coveralls
       uses: coverallsapp/github-action@v2

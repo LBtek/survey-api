@@ -1,15 +1,15 @@
 import { type IValidation } from '@/presentation/protocols'
 import { ValidationComposite, ZodValidation } from '@/application/validation/validators'
-import { makeAddSurveyValidation } from '@/main/factories/controllers'
-import { addSurveyZodSchema } from '@/infra/validators/zod-schemas'
+import { makeUserLoadOneSurveyValidation } from '@/main/factories/controllers'
+import { userLoadOneSurveyZodSchema } from '@/infra/validators/zod-schemas'
 
 jest.mock('@/application/validation/validators/validation-composite')
 
-describe('AddSurveyValidation Factory', () => {
+describe('UserLoadOneSurveyValidation Factory', () => {
   test('Should call ValidationComposite with all validations', () => {
-    makeAddSurveyValidation()
+    makeUserLoadOneSurveyValidation()
     const validations: IValidation[] = []
-    validations.push(new ZodValidation(addSurveyZodSchema))
+    validations.push(new ZodValidation(userLoadOneSurveyZodSchema))
     expect(ValidationComposite).toHaveBeenCalledWith(validations)
   })
 })

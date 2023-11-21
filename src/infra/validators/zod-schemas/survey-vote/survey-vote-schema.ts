@@ -1,6 +1,8 @@
 import { z } from 'zod'
-import { answerSchema } from '../survey/common'
+import { answerSchema, surveyIdSchema } from '../survey/common'
 
 export const surveyVoteZodSchema = z.object({
   answer: answerSchema
 })
+
+export const saveSurveyVoteZodValidation = z.object({ surveyId: surveyIdSchema }).extend(surveyVoteZodSchema.shape)

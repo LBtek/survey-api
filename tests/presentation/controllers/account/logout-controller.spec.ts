@@ -1,7 +1,9 @@
 import { type AuthenticationModel } from '@/application/models'
+import { InvalidParamError } from '@/presentation/errors'
 import { LogoutController } from '@/presentation/controllers'
+import { badRequest, noContent, serverError } from '@/presentation/helpers/http/http-helper'
 import { DeleteAccessTokenRepositorySpy } from '#/application/data/mocks/repository-mocks'
-import { noContent, serverError } from '@/presentation/helpers/http/http-helper'
+import { ValidationSpy } from '#/presentation/_mocks'
 
 const mockRequest = (): AuthenticationModel.Logout.Params => ({
   ip: 'any_ip',
@@ -10,19 +12,36 @@ const mockRequest = (): AuthenticationModel.Logout.Params => ({
 
 type SutTypes = {
   sut: LogoutController
+  validationSpy: ValidationSpy
   deleteAccessTokenRepositorySpy: DeleteAccessTokenRepositorySpy
 }
 
 const makeSut = (): SutTypes => {
+  const validationSpy = new ValidationSpy()
   const deleteAccessTokenRepositorySpy = new DeleteAccessTokenRepositorySpy()
-  const sut = new LogoutController(deleteAccessTokenRepositorySpy)
+  const sut = new LogoutController(deleteAccessTokenRepositorySpy, validationSpy)
   return {
     sut,
+    validationSpy,
     deleteAccessTokenRepositorySpy
   }
 }
 
 describe('Logout Controller', () => {
+  test('Should call Validation with correct value', async () => {
+    const { sut, validationSpy } = makeSut()
+    const request = mockRequest()
+    await sut.handle(request)
+    expect(validationSpy.input).toBe(request)
+  })
+
+  test('Should return 400 if Validation returns an error', async () => {
+    const { sut, validationSpy } = makeSut()
+    jest.spyOn(validationSpy, 'validate').mockReturnValueOnce(new InvalidParamError('any_field'))
+    const httpResponse = await sut.handle(mockRequest())
+    expect(httpResponse).toEqual(badRequest(new InvalidParamError('any_field')))
+  })
+
   test('Should call DeleteAccessTokenRepository with correct values', async () => {
     const { sut, deleteAccessTokenRepositorySpy } = makeSut()
     await sut.handle(mockRequest())

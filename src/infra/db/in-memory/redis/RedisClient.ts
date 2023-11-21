@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import { createClient } from 'redis'
 import env from '@/main/config/env'
 

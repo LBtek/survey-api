@@ -100,7 +100,7 @@ describe('Login Routes', () => {
       const userId = MongoHelper.mapOneDocumentWithId(user).id
       const accountId = MongoHelper.mapOneDocumentWithId(account).id
 
-      const authenticatedUserAccount = await authenticatedUserAccounts.loadUser({
+      const authenticatedUserAccount = await authenticatedUserAccounts.loadOwnUser({
         ip: '::ffff:127.0.0.1',
         accessToken: response.body.accessToken,
         userId,
@@ -141,7 +141,7 @@ describe('Login Routes', () => {
       const userId = user.insertedId.toString()
       const accountId = account.insertedId.toString()
 
-      const authenticatedUserAccount = await authenticatedUserAccounts.loadUser({
+      const authenticatedUserAccount = await authenticatedUserAccounts.loadOwnUser({
         ip: '::ffff:127.0.0.1',
         accessToken,
         userId,
@@ -166,7 +166,7 @@ describe('Login Routes', () => {
     test('Should ', async () => {
       let { accessToken, user, ...rest } = await makeAccessToken('basic_user')
 
-      let authenticatedUserAccount = await authenticatedUserAccounts.loadUser({
+      let authenticatedUserAccount = await authenticatedUserAccounts.loadOwnUser({
         accessToken,
         ...rest,
         userId: user.id
@@ -179,7 +179,7 @@ describe('Login Routes', () => {
         .send()
         .expect(204)
 
-      authenticatedUserAccount = await authenticatedUserAccounts.loadUser({
+      authenticatedUserAccount = await authenticatedUserAccounts.loadOwnUser({
         accessToken,
         ...rest,
         userId: user.id
@@ -200,7 +200,7 @@ describe('Login Routes', () => {
         .send()
         .expect(204)
 
-      authenticatedUserAccount = await authenticatedUserAccounts.loadUser({
+      authenticatedUserAccount = await authenticatedUserAccounts.loadOwnUser({
         accessToken,
         ...rest,
         userId: user.id
@@ -221,7 +221,7 @@ describe('Login Routes', () => {
         .send()
         .expect(204)
 
-      authenticatedUserAccount = await authenticatedUserAccounts.loadUser({
+      authenticatedUserAccount = await authenticatedUserAccounts.loadOwnUser({
         accessToken,
         ...rest,
         userId: user.id
@@ -234,7 +234,7 @@ describe('Login Routes', () => {
     test('Should ', async () => {
       let { accessToken, user, ...rest } = await makeAccessToken('basic_user')
 
-      let userAccount = await authenticatedUserAccounts.loadUser({
+      let userAccount = await authenticatedUserAccounts.loadOwnUser({
         accessToken,
         ...rest,
         userId: user.id
@@ -247,7 +247,7 @@ describe('Login Routes', () => {
         .send()
         .expect(204)
 
-      userAccount = await authenticatedUserAccounts.loadUser({
+      userAccount = await authenticatedUserAccounts.loadOwnUser({
         accessToken,
         ...rest,
         userId: user.id
@@ -268,7 +268,7 @@ describe('Login Routes', () => {
         .send({ accessToken })
         .expect(204)
 
-      userAccount = await authenticatedUserAccounts.loadUser({
+      userAccount = await authenticatedUserAccounts.loadOwnUser({
         accessToken,
         ...rest,
         userId: user.id

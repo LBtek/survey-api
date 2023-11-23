@@ -1,10 +1,10 @@
 import { type AuthenticationModel } from '@/application/models'
 import { type ILoadAuthenticatedUserByTokenService } from '@/presentation/protocols/services'
-import { type ILoadAuthenticatedUserRepository } from '../protocols/repositories'
+import { type ILoadOwnAuthenticatedUserRepository } from '../protocols/repositories'
 
 export class LoadAuthenticatedUserByToken implements ILoadAuthenticatedUserByTokenService {
   constructor (
-    private readonly loadAuthenticatedUserRepository: ILoadAuthenticatedUserRepository
+    private readonly loadAuthenticatedUserRepository: ILoadOwnAuthenticatedUserRepository
   ) { }
 
   async loadByToken (data: AuthenticationModel.LoadUserByToken.Params): Promise<AuthenticationModel.LoadUserByToken.Result> {
@@ -19,7 +19,7 @@ export class LoadAuthenticatedUserByToken implements ILoadAuthenticatedUserByTok
       roles.has(tokenPayload.role)
     ) {
       const { userId, accountId, role } = tokenPayload
-      const user = await this.loadAuthenticatedUserRepository.loadUser({
+      const user = await this.loadAuthenticatedUserRepository.loadOwnUser({
         accountId,
         userId,
         role,

@@ -10,7 +10,7 @@ export namespace AuthenticationRepository {
     export type Result = void
   }
 
-  export namespace LoadUser {
+  export namespace LoadOwnUser {
     export type Params = {
       ip: IP
       accessToken: AccessToken
@@ -37,14 +37,14 @@ export namespace AuthenticationRepository {
   export namespace RefreshAccessToken {
     export type Params =
     { oldAccessToken: string, newAccessToken: string }
-    & Omit<AuthenticationRepository.LoadUser.Params, 'accessToken'>
+    & Omit<AuthenticationRepository.LoadOwnUser.Params, 'accessToken'>
 
     export type Result = boolean
   }
 }
 
-export interface ILoadAuthenticatedUserRepository {
-  loadUser: (data: AuthenticationRepository.LoadUser.Params) => Promise<AuthenticationRepository.LoadUser.Result>
+export interface ILoadOwnAuthenticatedUserRepository {
+  loadOwnUser: (data: AuthenticationRepository.LoadOwnUser.Params) => Promise<AuthenticationRepository.LoadOwnUser.Result>
 }
 
 export interface IAuthenticateUserRepository {

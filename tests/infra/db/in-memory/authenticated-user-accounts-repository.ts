@@ -1,6 +1,6 @@
 import { mockAccount } from '#/domain/mocks/models'
 import {
-  type ILoadAuthenticatedUserRepository,
+  type ILoadOwnAuthenticatedUserRepository,
   type IAuthenticateUserRepository,
   type IDeleteAccessTokenRepository,
   type IRefreshAccessTokenRepository,
@@ -16,7 +16,7 @@ const mockAuthenticateData = (): AuthenticationRepository.AuthenticateUser.Param
   ...userAccount
 })
 
-const mockLoadUserData = (): AuthenticationRepository.LoadUser.Params => {
+const mockLoadUserData = (): AuthenticationRepository.LoadOwnUser.Params => {
   const { user, ...rest } = mockAuthenticateData()
   return {
     ...rest,
@@ -97,20 +97,20 @@ describe('Authentication Repository', () => {
     })
   })
 
-  describe('loadUser()', () => {
+  describe('loadOwnUser()', () => {
     test('Should ', async () => {
-      const sut: ILoadAuthenticatedUserRepository = new InMemoryAuthenticatedUserAccountsRepository()
+      const sut: ILoadOwnAuthenticatedUserRepository = new InMemoryAuthenticatedUserAccountsRepository()
       const data = mockLoadUserData()
-      const account = await sut.loadUser(data)
+      const account = await sut.loadOwnUser(data)
       expect(account).toEqual(userAccount)
     })
 
     test('Should ', async () => {
-      const sut: ILoadAuthenticatedUserRepository & IDeleteAccessTokenRepository = new InMemoryAuthenticatedUserAccountsRepository()
+      const sut: ILoadOwnAuthenticatedUserRepository & IDeleteAccessTokenRepository = new InMemoryAuthenticatedUserAccountsRepository()
       const data = mockLoadUserData()
       await sut.deleteAccessToken({ ip: data.ip, accessToken: data.accessToken })
       authenticatedUserAccounts.delete(data.userId)
-      const account = await sut.loadUser(data)
+      const account = await sut.loadOwnUser(data)
       expect(account).toBeNull()
     })
   })
@@ -175,7 +175,7 @@ describe('Authentication Repository', () => {
     })
 
     test('Should ', async () => {
-      const sut: IRefreshAccessTokenRepository & ILoadAuthenticatedUserRepository = new InMemoryAuthenticatedUserAccountsRepository()
+      const sut: IRefreshAccessTokenRepository & ILoadOwnAuthenticatedUserRepository = new InMemoryAuthenticatedUserAccountsRepository()
       const { ip, accessToken, ...data } = mockLoadUserData()
       const result = await sut.refreshToken({
         ip,
@@ -188,11 +188,11 @@ describe('Authentication Repository', () => {
       expect(authenticatedTokens.get('other_new_access_token')).toBeFalsy()
 
       const loadData = mockLoadUserData()
-      let account = await sut.loadUser(loadData)
+      let account = await sut.loadOwnUser(loadData)
       expect(account).toBeNull()
 
       loadData.accessToken = 'other_new_access_token'
-      account = await sut.loadUser(loadData)
+      account = await sut.loadOwnUser(loadData)
       expect(account).toBeNull()
     })
   })

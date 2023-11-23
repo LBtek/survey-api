@@ -53,7 +53,7 @@ describe('LoadAuthenticatedUserByToken Application Service', () => {
 
   test('Should return null if LoadUserAccountByTokenRepository returns null', async () => {
     const { sut, loadAuthenticatedUserRepository } = makeSut()
-    loadAuthenticatedUserRepository.loadUser = async () => null
+    loadAuthenticatedUserRepository.loadOwnUser = async () => null
     const account = await sut.loadByToken(mockData())
     expect(account).toBeNull()
   })
@@ -75,7 +75,7 @@ describe('LoadAuthenticatedUserByToken Application Service', () => {
 
   test('Should throw if LoadAccountByTokenRepository throws', async () => {
     const { sut, loadAuthenticatedUserRepository } = makeSut()
-    loadAuthenticatedUserRepository.loadUser = async () => { throw new Error() }
+    loadAuthenticatedUserRepository.loadOwnUser = async () => { throw new Error() }
     const promise = sut.loadByToken(mockData())
     await expect(promise).rejects.toThrow()
   })

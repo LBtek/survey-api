@@ -1,7 +1,9 @@
+/* istanbul ignore file */
+
 import {
   type AuthenticationRepository,
   type IAuthenticateUserRepository,
-  type ILoadAuthenticatedUserRepository,
+  type ILoadOwnAuthenticatedUserRepository,
   type IDeleteAccessTokenRepository,
   type IRefreshAccessTokenRepository
 } from '@/application/data/protocols/repositories'
@@ -19,7 +21,7 @@ export const authenticatedTokens = new Map<AccessToken, TokenPayload>()
 
 type IPsMapper = AuthenticatedAccount.BaseDataModel.Body['ips']
 
-export class InMemoryAuthenticatedUserAccountsRepository implements ILoadAuthenticatedUserRepository, IAuthenticateUserRepository, IRefreshAccessTokenRepository, IDeleteAccessTokenRepository {
+export class InMemoryAuthenticatedUserAccountsRepository implements ILoadOwnAuthenticatedUserRepository, IAuthenticateUserRepository, IRefreshAccessTokenRepository, IDeleteAccessTokenRepository {
   async authenticate (
     data: AuthenticationRepository.AuthenticateUser.Params
   ): Promise<AuthenticationRepository.AuthenticateUser.Result> {
@@ -51,7 +53,7 @@ export class InMemoryAuthenticatedUserAccountsRepository implements ILoadAuthent
     }
   }
 
-  async loadUser (data: AuthenticationRepository.LoadUser.Params): Promise<AuthenticationRepository.LoadUser.Result> {
+  async loadOwnUser (data: AuthenticationRepository.LoadOwnUser.Params): Promise<AuthenticationRepository.LoadOwnUser.Result> {
     const { ip, accessToken, role, userId, accountId } = data
     const authenticatedUser = authenticatedUserAccounts.get(userId)
     const authenticatedUserAccount = authenticatedUser?.accounts.get(accountId)

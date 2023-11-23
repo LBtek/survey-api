@@ -15,7 +15,7 @@ import {
   type ILogErrorRepository,
   type LogTypeError,
   type AuthenticationRepository,
-  type ILoadAuthenticatedUserRepository,
+  type ILoadOwnAuthenticatedUserRepository,
   type IAuthenticateUserRepository,
   type IDeleteAccessTokenRepository,
   type IRefreshAccessTokenRepository
@@ -61,11 +61,11 @@ export class LoadUserAccountByEmailRepositorySpy implements ILoadUserAccountByEm
   }
 }
 
-export class LoadAuthenticatedUserRepositorySpy implements ILoadAuthenticatedUserRepository {
-  loadUserData: AuthenticationRepository.LoadUser.Params
+export class LoadAuthenticatedUserRepositorySpy implements ILoadOwnAuthenticatedUserRepository {
+  loadUserData: AuthenticationRepository.LoadOwnUser.Params
   account = mockAccount()
 
-  async loadUser (data: AuthenticationRepository.LoadUser.Params): Promise<AuthenticationRepository.LoadUser.Result> {
+  async loadOwnUser (data: AuthenticationRepository.LoadOwnUser.Params): Promise<AuthenticationRepository.LoadOwnUser.Result> {
     this.loadUserData = data
 
     const { user, ...account } = this.account
@@ -79,10 +79,10 @@ export class LoadAuthenticatedUserRepositorySpy implements ILoadAuthenticatedUse
 }
 
 export class DeleteAccessTokenRepositorySpy implements IDeleteAccessTokenRepository {
-  deleteAccessTokenData: AuthenticationRepository.LoadUser.Params
+  deleteAccessTokenData: AuthenticationRepository.LoadOwnUser.Params
   result = true
 
-  async deleteAccessToken (data: AuthenticationRepository.LoadUser.Params): Promise<boolean> {
+  async deleteAccessToken (data: AuthenticationRepository.LoadOwnUser.Params): Promise<boolean> {
     this.deleteAccessTokenData = data
     return this.result
   }

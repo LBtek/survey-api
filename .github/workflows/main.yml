@@ -54,7 +54,8 @@ jobs:
         port: ${{ secrets.PORT }}
         script: |
           cd /usr/src/survey-api
-          git pull origin dev
+          git restore .
+          git pull -f origin dev
           npm pkg delete scripts.prepare
           npm install
           npm run build

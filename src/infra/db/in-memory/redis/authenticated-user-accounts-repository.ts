@@ -1,19 +1,19 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { type AuthenticationRepository, type IAuthenticateUserRepository, type IDeleteAccessTokenRepository, type ILoadOwnAuthenticatedUserRepository, type IRefreshAccessTokenRepository } from '@/application/data/protocols/repositories'
 import { type AuthenticatedAccount } from '@/application/entities'
-import { RedisClient } from './RedisClient'
 import { type TokenPayload } from '../authenticated-user-accounts-repository'
+import { RedisClient } from './RedisClient'
 
 export class RedisAuthenticatedUserAccountsRepository implements ILoadOwnAuthenticatedUserRepository, IAuthenticateUserRepository, IRefreshAccessTokenRepository, IDeleteAccessTokenRepository {
   async authenticate (data: AuthenticationRepository.AuthenticateUser.Params): Promise<void> {
     const { ip, accessToken, role, accountId, user } = data
     const usr = await RedisClient.hGetAll(`auth_usr:${user.id}`)
-    if (!usr) RedisClient.hSet(`auth_usr:${user.id}`, { ...user, accs: 1 })
+    if (Object.keys(usr).length < 2) RedisClient.hSet(`auth_usr:${user.id}`, { ...user, accs: 1 })
     else {
       RedisClient.hIncrBy(`auth_usr:${user.id}`, 'accs', 1)
     }
     const authAcc = await RedisClient.hGetAll(`auth_acc:${accountId}`)
-    if (!authAcc) {
+    if (Object.keys(authAcc).length < 2) {
       RedisClient.hSet(`auth_acc:${accountId}`, {
         ips: ip,
         role
@@ -36,16 +36,17 @@ export class RedisAuthenticatedUserAccountsRepository implements ILoadOwnAuthent
       RedisClient.hGetAll(`auth_acc:${accountId}`),
       RedisClient.hGetAll(`token:${accessToken}`)
     ])
-    if (auth.length < 3) return null
+    if (auth.some((item) => Object.keys(item).length < 2)) return null
 
     if (
       auth[1].role === role &&
       auth[1].ips.includes(ip)
     ) {
+      const { accs, ...user } = auth[0]
       return {
         accountId,
         role,
-        user: auth[0] as AuthenticatedAccount.UserAccount['user']
+        user: user as AuthenticatedAccount.UserAccount['user']
       }
     }
     return null
@@ -57,15 +58,15 @@ export class RedisAuthenticatedUserAccountsRepository implements ILoadOwnAuthent
     if (!data.userId || !data.accountId || !data.role) {
       payload = await RedisClient.hGetAll(`token:${accessToken}`) as TokenPayload
     }
-    const userId = data.userId || payload?.userId
-    const accountId = data.accountId || payload?.accountId
-    const role = data.role || payload?.role
+    const userId = data.userId || payload.userId
+    const accountId = data.accountId || payload.accountId
+    const role = data.role || payload.role
 
     const auth = await Promise.all([
       RedisClient.hGetAll(`auth_usr:${userId}`),
       RedisClient.hGetAll(`auth_acc:${accountId}`)
     ])
-    if (auth.length < 2) return false
+    if (auth.some((item) => Object.keys(item).length < 2)) return false
 
     if (
       auth[1].role === role &&
@@ -101,7 +102,7 @@ export class RedisAuthenticatedUserAccountsRepository implements ILoadOwnAuthent
       RedisClient.hGetAll(`auth_acc:${accountId}`),
       RedisClient.hGetAll(`auth_usr:${userId}`)
     ])
-    if (auth.length < 3) return false
+    if (auth.some((item) => Object.keys(item).length < 2)) return false
 
     if (
       auth[1].role === role &&

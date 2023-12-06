@@ -2,7 +2,7 @@ import { type Collection } from 'mongodb'
 import { type User } from '@/domain/entities'
 import { type Account } from '@/application/entities'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
-import { InMemoryAuthenticatedUserAccountsRepository } from '@/infra/db/in-memory/authenticated-user-accounts-repository'
+import { RedisAuthenticatedUserAccountsRepository, RedisClient } from '@/infra/db/in-memory/redis'
 import env from '@/main/config/env'
 import app from '@/main/config/app'
 import { hash } from 'bcrypt'
@@ -13,7 +13,7 @@ let surveyCollection: Collection
 let accountCollection: Collection
 let userCollection: Collection
 
-const authenticatedUserAccounts = new InMemoryAuthenticatedUserAccountsRepository()
+const authenticatedUserAccounts = new RedisAuthenticatedUserAccountsRepository()
 
 const makeAccessToken = async (role: Account.BaseDataModel.Roles): Promise<string> => {
   const user = await userCollection.findOneAndReplace({}, {
@@ -47,11 +47,13 @@ const makeAccessToken = async (role: Account.BaseDataModel.Roles): Promise<strin
 
 describe('Survey Vote Routes', () => {
   beforeAll(async () => {
+    await RedisClient.connect()
     await MongoHelper.connect(env.mongodb.url)
   })
 
   afterAll(async () => {
     await MongoHelper.disconnect()
+    await RedisClient.disconnect()
   })
 
   beforeEach(async () => {

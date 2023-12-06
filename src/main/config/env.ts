@@ -9,6 +9,6 @@ export default {
     url: process.env.MONGO_URL || 'mongodb://localhost:27017/survey-api'
   },
   redis: {
-    url: process.env.REDIS_URL || 'redis://default:AbcD1234@localhost:6379'
+    url: process.env.REDIS_URL || 'redis://default:AbcD1234@localhost:6380'
   }
 }

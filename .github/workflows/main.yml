@@ -18,12 +18,11 @@ jobs:
       with:
         node-version: 18.16
         
-    - name: Install dependencies and run coverage tests
+    - name: Install dependencies
       run: |
         npm pkg delete scripts.prepare
         npm install
         npm run lint:fix
-        npm run test:ci
         npm run build
 
     - name: Start MongoDB
@@ -39,6 +38,9 @@ jobs:
       run: |
         docker-compose up --build -d mongo redis api traefik
         sleep 25 && node dist/infra/http/requests/check-server-is-ok.js pipeline_action 80 127.0.0.1
+
+    - name: Run coverage tests
+      run: npm run test:ci
 
     - name: Coveralls
       uses: coverallsapp/github-action@v2

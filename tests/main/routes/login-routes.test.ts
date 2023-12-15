@@ -165,7 +165,7 @@ describe('Login Routes', () => {
   })
 
   describe('GET /logout', () => {
-    test('Should ', async () => {
+    test('Should log out with the verb GET', async () => {
       let { accessToken, user, ...rest } = await makeAccessToken('basic_user')
 
       let authenticatedUserAccount = await authenticatedUserAccounts.loadOwnUser({
@@ -233,7 +233,7 @@ describe('Login Routes', () => {
   })
 
   describe('POST /logout', () => {
-    test('Should ', async () => {
+    test('Should log out with the verb POST', async () => {
       let { accessToken, user, ...rest } = await makeAccessToken('basic_user')
 
       let userAccount = await authenticatedUserAccounts.loadOwnUser({

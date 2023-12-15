@@ -1,4 +1,7 @@
+/* istanbul ignore file */
+
 /* eslint-disable @typescript-eslint/no-misused-promises */
+
 import { zodValidation } from '@/main/middlewares/zod-validation'
 import { MissingParamError } from '@/presentation/errors'
 import { logoutZodSchema } from '@/infra/validators/zod-schemas'
@@ -6,7 +9,7 @@ import app from '@/main/config/app'
 import request from 'supertest'
 
 describe('Zod Validation Middleware', () => {
-  test('Should ', async () => {
+  test('Should validate logout data with zodValidation', async () => {
     app.get('/logout-zod-validation', zodValidation(logoutZodSchema), (req, res) => {
       res.status(204).send()
     })

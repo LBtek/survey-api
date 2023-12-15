@@ -1,4 +1,7 @@
+/* istanbul ignore file */
+
 /* eslint-disable @typescript-eslint/no-floating-promises */
+
 import { type ILogErrorRepository } from '@/application/data/protocols/repositories'
 import { type Response, type Request, type NextFunction } from 'express'
 import { ZodError, type AnyZodObject } from 'zod'

@@ -26,7 +26,7 @@ const mockLoadUserData = (): AuthenticationRepository.LoadOwnUser.Params => {
 
 describe('Authentication Repository', () => {
   describe('authenticate()', () => {
-    test('Should ', async () => {
+    test('Should authenticate the user successfully', async () => {
       const sut: IAuthenticateUserRepository = new InMemoryAuthenticatedUserAccountsRepository()
       const data = mockAuthenticateData()
       await sut.authenticate(data)
@@ -43,7 +43,7 @@ describe('Authentication Repository', () => {
       ).toBe(true)
     })
 
-    test('Should ', async () => {
+    test('Should authenticate another account of the same user successfully', async () => {
       const sut: IAuthenticateUserRepository = new InMemoryAuthenticatedUserAccountsRepository()
       const data = mockAuthenticateData()
       const firstAccountId = data.accountId
@@ -70,7 +70,7 @@ describe('Authentication Repository', () => {
       ).toBe(true)
     })
 
-    test('Should ', async () => {
+    test('Should successfully authenticate the same account with another IP', async () => {
       const sut: IAuthenticateUserRepository = new InMemoryAuthenticatedUserAccountsRepository()
       const data = mockAuthenticateData()
       const firstIp = data.ip
@@ -98,14 +98,14 @@ describe('Authentication Repository', () => {
   })
 
   describe('loadOwnUser()', () => {
-    test('Should ', async () => {
+    test('Should load own user successfully', async () => {
       const sut: ILoadOwnAuthenticatedUserRepository = new InMemoryAuthenticatedUserAccountsRepository()
       const data = mockLoadUserData()
       const account = await sut.loadOwnUser(data)
       expect(account).toEqual(userAccount)
     })
 
-    test('Should ', async () => {
+    test('Should not load own user if user is not logged in', async () => {
       const sut: ILoadOwnAuthenticatedUserRepository & IDeleteAccessTokenRepository = new InMemoryAuthenticatedUserAccountsRepository()
       const data = mockLoadUserData()
       await sut.deleteAccessToken({ ip: data.ip, accessToken: data.accessToken })
@@ -116,7 +116,7 @@ describe('Authentication Repository', () => {
   })
 
   describe('deleteAccessToken()', () => {
-    test('Should ', async () => {
+    test('Should ensure that only the correct accessToken is deleted', async () => {
       const sut: IDeleteAccessTokenRepository & IAuthenticateUserRepository = new InMemoryAuthenticatedUserAccountsRepository()
       const { ip, accessToken, ...data } = mockLoadUserData()
       await sut.authenticate(mockAuthenticateData())
@@ -131,7 +131,7 @@ describe('Authentication Repository', () => {
       ).toBe(false)
     })
 
-    test('Should ', async () => {
+    test('Should ensure deleteAccessToken returns false if token is not logged in', async () => {
       const sut: IDeleteAccessTokenRepository & IAuthenticateUserRepository = new InMemoryAuthenticatedUserAccountsRepository()
       const { ip, accessToken, ...data } = mockLoadUserData()
       const result = await sut.deleteAccessToken({ ip, accessToken })
@@ -147,7 +147,7 @@ describe('Authentication Repository', () => {
   })
 
   describe('refreshToken()', () => {
-    test('Should ', async () => {
+    test('Should refresh token successfully', async () => {
       const sut: IRefreshAccessTokenRepository & IAuthenticateUserRepository = new InMemoryAuthenticatedUserAccountsRepository()
       await sut.authenticate(mockAuthenticateData())
       const { ip, accessToken, ...data } = mockLoadUserData()
@@ -174,7 +174,7 @@ describe('Authentication Repository', () => {
       ).toBe(true)
     })
 
-    test('Should ', async () => {
+    test('Should ensure that an accessToken is not erroneously renewed', async () => {
       const sut: IRefreshAccessTokenRepository & ILoadOwnAuthenticatedUserRepository = new InMemoryAuthenticatedUserAccountsRepository()
       const { ip, accessToken, ...data } = mockLoadUserData()
       const result = await sut.refreshToken({

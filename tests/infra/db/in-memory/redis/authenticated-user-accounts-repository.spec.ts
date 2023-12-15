@@ -37,7 +37,7 @@ describe('Authentication Repository', () => {
   })
 
   describe('authenticate()', () => {
-    test('Should ', async () => {
+    test('Should authenticate the user successfully', async () => {
       const sut: IAuthenticateUserRepository = new RedisAuthenticatedUserAccountsRepository()
       const data = mockAuthenticateData()
       await sut.authenticate(data)
@@ -56,7 +56,7 @@ describe('Authentication Repository', () => {
       })
     })
 
-    test('Should ', async () => {
+    test('Should authenticate another account of the same user successfully', async () => {
       const sut: IAuthenticateUserRepository = new RedisAuthenticatedUserAccountsRepository()
       const data = mockAuthenticateData()
       data.role = 'other_role' as any
@@ -79,7 +79,7 @@ describe('Authentication Repository', () => {
       })
     })
 
-    test('Should ', async () => {
+    test('Should successfully authenticate the same account with another IP', async () => {
       const sut: IAuthenticateUserRepository = new RedisAuthenticatedUserAccountsRepository()
       const data = mockAuthenticateData()
       const firstIp = data.ip
@@ -103,14 +103,14 @@ describe('Authentication Repository', () => {
   })
 
   describe('loadOwnUser()', () => {
-    test('Should ', async () => {
+    test('Should load own user successfully', async () => {
       const sut: ILoadOwnAuthenticatedUserRepository = new RedisAuthenticatedUserAccountsRepository()
       const data = mockLoadUserData()
       const account = await sut.loadOwnUser(data)
       expect(account).toEqual(userAccount)
     })
 
-    test('Should ', async () => {
+    test('Should not load the user itself with a non-logged IP', async () => {
       const sut: ILoadOwnAuthenticatedUserRepository = new RedisAuthenticatedUserAccountsRepository()
       const data = mockLoadUserData()
       data.ip = 'ip_not_registered'
@@ -120,7 +120,7 @@ describe('Authentication Repository', () => {
   })
 
   describe('deleteAccessToken()', () => {
-    test('Should ', async () => {
+    test('Should delete accessToken successfully', async () => {
       const sut: IDeleteAccessTokenRepository & IAuthenticateUserRepository & ILoadOwnAuthenticatedUserRepository = new RedisAuthenticatedUserAccountsRepository()
       const { ip, accessToken, ...data } = mockLoadUserData()
       const result = await sut.deleteAccessToken({ ip, accessToken })
@@ -134,7 +134,7 @@ describe('Authentication Repository', () => {
       expect(Object.keys(authAcc).length > 0 ? authAcc.ips.includes(ip) : false).toBe(false)
     })
 
-    test('Should ', async () => {
+    test('Should ensure that only the correct accessToken is deleted', async () => {
       const sut: IDeleteAccessTokenRepository & IAuthenticateUserRepository = new RedisAuthenticatedUserAccountsRepository()
       const { ip, accessToken, ...data } = mockLoadUserData()
       let result = await sut.deleteAccessToken({ ip, accessToken })
@@ -150,7 +150,7 @@ describe('Authentication Repository', () => {
   })
 
   describe('refreshToken()', () => {
-    test('Should ', async () => {
+    test('Should refresh token successfully', async () => {
       const sut: IRefreshAccessTokenRepository & IAuthenticateUserRepository = new RedisAuthenticatedUserAccountsRepository()
       await sut.authenticate(mockAuthenticateData())
       const { ip, accessToken, ...data } = mockLoadUserData()
@@ -168,7 +168,7 @@ describe('Authentication Repository', () => {
       expect(Object.keys(newAccessToken).length > 0).toBe(true)
     })
 
-    test('Should ', async () => {
+    test('Should ensure that an accessToken is not erroneously renewed', async () => {
       const sut: IRefreshAccessTokenRepository & ILoadOwnAuthenticatedUserRepository = new RedisAuthenticatedUserAccountsRepository()
       const { ip, accessToken, ...data } = mockLoadUserData()
       let result = await sut.refreshToken({

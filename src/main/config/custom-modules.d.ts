@@ -5,5 +5,6 @@ declare module Express {
     role?: string
     filteredData?: any
     newAccessToken?: string
+    guestAgentId?: string
   }
 }

@@ -12,6 +12,8 @@ export const adaptRoute = (controller: IController) => {
       ip: req.ip,
       userId: req.userId || null,
       accountId: req.accountId || null,
+      userAgent: req.headers?.['user-agent'] || null,
+      guestAgentId: req.guestAgentId || null,
       role: req.role || req.body.role || null
     }
 

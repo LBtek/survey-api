@@ -1,7 +1,12 @@
-import { type SurveyVote } from '../entities'
-import { type UserLoadOneSurvey } from './survey-models'
+import { type GuestSurveyVote, type UserSurveyVote } from '../entities'
+import { type GuestLoadOneSurvey, type UserLoadOneSurvey } from './survey-models'
 
-export namespace SaveSurveyVote {
-  export type Params = SurveyVote.BaseDataModel.Body
+export namespace UserSaveSurveyVote {
+  export type Params = UserSurveyVote.BaseDataModel.Body
   export type Result = UserLoadOneSurvey.Result
+}
+
+export namespace GuestSaveSurveyVote {
+  export type Params = GuestSurveyVote.BaseDataModel.Body
+  export type Result = GuestLoadOneSurvey.Result
 }

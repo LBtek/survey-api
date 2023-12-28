@@ -15,6 +15,14 @@ export namespace PublisherAddSurvey {
   export type Result = 'Ok' | AnswersLengthError
 }
 
+export namespace GuestLoadOneSurvey {
+  export type Params = {
+    surveyId: SurveyID
+  }
+
+  export type Result = Survey.Model
+}
+
 export namespace UserLoadOneSurvey {
   export type Params = {
     surveyId: SurveyID

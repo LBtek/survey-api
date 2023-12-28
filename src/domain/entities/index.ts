@@ -1,3 +1,5 @@
 export * from './user'
+export * from './guest'
 export * from './survey'
-export * from './survey-vote'
+export * from './user-survey-vote'
+export * from './guest-survey-vote'

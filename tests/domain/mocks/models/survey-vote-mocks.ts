@@ -1,16 +1,24 @@
-import { type SurveyVote } from '@/domain/entities'
-import { type SaveSurveyVote } from '@/domain/models'
+import { type UserSurveyVote } from '@/domain/entities'
+import { type GuestSaveSurveyVote, type UserSaveSurveyVote } from '@/domain/models'
 
 const date = new Date()
 
-export const mockSaveSurveyVoteParams = (): SaveSurveyVote.Params => ({
+export const mockUserSaveSurveyVoteParams = (): UserSaveSurveyVote.Params => ({
   surveyId: 'any_survey_id',
   userId: 'any_user_id',
   answer: 'any_answer',
   date
 })
 
-export const mockSurveyVote = (): SurveyVote.BaseDataModel.Body & { id: string } => ({
+export const mockUserSurveyVote = (): UserSurveyVote.BaseDataModel.Body & { id: string } => ({
   id: 'any_survey_vote_id',
-  ...mockSaveSurveyVoteParams()
+  ...mockUserSaveSurveyVoteParams()
+})
+
+export const mockGuestSaveSurveyVoteParams = (): GuestSaveSurveyVote.Params => ({
+  surveyId: 'any_survey_id',
+  guestId: 'any_guest_id',
+  guestAgentId: 'any_guest_agent_id',
+  answer: 'any_answer',
+  date
 })

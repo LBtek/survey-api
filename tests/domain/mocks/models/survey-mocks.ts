@@ -41,18 +41,22 @@ export const mockSurvey = (): Survey.BaseDataModel.Body & { id: string } => ({
   ...mockAddSurveyRepositoryParams()
 })
 
-export const mockUserLoadOneSurveyRepositoryResult = (): SurveyRepository.UserLoadOneSurvey.Result => ({
-  ...mockSurvey(),
-  answers: mockSurvey().answers.map((answer: AnswerToUserContext) => {
-    answer.isCurrentAccountAnswer = false
-    return answer
-  }),
-  didAnswer: false
-})
+export const mockLoadOneSurveyRepositoryResult = (type: 'user' | 'guest'): SurveyRepository.LoadOneSurvey.Result => {
+  const survey: SurveyRepository.LoadOneSurvey.Result = {
+    ...mockSurvey(),
+    answers: mockSurvey().answers.map((answer: AnswerToUserContext) => {
+      if (type === 'user') answer.isCurrentAccountAnswer = false
+      return answer
+    })
+  }
+  if (type === 'user') survey.didAnswer = false
+
+  return survey
+}
 
 export const mockUserLoadAllSurveysRepositoryResult = (): SurveyRepository.UserLoadAllSurveys.Result => {
   return [
-    mockUserLoadOneSurveyRepositoryResult(),
+    mockLoadOneSurveyRepositoryResult('user') as any,
     {
       id: 'other_id',
       question: 'other_question',
@@ -69,8 +73,8 @@ export const mockUserLoadAllSurveysRepositoryResult = (): SurveyRepository.UserL
 }
 
 export const mockSurveyToUserContext = (): UserLoadOneSurvey.Result => ({
-  ...mockUserLoadOneSurveyRepositoryResult(),
-  answers: mockUserLoadOneSurveyRepositoryResult().answers.map((answer: AnswerToUserContext) => {
+  ...mockLoadOneSurveyRepositoryResult('user') as UserLoadOneSurvey.Result,
+  answers: mockLoadOneSurveyRepositoryResult('user').answers.map((answer: AnswerToUserContext) => {
     answer.percent = 0
     return answer
   })

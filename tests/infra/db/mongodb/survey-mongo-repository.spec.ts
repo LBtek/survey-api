@@ -3,19 +3,19 @@ import { type AccountRepository } from '@/application/data/protocols/repositorie
 import { type Collection, ObjectId } from 'mongodb'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import { SurveyMongoRepository } from '@/infra/db/mongodb/survey-mongo-repository'
-import { SurveyVoteMongoRepository } from '@/infra/db/mongodb/survey-vote-mongo-repository'
+import { UserSurveyVoteMongoRepository } from '@/infra/db/mongodb/user-survey-vote-mongo-repository'
 import { mockAddAccountParams, mockAddSurveyRepositoryParams } from '#/domain/mocks/models'
 import env from '@/main/config/env'
 
 let surveyCollection: Collection
-let surveyVoteCollection: Collection
+let userSurveyVoteCollection: Collection
 let accountCollection: Collection
 let userCollection: Collection
 
 class SaveVoteAndUpdateSurvey {
   constructor (
     private readonly surveyRepository: SurveyMongoRepository,
-    private readonly saveSurveyVoteRepository: SurveyVoteMongoRepository
+    private readonly userSaveSurveyVoteRepository: UserSurveyVoteMongoRepository
   ) { }
 
   async saveAndUpdate (
@@ -24,13 +24,13 @@ class SaveVoteAndUpdateSurvey {
     newAnswer: string,
     userId: string
   ): Promise<any> {
-    await this.saveSurveyVoteRepository.save({
+    await this.userSaveSurveyVoteRepository.userSaveVote({
       surveyId,
       userId,
       answer: newAnswer,
       date: new Date()
     })
-    const survey = await this.surveyRepository.update({ surveyId, oldAnswer, newAnswer, userId })
+    const survey = await this.surveyRepository.update({ surveyId, oldAnswer, newAnswer, userOrGuestId: userId, type: 'user' })
     return survey
   }
 }
@@ -64,7 +64,7 @@ type SutTypes = {
 
 const makeSut = (): SutTypes => {
   const sut = new SurveyMongoRepository()
-  const saveSurveyVoteRepository = new SurveyVoteMongoRepository()
+  const saveSurveyVoteRepository = new UserSurveyVoteMongoRepository()
   const saveSurveyVoteAndUpdateSurvey = new SaveVoteAndUpdateSurvey(sut, saveSurveyVoteRepository)
 
   return {
@@ -85,8 +85,8 @@ describe('Survey Mongo Repository', () => {
   beforeEach(async () => {
     surveyCollection = await MongoHelper.getCollection('surveys')
     await surveyCollection.deleteMany({})
-    surveyVoteCollection = await MongoHelper.getCollection('surveyVotes')
-    await surveyVoteCollection.deleteMany({})
+    userSurveyVoteCollection = await MongoHelper.getCollection('userSurveyVotes')
+    await userSurveyVoteCollection.deleteMany({})
     accountCollection = await MongoHelper.getCollection('accounts')
     await accountCollection.deleteMany({})
     userCollection = await MongoHelper.getCollection('users')
@@ -127,7 +127,7 @@ describe('Survey Mongo Repository', () => {
 
       const firstSurvey = firstSurveyAdded.value
 
-      await surveyVoteCollection.insertOne({
+      await userSurveyVoteCollection.insertOne({
         surveyId: firstSurvey._id,
         userId: new ObjectId(userId),
         answer: firstSurvey.answers[0].answer,
@@ -180,14 +180,14 @@ describe('Survey Mongo Repository', () => {
       )
       const survey = surveyAdded.value
       const { sut } = makeSut()
-      await surveyVoteCollection.insertOne({
+      await userSurveyVoteCollection.insertOne({
         surveyId: survey._id,
         userId: new ObjectId(user.id),
         answer: survey.answers[0].answer,
         date: new Date()
       })
       const surveyId = survey._id.toString()
-      const surveyLoaded = await sut.loadSurvey({ surveyId, userId: user.id })
+      const surveyLoaded = await sut.loadSurvey({ surveyId, userOrGuestId: user.id, type: 'user' })
       expect(surveyLoaded).toBeTruthy()
       expect(surveyLoaded.id).toBeTruthy()
       expect(surveyLoaded.id).toBe(surveyId)
@@ -201,7 +201,7 @@ describe('Survey Mongo Repository', () => {
       const res = await surveyCollection.insertOne(mockAddSurveyRepositoryParams())
       const { sut } = makeSut()
       const surveyId = res.insertedId.toString()
-      const surveyLoaded = await sut.loadSurvey({ surveyId, userId: user.id })
+      const surveyLoaded = await sut.loadSurvey({ surveyId, userOrGuestId: user.id, type: 'user' })
       expect(surveyLoaded).toBeTruthy()
       expect(surveyLoaded.id).toBeTruthy()
       expect(surveyLoaded.id).toBe(surveyId)

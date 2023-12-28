@@ -1,17 +1,17 @@
 import { type Collection } from 'mongodb'
 import { type AccountRepository } from '@/application/data/protocols/repositories/account-repository'
-import { SurveyVoteMongoRepository } from '@/infra/db/mongodb/survey-vote-mongo-repository'
+import { UserSurveyVoteMongoRepository } from '@/infra/db/mongodb/user-survey-vote-mongo-repository'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import { mockAddAccountParams, mockAddSurveyRepositoryParams } from '#/domain/mocks/models'
 import env from '@/main/config/env'
 
 let surveyCollection: Collection
-let surveyVoteCollection: Collection
+let userSurveyVoteCollection: Collection
 let accountCollection: Collection
 let userCollection: Collection
 
-const makeSut = (): SurveyVoteMongoRepository => {
-  return new SurveyVoteMongoRepository()
+const makeSut = (): UserSurveyVoteMongoRepository => {
+  return new UserSurveyVoteMongoRepository()
 }
 
 const makeSurvey = async (): Promise<any> => {
@@ -53,8 +53,8 @@ describe('Survey Mongo Repository', () => {
   beforeEach(async () => {
     surveyCollection = await MongoHelper.getCollection('surveys')
     await surveyCollection.deleteMany({})
-    surveyVoteCollection = await MongoHelper.getCollection('surveyVotes')
-    await surveyVoteCollection.deleteMany({})
+    userSurveyVoteCollection = await MongoHelper.getCollection('userSurveyVotes')
+    await userSurveyVoteCollection.deleteMany({})
     accountCollection = await MongoHelper.getCollection('accounts')
     await accountCollection.deleteMany({})
     userCollection = await MongoHelper.getCollection('users')
@@ -66,7 +66,7 @@ describe('Survey Mongo Repository', () => {
       const sut = makeSut()
       const account = await makeAccount()
       const survey = await makeSurvey()
-      const surveyVote = await sut.save({
+      const surveyVote = await sut.userSaveVote({
         surveyId: survey.id,
         userId: account.user.id,
         answer: survey.answers[1].answer,
@@ -85,14 +85,14 @@ describe('Survey Mongo Repository', () => {
         answer: survey.answers[1].answer,
         date: new Date()
       }
-      await sut.save(oldData)
+      await sut.userSaveVote(oldData)
       const newData = {
         surveyId: survey.id,
         userId: account.user.id,
         answer: survey.answers[0].answer,
         date: new Date()
       }
-      const surveyVote = await sut.save(newData)
+      const surveyVote = await sut.userSaveVote(newData)
       expect(surveyVote).toBeTruthy()
       expect(surveyVote.id).toBeTruthy()
       expect(surveyVote.answer).toBe(oldData.answer)

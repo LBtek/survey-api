@@ -1,16 +1,16 @@
-import { type SaveSurveyVote, type AnswerToUserContext } from '@/domain/models'
+import { type UserSaveSurveyVote, type AnswerToUserContext } from '@/domain/models'
 import { InvalidParamError } from '@/presentation/errors'
-import { SaveSurveyVoteController } from '@/presentation/controllers/survey-vote/save-survey-vote-controller'
+import { UserSaveSurveyVoteController } from '@/presentation/controllers/survey-vote/user-save-survey-vote-controller'
 import { badRequest, ok, serverError } from '@/presentation/helpers/http/http-helper'
 import { CheckSurveyAnswerServiceSpy } from '#/presentation/_mocks/services-mocks'
 import { ValidationSpy } from '#/presentation/_mocks'
-import { SaveSurveyVoteSpy } from '#/domain/mocks/usecases'
+import { UserSaveSurveyVoteSpy } from '#/domain/mocks/usecases'
 import { mockSurvey } from '#/domain/mocks/models'
 import MockDate from 'mockdate'
 
 let originalError
 
-const mockRequest = (): SaveSurveyVote.Params => ({
+const mockRequest = (): UserSaveSurveyVote.Params => ({
   surveyId: 'any_survey_id',
   answer: 'any_answer',
   userId: 'any_user_id',
@@ -18,9 +18,9 @@ const mockRequest = (): SaveSurveyVote.Params => ({
 })
 
 type SutTypes = {
-  sut: SaveSurveyVoteController
+  sut: UserSaveSurveyVoteController
   checkSurveyContainsAnswerServiceSpy: CheckSurveyAnswerServiceSpy
-  saveSurveyVoteSpy: SaveSurveyVoteSpy
+  userSaveSurveyVoteSpy: UserSaveSurveyVoteSpy
   validationSpy: ValidationSpy
 }
 
@@ -28,18 +28,18 @@ const makeSut = (): SutTypes => {
   const checkSurveyContainsAnswerServiceSpy = new CheckSurveyAnswerServiceSpy()
   originalError = checkSurveyContainsAnswerServiceSpy.error
   checkSurveyContainsAnswerServiceSpy.error = null
-  const saveSurveyVoteSpy = new SaveSurveyVoteSpy()
+  const userSaveSurveyVoteSpy = new UserSaveSurveyVoteSpy()
   const validationSpy = new ValidationSpy()
-  const sut = new SaveSurveyVoteController(validationSpy, checkSurveyContainsAnswerServiceSpy, saveSurveyVoteSpy)
+  const sut = new UserSaveSurveyVoteController(validationSpy, checkSurveyContainsAnswerServiceSpy, userSaveSurveyVoteSpy)
   return {
     sut,
     checkSurveyContainsAnswerServiceSpy,
-    saveSurveyVoteSpy,
+    userSaveSurveyVoteSpy,
     validationSpy
   }
 }
 
-describe('SaveSurveyVote Controller', () => {
+describe('UserSaveSurveyVote Controller', () => {
   beforeAll(() => {
     MockDate.set(new Date())
   })
@@ -84,10 +84,10 @@ describe('SaveSurveyVote Controller', () => {
     expect(httpResponse).toEqual(serverError(new Error()))
   })
 
-  test('Should call SaveSurveyVote usecase with correct values', async () => {
-    const { sut, saveSurveyVoteSpy } = makeSut()
+  test('Should call UserSaveSurveyVote usecase with correct values', async () => {
+    const { sut, userSaveSurveyVoteSpy } = makeSut()
     await sut.handle(mockRequest())
-    expect(saveSurveyVoteSpy.saveSurveyVoteData).toEqual({
+    expect(userSaveSurveyVoteSpy.saveSurveyVoteData).toEqual({
       surveyId: 'any_survey_id',
       userId: 'any_user_id',
       answer: 'any_answer',
@@ -95,9 +95,9 @@ describe('SaveSurveyVote Controller', () => {
     })
   })
 
-  test('Should return 500 if SaveSurveyVote trows', async () => {
-    const { sut, saveSurveyVoteSpy } = makeSut()
-    jest.spyOn(saveSurveyVoteSpy, 'save').mockReturnValueOnce(
+  test('Should return 500 if UserSaveSurveyVote trows', async () => {
+    const { sut, userSaveSurveyVoteSpy } = makeSut()
+    jest.spyOn(userSaveSurveyVoteSpy, 'save').mockReturnValueOnce(
       Promise.reject(new Error())
     )
     const httpResponse = await sut.handle(mockRequest())

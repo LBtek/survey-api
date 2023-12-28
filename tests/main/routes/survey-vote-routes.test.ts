@@ -98,5 +98,27 @@ describe('Survey Vote Routes', () => {
         })
         .expect(200)
     })
+
+    test('Should return 200 on guest save survey vote', async () => {
+      const res = await surveyCollection.insertOne({
+        question: 'Question',
+        answers: [{
+          answer: 'Answer 1',
+          image: 'http://image-name.com',
+          numberOfVotes: 0
+        }, {
+          answer: 'Answer 2',
+          numberOfVotes: 0
+        }],
+        totalNumberOfVotes: 0,
+        date: new Date()
+      })
+      await request(app)
+        .put(`/api/guest/surveys/${res.insertedId.toString()}`)
+        .send({
+          answer: 'Answer 2'
+        })
+        .expect(200)
+    })
   })
 })

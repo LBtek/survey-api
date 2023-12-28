@@ -11,6 +11,6 @@ export class UserLoadAllSurveys implements IUserLoadAllSurveysUsecase {
 
     const surveysWithPercent = surveys.map(survey => addPercentageToAnswers(survey))
 
-    return surveysWithPercent
+    return surveysWithPercent as UserLoadAllSurveysModel.Result
   }
 }

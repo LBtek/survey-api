@@ -1,10 +1,10 @@
-import { type ISaveSurveyVote } from '@/domain/usecases/user-context'
-import { SurveyVoteMongoRepository } from '@/infra/db/mongodb/survey-vote-mongo-repository'
-import { SaveSurveyVote } from '@/application/data/usecases/survey-vote'
+import { type IUserSaveSurveyVote } from '@/domain/usecases/user-context'
+import { UserSurveyVoteMongoRepository } from '@/infra/db/mongodb/user-survey-vote-mongo-repository'
+import { UserSaveSurveyVote } from '@/application/data/usecases/survey-vote'
 import { SurveyMongoRepository } from '@/infra/db/mongodb/survey-mongo-repository'
 
-export const makeSaveSurveyVoteUsecase = (): ISaveSurveyVote => {
-  const surveyVoteMongoRepository = new SurveyVoteMongoRepository()
+export const makeUserSaveSurveyVoteUsecase = (): IUserSaveSurveyVote => {
+  const userSurveyVoteMongoRepository = new UserSurveyVoteMongoRepository()
   const surveyMongoRepository = new SurveyMongoRepository()
-  return new SaveSurveyVote(surveyVoteMongoRepository, surveyMongoRepository)
+  return new UserSaveSurveyVote(userSurveyVoteMongoRepository, surveyMongoRepository)
 }

@@ -1,17 +1,17 @@
-import { type SaveSurveyVote } from '@/domain/models'
-import { type ISaveSurveyVote as ISaveSurveyVoteUsecase } from '@/domain/usecases/user-context'
+import { type UserSaveSurveyVote } from '@/domain/models'
+import { type IUserSaveSurveyVote as IUserSaveSurveyVoteUsecase } from '@/domain/usecases/user-context'
 import { type IController, type HttpResponse, type IValidation } from '@/presentation/protocols'
 import { type ICheckSurveyContainsAnswerService } from '@/presentation/protocols/services'
 import { badRequest, ok, serverError } from '@/presentation/helpers/http/http-helper'
 
-export class SaveSurveyVoteController implements IController {
+export class UserSaveSurveyVoteController implements IController {
   constructor (
     private readonly validation: IValidation,
     private readonly checkSurveyContainsAnswer: ICheckSurveyContainsAnswerService,
-    private readonly useSaveSurveyVote: ISaveSurveyVoteUsecase
+    private readonly userSaveSurveyVote: IUserSaveSurveyVoteUsecase
   ) { }
 
-  async handle (request: SaveSurveyVote.Params): Promise<HttpResponse> {
+  async handle (request: UserSaveSurveyVote.Params): Promise<HttpResponse> {
     try {
       let error = this.validation.validate(request)
       if (error) {
@@ -22,7 +22,7 @@ export class SaveSurveyVoteController implements IController {
       if (error) {
         return badRequest(error)
       }
-      const survey = await this.useSaveSurveyVote.save(
+      const survey = await this.userSaveSurveyVote.save(
         {
           userId,
           surveyId,

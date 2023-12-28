@@ -1,8 +1,11 @@
-import { type UserLoadOneSurvey, type AnswerToUserContext } from '@/domain/models'
+import { type AnswerToUserContext } from '@/domain/models'
 import { type SurveyRepository } from '../protocols/repositories'
 
-export const addPercentageToAnswers = (survey: SurveyRepository.UserLoadOneSurvey.Result): UserLoadOneSurvey.Result => {
-  const newAnswers = survey.answers.map((a: AnswerToUserContext) => {
+type Answers = Omit<AnswerToUserContext, 'isCurrentAccountAnswer'> & { isCurrentAccountAnswer?: boolean }
+
+export const addPercentageToAnswers = (survey: SurveyRepository.LoadOneSurvey.Result):
+Omit<SurveyRepository.LoadOneSurvey.Result, 'answers'> & { answers: Answers[] } => {
+  const newAnswers = survey.answers.map((a: Answers) => {
     const answer = { ...a }
 
     answer.percent = answer.numberOfVotes && survey.totalNumberOfVotes

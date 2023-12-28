@@ -1,4 +1,4 @@
-import { type UserID, type SurveyID, type Survey } from '@/domain/entities'
+import { type UserID, type SurveyID, type Survey, type GuestID } from '@/domain/entities'
 import {
   type AnswerToUserContext,
   type UserLoadOneSurvey as UserLoadOneSurveyModel,
@@ -16,25 +16,27 @@ export namespace SurveyRepository {
     export type Result = Survey.Model
   }
 
-  export namespace UserLoadOneSurvey {
-    export type Params = UserLoadOneSurveyModel.Params
-    export type Result = Omit<UserLoadOneSurveyModel.Result, 'answers'>
-    & { answers: Array<Omit<AnswerToUserContext, 'percent'>> }
+  export namespace LoadOneSurvey {
+    export type Params = { surveyId: SurveyID, userOrGuestId: UserID | GuestID, type: 'user' | 'guest' }
+    export type Result = Omit<UserLoadOneSurveyModel.Result, 'answers' | 'didAnswer'>
+    & { answers: Array<Survey.BaseDataModel.BaseAnswer & { isCurrentAccountAnswer?: boolean }>, didAnswer?: boolean }
   }
 
   export namespace UserLoadAllSurveys {
     export type Params = UserLoadAllSurveysModel.Params
-    export type Result = UserLoadOneSurvey.Result[]
+    export type Result = Array<Omit<UserLoadOneSurveyModel.Result, 'answers'>
+    & { answers: Array<Omit<AnswerToUserContext, 'percent'>> }>
   }
 
-  export namespace UserUpdateSurvey {
+  export namespace UpdateSurvey {
     export type Params = {
-      userId: UserID
+      userOrGuestId: UserID | GuestID
+      type: 'user' | 'guest'
       surveyId: SurveyID
       oldAnswer: string
       newAnswer: string
     }
-    export type Result = UserLoadOneSurvey.Result
+    export type Result = LoadOneSurvey.Result
   }
 }
 
@@ -49,8 +51,8 @@ export interface IPublisherAddSurveyRepository {
   add: (data: SurveyRepository.PublisherAddSurvey.Params) => Promise<SurveyRepository.PublisherAddSurvey.Result>
 }
 
-export interface IUserLoadOneSurveyRepository {
-  loadSurvey: (data: SurveyRepository.UserLoadOneSurvey.Params) => Promise<SurveyRepository.UserLoadOneSurvey.Result>
+export interface ILoadOneSurveyRepository {
+  loadSurvey: (data: SurveyRepository.LoadOneSurvey.Params) => Promise<SurveyRepository.LoadOneSurvey.Result>
 }
 
 export interface IUserLoadAllSurveysRepository {
@@ -58,5 +60,9 @@ export interface IUserLoadAllSurveysRepository {
 }
 
 export interface IUserUpdateSurveyRepository {
-  update: (data: SurveyRepository.UserUpdateSurvey.Params) => Promise<SurveyRepository.UserUpdateSurvey.Result>
+  update: (data: SurveyRepository.UpdateSurvey.Params) => Promise<SurveyRepository.UpdateSurvey.Result>
+}
+
+export interface IGuestUpdateSurveyRepository {
+  update: (data: SurveyRepository.UpdateSurvey.Params) => Promise<SurveyRepository.UpdateSurvey.Result>
 }

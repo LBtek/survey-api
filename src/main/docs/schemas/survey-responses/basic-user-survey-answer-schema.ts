@@ -4,9 +4,6 @@ export const surveyAnswerForBasicUserSchema = {
   type: 'object',
   properties: {
     ...surveyAnswerSchema.properties,
-    percent: {
-      type: 'string'
-    },
     isCurrentAccountAnswer: {
       type: 'boolean'
     }

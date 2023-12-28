@@ -1,6 +1,7 @@
 export * from './survey/publisher-paths'
 export * from './survey/user-paths'
 export * from './user-survey-vote-path'
+export * from './guest-survey-vote-path'
 export * from './login-path'
 export * from './logout-paths'
 export * from './signup-path'

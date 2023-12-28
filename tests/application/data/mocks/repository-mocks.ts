@@ -2,14 +2,14 @@ import { type AnswerToUserContext } from '@/domain/models'
 import {
   type AccountRepository,
   type SurveyRepository,
-  type SurveyVoteRepository,
+  type UserSurveyVoteRepository,
   type IAddUserAccountRepository,
   type ICheckUserAccountByEmailRepository,
   type ILoadUserAccountByEmailRepository,
   type IPublisherAddSurveyRepository,
-  type ISaveSurveyVoteRepository,
+  type IUserSaveSurveyVoteRepository,
   type IUserUpdateSurveyRepository,
-  type IUserLoadOneSurveyRepository,
+  type ILoadOneSurveyRepository,
   type IUserLoadAllSurveysRepository,
   type ILoadSurveyByIdRepository,
   type ILogErrorRepository,
@@ -18,9 +18,14 @@ import {
   type ILoadOwnAuthenticatedUserRepository,
   type IAuthenticateUserRepository,
   type IDeleteAccessTokenRepository,
-  type IRefreshAccessTokenRepository
+  type IRefreshAccessTokenRepository,
+  type ILoadGuestsByAgentIdRepository,
+  type GuestRepository,
+  type ISaveGuestRepository,
+  type IGuestSaveSurveyVoteRepository,
+  type GuestSurveyVoteRepository
 } from '@/application/data/protocols/repositories'
-import { mockAccount, mockSurvey, mockUserLoadOneSurveyRepositoryResult, mockUserLoadAllSurveysRepositoryResult } from '#/domain/mocks/models'
+import { mockAccount, mockSurvey, mockLoadOneSurveyRepositoryResult, mockUserLoadAllSurveysRepositoryResult, mockLoadGuestsByAgentId, mockGuest } from '#/domain/mocks/models'
 
 export class AddAccountRepositorySpy implements IAddUserAccountRepository {
   addAccountData: AccountRepository.AddUserAccount.Params
@@ -116,56 +121,60 @@ export class PublisherAddSurveyRepositorySpy implements IPublisherAddSurveyRepos
   }
 }
 
-export class SaveSurveyVoteRepositorySpy implements ISaveSurveyVoteRepository {
-  saveSurveyVoteData: SurveyVoteRepository.Save.Params
-  oldSurveyVote: SurveyVoteRepository.Save.Result = undefined
+export class UserSaveSurveyVoteRepositorySpy implements IUserSaveSurveyVoteRepository {
+  saveSurveyVoteData: UserSurveyVoteRepository.UserSaveVote.Params
+  oldSurveyVote: UserSurveyVoteRepository.UserSaveVote.Result = undefined
 
-  async save (data: SurveyVoteRepository.Save.Params): Promise<SurveyVoteRepository.Save.Result> {
+  async userSaveVote (data: UserSurveyVoteRepository.UserSaveVote.Params): Promise<UserSurveyVoteRepository.UserSaveVote.Result> {
     this.saveSurveyVoteData = data
     return this.oldSurveyVote
   }
 }
 
-export class UserUpdateSurveyRepositorySpy implements IUserUpdateSurveyRepository {
+export class UpdateSurveyRepositorySpy implements IUserUpdateSurveyRepository {
   oldSurvey = mockSurvey()
-  newSurvey: SurveyRepository.UserUpdateSurvey.Result
+  newSurvey: SurveyRepository.UpdateSurvey.Result
   oldAnswer: string
   newAnswer: string
 
-  async update (data: SurveyRepository.UserUpdateSurvey.Params): Promise<SurveyRepository.UserUpdateSurvey.Result> {
+  async update (data: SurveyRepository.UpdateSurvey.Params): Promise<SurveyRepository.UpdateSurvey.Result> {
     const { surveyId, oldAnswer, newAnswer } = data
     this.oldSurvey.id = surveyId
     this.oldAnswer = oldAnswer
     this.newAnswer = newAnswer
+    const isUser = data.type === 'user'
     this.newSurvey = {
       ...this.oldSurvey,
       answers: this.oldSurvey.answers.map((a: AnswerToUserContext) => {
         const answer = { ...a }
-        answer.isCurrentAccountAnswer = false
+        if (isUser) answer.isCurrentAccountAnswer = false
         if (oldAnswer && answer.answer === oldAnswer) {
           answer.numberOfVotes = answer.numberOfVotes - 1
         }
         if (answer.answer === newAnswer) {
           answer.numberOfVotes = answer.numberOfVotes + 1
-          answer.isCurrentAccountAnswer = true
+          if (isUser) answer.isCurrentAccountAnswer = true
         }
         return answer
       }),
-      totalNumberOfVotes: oldAnswer ? this.oldSurvey.totalNumberOfVotes : this.oldSurvey.totalNumberOfVotes + 1,
-      didAnswer: true
+      totalNumberOfVotes: oldAnswer ? this.oldSurvey.totalNumberOfVotes : this.oldSurvey.totalNumberOfVotes + 1
     }
+    if (isUser) this.newSurvey.didAnswer = true
     return this.newSurvey
   }
 }
 
-export class UserLoadOneSurveyRepositorySpy implements IUserLoadOneSurveyRepository {
-  survey = mockUserLoadOneSurveyRepositoryResult()
+export class LoadOneSurveyRepositorySpy implements ILoadOneSurveyRepository {
+  survey: SurveyRepository.LoadOneSurvey.Result
   surveyId: string
   userId: string
+  guestId: string
 
-  async loadSurvey (data: SurveyRepository.UserLoadOneSurvey.Params): Promise<SurveyRepository.UserLoadOneSurvey.Result> {
+  async loadSurvey (data: SurveyRepository.LoadOneSurvey.Params): Promise<SurveyRepository.LoadOneSurvey.Result> {
     this.surveyId = data.surveyId
-    this.userId = data.userId
+    this.userId = data.type === 'user' ? data.userOrGuestId : null
+    this.guestId = data.type === 'guest' ? data.userOrGuestId : null
+    this.survey = mockLoadOneSurveyRepositoryResult(data.type)
     return this.survey
   }
 }
@@ -197,5 +206,37 @@ export class LogErrorRepositorySpy implements ILogErrorRepository {
   async logError (stack: string, typeError: LogTypeError): Promise<void> {
     this.stack = stack
     this.typeError = typeError
+  }
+}
+
+export class LoadGuestsByAgentIdRepositorySpy implements ILoadGuestsByAgentIdRepository {
+  loadDataParams: GuestRepository.LoadGuestsByAgentId.Params
+  guests = mockLoadGuestsByAgentId()
+
+  async loadByAgentId (data: GuestRepository.LoadGuestsByAgentId.Params): Promise<GuestRepository.LoadGuestsByAgentId.Result> {
+    this.loadDataParams = data
+
+    return this.guests
+  }
+}
+
+export class SaveGuestRepositorySpy implements ISaveGuestRepository {
+  saveDataParams: GuestRepository.SaveGuest.Params
+  saveResult = mockGuest()
+
+  async save (data: GuestRepository.SaveGuest.Params): Promise<GuestRepository.SaveGuest.Result> {
+    this.saveDataParams = data
+
+    return this.saveResult
+  }
+}
+
+export class GuestSaveSurveyVoteRepositorySpy implements IGuestSaveSurveyVoteRepository {
+  saveSurveyVoteData: GuestSurveyVoteRepository.GuestSaveVote.Params
+  oldSurveyVote: GuestSurveyVoteRepository.GuestSaveVote.Result = undefined
+
+  async guestSaveVote (data: GuestSurveyVoteRepository.GuestSaveVote.Params): Promise<GuestSurveyVoteRepository.GuestSaveVote.Result> {
+    this.saveSurveyVoteData = data
+    return this.oldSurveyVote
   }
 }

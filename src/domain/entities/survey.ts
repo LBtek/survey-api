@@ -2,6 +2,7 @@ export type SurveyID = string
 
 export namespace Survey {
   export type Model = { id: SurveyID } & BaseDataModel.Body
+  export type ModelForPubisher = { id: SurveyID } & BaseDataModel.DataModelForPublisher
 
   export namespace BaseDataModel {
     export type Body = {
@@ -14,6 +15,9 @@ export namespace Survey {
       image?: string
       answer: string
       numberOfVotes: number
+    }
+    export type DataModelForPublisher = Body & {
+      publisherAccountId: string
     }
   }
 }

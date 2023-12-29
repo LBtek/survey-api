@@ -1,4 +1,5 @@
 import { type UserID, type SurveyID, type Survey } from '../entities'
+import { type AccountID } from '@/application/entities'
 import { type AnswersLengthError } from '../errors'
 
 export type AnswerToUserContext =
@@ -9,7 +10,7 @@ export type AnswerToUserContext =
 
 export namespace PublisherAddSurvey {
   export type Params =
-    Omit<Survey.BaseDataModel.Body, 'totalNumberOfVotes' | 'answers'>
+    Omit<Survey.BaseDataModel.DataModelForPublisher, 'totalNumberOfVotes' | 'answers'>
     & { answers: Array<Omit<Survey.BaseDataModel.BaseAnswer, 'numberOfVotes'>> }
 
   export type Result = 'Ok' | AnswersLengthError
@@ -42,4 +43,11 @@ export namespace UserLoadAllSurveys {
     userId: UserID
   }
   export type Result = UserLoadOneSurvey.Result[]
+}
+
+export namespace PublisherLoadSurveys {
+  export type Params = {
+    publisherAccountId: AccountID
+  }
+  export type Result = Survey.ModelForPubisher[]
 }

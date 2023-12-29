@@ -2,13 +2,19 @@ import { type UserID, type SurveyID, type Survey, type GuestID } from '@/domain/
 import {
   type AnswerToUserContext,
   type UserLoadOneSurvey as UserLoadOneSurveyModel,
-  type UserLoadAllSurveys as UserLoadAllSurveysModel
+  type UserLoadAllSurveys as UserLoadAllSurveysModel,
+  type PublisherLoadSurveys as PublisherLoadSurveysModel
 } from '@/domain/models'
 
 export namespace SurveyRepository {
   export namespace PublisherAddSurvey {
-    export type Params = Survey.BaseDataModel.Body
+    export type Params = Survey.BaseDataModel.DataModelForPublisher
     export type Result = { surveyId: SurveyID }
+  }
+
+  export namespace PublisherLoadSurveys {
+    export type Params = PublisherLoadSurveysModel.Params
+    export type Result = PublisherLoadSurveysModel.Result
   }
 
   export namespace LoadSurveyById {
@@ -49,6 +55,10 @@ export interface ILoadSurveyByIdRepository {
 
 export interface IPublisherAddSurveyRepository {
   add: (data: SurveyRepository.PublisherAddSurvey.Params) => Promise<SurveyRepository.PublisherAddSurvey.Result>
+}
+
+export interface IPublisherLoadSurveysRepository {
+  publisherLoadSurveys: (data: SurveyRepository.PublisherLoadSurveys.Params) => Promise<SurveyRepository.PublisherLoadSurveys.Result>
 }
 
 export interface ILoadOneSurveyRepository {

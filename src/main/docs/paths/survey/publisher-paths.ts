@@ -1,3 +1,5 @@
+import { surveyForPublisherExample } from '../../schemas/survey-responses/publisher-survey-schema'
+
 export const publisherAddSurveyPath = {
   post: {
     security: [{
@@ -21,6 +23,42 @@ export const publisherAddSurveyPath = {
       },
       400: {
         $ref: '#/components/badRequest'
+      },
+      500: {
+        $ref: '#/components/serverError'
+      }
+    }
+  }
+}
+
+export const publisherLoadSurveysPath = {
+  get: {
+    security: [{
+      apiKeyAuth: []
+    }],
+    tags: ['Enquetes'],
+    summary: 'API para um publicador listar as suas enquetes',
+    responses: {
+      200: {
+        description: 'Sucesso',
+        content: {
+          'application/json': {
+            schema: {
+              $ref: '#/schemas/surveysForPublisher'
+            },
+            examples: {
+              example01: {
+                value: [surveyForPublisherExample]
+              }
+            }
+          }
+        }
+      },
+      204: {
+        description: 'Nenhuma enquete encontrada'
+      },
+      403: {
+        $ref: '#/components/forbidden'
       },
       500: {
         $ref: '#/components/serverError'

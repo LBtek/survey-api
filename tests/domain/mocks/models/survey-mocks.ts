@@ -19,6 +19,7 @@ const mockAnswers = (): Array<Omit<Survey.BaseDataModel.BaseAnswer, 'numberOfVot
 }
 
 export const mockAddSurveyParams = (): PublisherAddSurvey.Params => ({
+  publisherAccountId: 'any_account_id',
   question: 'any_question',
   answers: mockAnswers(),
   date
@@ -36,7 +37,7 @@ export const mockAddSurveyRepositoryParams = (): SurveyRepository.PublisherAddSu
   }
 }
 
-export const mockSurvey = (): Survey.BaseDataModel.Body & { id: string } => ({
+export const mockSurvey = (): Survey.ModelForPubisher => ({
   id: 'any_survey_id',
   ...mockAddSurveyRepositoryParams()
 })

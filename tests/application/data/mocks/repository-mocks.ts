@@ -1,4 +1,4 @@
-import { type AnswerToUserContext } from '@/domain/models'
+import { type PublisherLoadSurveys, type AnswerToUserContext } from '@/domain/models'
 import {
   type AccountRepository,
   type SurveyRepository,
@@ -23,7 +23,8 @@ import {
   type GuestRepository,
   type ISaveGuestRepository,
   type IGuestSaveSurveyVoteRepository,
-  type GuestSurveyVoteRepository
+  type GuestSurveyVoteRepository,
+  type IPublisherLoadSurveysRepository
 } from '@/application/data/protocols/repositories'
 import { mockAccount, mockSurvey, mockLoadOneSurveyRepositoryResult, mockUserLoadAllSurveysRepositoryResult, mockLoadGuestsByAgentId, mockGuest } from '#/domain/mocks/models'
 
@@ -176,6 +177,19 @@ export class LoadOneSurveyRepositorySpy implements ILoadOneSurveyRepository {
     this.guestId = data.type === 'guest' ? data.userOrGuestId : null
     this.survey = mockLoadOneSurveyRepositoryResult(data.type)
     return this.survey
+  }
+}
+
+export class PulisherLoadSurveysRepositorySpy implements IPublisherLoadSurveysRepository {
+  params: PublisherLoadSurveys.Params
+  result: PublisherLoadSurveys.Result = [{
+    ...mockLoadOneSurveyRepositoryResult('guest'),
+    publisherAccountId: 'any_account_id'
+  }]
+
+  async publisherLoadSurveys (data: PublisherLoadSurveys.Params): Promise<PublisherLoadSurveys.Result> {
+    this.params = data
+    return this.result
   }
 }
 

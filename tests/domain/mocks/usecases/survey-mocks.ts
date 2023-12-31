@@ -1,14 +1,18 @@
 import {
+  type PublisherLoadSurveys,
   type PublisherAddSurvey,
   type UserLoadAllSurveys,
   type UserLoadOneSurvey
 } from '@/domain/models'
-import { type IPublisherAddSurvey as IPublisherAddSurveyUsecase } from '@/domain/usecases/publisher-context'
+import {
+  type IPublisherAddSurvey as IPublisherAddSurveyUsecase,
+  type IPublisherLoadSurveys as IPublisherLoadSurveysUsecase
+} from '@/domain/usecases/publisher-context'
 import {
   type IUserLoadOneSurvey as IUserLoadOneSurveyUsecase,
   type IUserLoadAllSurveys as IUserLoadAllSurveysUsecase
 } from '@/domain/usecases/user-context'
-import { mockAllSurveysToUserContext, mockSurveyToUserContext } from '../models'
+import { mockAllSurveysToUserContext, mockSurvey, mockSurveyToUserContext } from '../models'
 
 export class PublisherAddSurveySpy implements IPublisherAddSurveyUsecase {
   addSurveyData: PublisherAddSurvey.Params
@@ -17,6 +21,16 @@ export class PublisherAddSurveySpy implements IPublisherAddSurveyUsecase {
   async add (data: PublisherAddSurvey.Params): Promise<PublisherAddSurvey.Result> {
     this.addSurveyData = data
 
+    return this.result
+  }
+}
+
+export class PublisherLoadSurveysSpy implements IPublisherLoadSurveysUsecase {
+  params: PublisherLoadSurveys.Params
+  result: PublisherLoadSurveys.Result = [mockSurvey()]
+
+  async load (data: PublisherLoadSurveys.Params): Promise<PublisherLoadSurveys.Result> {
+    this.params = data
     return this.result
   }
 }

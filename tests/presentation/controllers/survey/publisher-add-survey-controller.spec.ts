@@ -1,4 +1,3 @@
-import { type PublisherAddSurvey } from '@/domain/models'
 import { PublisherAddSurveyController } from '@/presentation/controllers'
 import { PublisherAddSurveySpy } from '#/domain/mocks/usecases'
 import { mockAddSurveyParams } from '#/domain/mocks/models'
@@ -7,8 +6,9 @@ import { badRequest, noContent, serverError } from '@/presentation/helpers/http/
 import MockDate from 'mockdate'
 import { AnswersLengthError } from '@/domain/errors'
 
-const mockRequest = (): PublisherAddSurvey.Params => ({
+const mockRequest = (): any => ({
   ...mockAddSurveyParams(),
+  accountId: mockAddSurveyParams().publisherAccountId,
   date: new Date()
 })
 
@@ -56,6 +56,7 @@ describe('PublisherAddSurvey Controller', () => {
     const { sut, addSurveySpy } = makeSut()
     const request = mockRequest()
     await sut.handle(request)
+    delete request.accountId
     expect(addSurveySpy.addSurveyData).toEqual(request)
   })
 

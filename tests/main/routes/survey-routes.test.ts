@@ -102,6 +102,33 @@ describe('Survey Routes', () => {
     })
   })
 
+  describe('GET /publisher/surveys', () => {
+    test('Should return 403 on load surveys without accessToken', async () => {
+      await request(app)
+        .get('/api/publisher/surveys')
+        .send()
+        .expect(403)
+    })
+
+    test('Should return 403 on load surveys with invalid accessToken role', async () => {
+      const accessToken = await makeAccessToken('basic_user')
+      await request(app)
+        .get('/api/publisher/surveys')
+        .set('x-access-token', accessToken)
+        .send()
+        .expect(403)
+    })
+
+    test('Should return 204 on add survey with valid accessToken', async () => {
+      const accessToken = await makeAccessToken('publisher')
+      await request(app)
+        .get('/api/publisher/surveys')
+        .set('x-access-token', accessToken)
+        .send()
+        .expect(204)
+    })
+  })
+
   describe('GET /user/surveys', () => {
     test('Should return 403 on load surveys without accessToken', async () => {
       await request(app)

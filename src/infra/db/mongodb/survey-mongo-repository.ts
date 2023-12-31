@@ -6,7 +6,8 @@ import {
   type IUserUpdateSurveyRepository,
   type ILoadSurveyByIdRepository,
   type LoadSurveyByIdParams,
-  type LoadSurveyByIdResult
+  type LoadSurveyByIdResult,
+  type IPublisherLoadSurveysRepository
 } from '@/application/data/protocols/repositories'
 import { MongoHelper } from './helpers/mongo-helper'
 import { MongoAggregateQueryBuilder } from './helpers/query-builder'
@@ -93,7 +94,7 @@ const makeFindSurveysQuery = (id: UserID | GuestID, type: 'user' | 'guest', surv
   return query
 }
 
-export class SurveyMongoRepository implements IPublisherAddSurveyRepository, ILoadOneSurveyRepository, IUserLoadAllSurveysRepository, ILoadSurveyByIdRepository, IUserUpdateSurveyRepository {
+export class SurveyMongoRepository implements IPublisherAddSurveyRepository, ILoadOneSurveyRepository, IUserLoadAllSurveysRepository, ILoadSurveyByIdRepository, IUserUpdateSurveyRepository, IPublisherLoadSurveysRepository {
   async add (surveyData: SurveyRepository.PublisherAddSurvey.Params): Promise<SurveyRepository.PublisherAddSurvey.Result> {
     const surveyCollection = await MongoHelper.getCollection('surveys')
     const result = await surveyCollection.insertOne(surveyData)
@@ -194,5 +195,11 @@ export class SurveyMongoRepository implements IPublisherAddSurveyRepository, ILo
       })
 
     return await this.loadSurvey({ surveyId, userOrGuestId, type })
+  }
+
+  async publisherLoadSurveys (data: SurveyRepository.PublisherLoadSurveys.Params): Promise<SurveyRepository.PublisherLoadSurveys.Result> {
+    const surveysCollection = await MongoHelper.getCollection('surveys')
+    const surveys = await surveysCollection.find({ publisherAccountId: data.publisherAccountId }).toArray()
+    return MongoHelper.mapManyDocumentsWithId(surveys)
   }
 }

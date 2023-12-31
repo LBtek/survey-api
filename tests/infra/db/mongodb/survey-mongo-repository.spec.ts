@@ -121,6 +121,7 @@ describe('Survey Mongo Repository', () => {
           answer: 'other_answer',
           numberOfVotes: 0
         }],
+        publisherAccountId: 'any_account_id',
         date: new Date(),
         totalNumberOfVotes: 0
       })
@@ -165,6 +166,27 @@ describe('Survey Mongo Repository', () => {
       expect(surveyLoaded).toBeTruthy()
       expect(surveyLoaded.id).toBeTruthy()
       expect(surveyLoaded.id).toBe(surveyId)
+    })
+  })
+
+  describe('publisherLoadSurveys()', () => {
+    test('Should publisher load surveys on success', async () => {
+      await surveyCollection.insertOne(mockAddSurveyRepositoryParams())
+      const { sut } = makeSut()
+      let publisherAccountId = 'any_account_id'
+      let surveysLoaded = await sut.publisherLoadSurveys({ publisherAccountId })
+      expect(surveysLoaded.length).toBe(1)
+      expect(surveysLoaded[0].id).toBeTruthy()
+      expect(surveysLoaded[0].publisherAccountId).toBe(publisherAccountId)
+
+      publisherAccountId = 'other_account_id'
+      await surveyCollection.insertOne({ ...mockAddSurveyRepositoryParams(), publisherAccountId })
+      surveysLoaded = await sut.publisherLoadSurveys({ publisherAccountId })
+      expect(surveysLoaded.length).toBe(1)
+      expect(surveysLoaded[0].publisherAccountId).toBe(publisherAccountId)
+
+      surveysLoaded = await sut.publisherLoadSurveys({ publisherAccountId: 'account_not_exists' })
+      expect(surveysLoaded.length).toBe(0)
     })
   })
 
@@ -217,6 +239,7 @@ describe('Survey Mongo Repository', () => {
       await sut.add(mockAddSurveyRepositoryParams())
       const surveyFound = await surveyCollection.findOne({ question: 'any_question' })
       const survey: any = MongoHelper.mapOneDocumentWithId(surveyFound)
+      delete survey.publisherAccountId
 
       let updatedSurvey = await saveSurveyVoteAndUpdateSurvey.saveAndUpdate(
         survey.id,

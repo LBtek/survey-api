@@ -1,26 +1,25 @@
-import { type UserLoadOneSurvey } from '@/domain/models'
+import { type GuestLoadOneSurvey } from '@/domain/models'
 import { InvalidParamError } from '@/presentation/errors'
-import { UserLoadOneSurveyController } from '@/presentation/controllers'
+import { GuestLoadOneSurveyController } from '@/presentation/controllers'
 import { badRequest, forbidden, ok, serverError } from '@/presentation/helpers/http/http-helper'
 import { ValidationSpy } from '#/presentation/_mocks'
-import { UserLoadOneSurveySpy } from '#/domain/mocks/usecases'
-import { mockSurveyToUserContext } from '#/domain/mocks/models'
+import { GuestLoadOneSurveySpy } from '#/domain/mocks/usecases'
+import { mockSurveyToGuestContext } from '#/domain/mocks/models'
 
-const mockRequest = (): UserLoadOneSurvey.Params => ({
-  userId: 'any_user_id',
+const mockRequest = (): GuestLoadOneSurvey.Params => ({
   surveyId: 'any_survey_id'
 })
 
 type SutTypes = {
-  sut: UserLoadOneSurveyController
+  sut: GuestLoadOneSurveyController
   validationSpy: ValidationSpy
-  loadSurveySpy: UserLoadOneSurveySpy
+  loadSurveySpy: GuestLoadOneSurveySpy
 }
 
 const makeSut = (): SutTypes => {
-  const loadSurveySpy = new UserLoadOneSurveySpy()
+  const loadSurveySpy = new GuestLoadOneSurveySpy()
   const validationSpy = new ValidationSpy()
-  const sut = new UserLoadOneSurveyController(loadSurveySpy, validationSpy)
+  const sut = new GuestLoadOneSurveyController(loadSurveySpy, validationSpy)
   return {
     sut,
     loadSurveySpy,
@@ -48,7 +47,6 @@ describe('LoadSurveys Controller', () => {
     const request = mockRequest()
     await sut.handle(request)
     expect(loadSurveySpy.surveyId).toBe(request.surveyId)
-    expect(loadSurveySpy.userId).toBe(request.userId)
   })
 
   test('Should return 403 if survey is not found ', async () => {
@@ -61,7 +59,7 @@ describe('LoadSurveys Controller', () => {
   test('Should return 200 on success', async () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle(mockRequest())
-    expect(httpResponse).toEqual(ok(mockSurveyToUserContext()))
+    expect(httpResponse).toEqual(ok(mockSurveyToGuestContext()))
   })
 
   test('Should return 500 if LoadSurvey trows', async () => {

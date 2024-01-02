@@ -2,7 +2,8 @@ import {
   type PublisherLoadSurveys,
   type PublisherAddSurvey,
   type UserLoadAllSurveys,
-  type UserLoadOneSurvey
+  type UserLoadOneSurvey,
+  type GuestLoadOneSurvey
 } from '@/domain/models'
 import {
   type IPublisherAddSurvey as IPublisherAddSurveyUsecase,
@@ -12,7 +13,8 @@ import {
   type IUserLoadOneSurvey as IUserLoadOneSurveyUsecase,
   type IUserLoadAllSurveys as IUserLoadAllSurveysUsecase
 } from '@/domain/usecases/user-context'
-import { mockAllSurveysToUserContext, mockSurvey, mockSurveyToUserContext } from '../models'
+import { mockAllSurveysToUserContext, mockSurvey, mockSurveyToGuestContext, mockSurveyToUserContext } from '../models'
+import { type IGuestLoadOneSurvey as IGuestLoadOneSurveyUsecase } from '@/domain/usecases/guest-context'
 
 export class PublisherAddSurveySpy implements IPublisherAddSurveyUsecase {
   addSurveyData: PublisherAddSurvey.Params
@@ -53,6 +55,16 @@ export class UserLoadOneSurveySpy implements IUserLoadOneSurveyUsecase {
   async load (data: UserLoadOneSurvey.Params): Promise<UserLoadOneSurvey.Result> {
     this.surveyId = data.surveyId
     this.userId = data.userId
+    return this.survey
+  }
+}
+
+export class GuestLoadOneSurveySpy implements IGuestLoadOneSurveyUsecase {
+  surveyId: string
+  survey = mockSurveyToGuestContext()
+
+  async load (data: GuestLoadOneSurvey.Params): Promise<GuestLoadOneSurvey.Result> {
+    this.surveyId = data.surveyId
     return this.survey
   }
 }

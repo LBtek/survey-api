@@ -1,9 +1,12 @@
-import { surveyForGuestExample } from '../schemas'
+import { surveyForBasicUserExample } from '../../schemas'
 
-export const guestSurveyVotePath = {
+export const userSurveyVotePath = {
   put: {
+    security: [{
+      apiKeyAuth: []
+    }],
     tags: ['Enquetes'],
-    summary: 'API para um convidado votar numa enquete',
+    summary: 'API para um usuário votar numa enquete',
     parameters: [{
       name: 'surveyId',
       in: 'path',
@@ -17,7 +20,7 @@ export const guestSurveyVotePath = {
       content: {
         'application/json': {
           schema: {
-            $ref: '#/schemas/guestSurveyVoteParams'
+            $ref: '#/schemas/surveyVoteParams'
           }
         }
       }
@@ -28,11 +31,11 @@ export const guestSurveyVotePath = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/guestSurveyVote'
+              $ref: '#/schemas/surveyForBasicUser'
             },
             examples: {
               example01: {
-                value: surveyForGuestExample
+                value: surveyForBasicUserExample
               }
             }
           }
@@ -40,6 +43,9 @@ export const guestSurveyVotePath = {
       },
       400: {
         $ref: '#/components/badRequest'
+      },
+      403: {
+        $ref: '#/components/forbidden'
       },
       500: {
         $ref: '#/components/serverError'

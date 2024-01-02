@@ -1,12 +1,9 @@
-import { surveyForBasicUserExample } from '../schemas'
+import { surveyForGuestExample } from '../../schemas'
 
-export const userSurveyVotePath = {
-  put: {
-    security: [{
-      apiKeyAuth: []
-    }],
+export const guestLoadOneSurveyPath = {
+  get: {
     tags: ['Enquetes'],
-    summary: 'API para um usuário votar numa enquete',
+    summary: 'API para um convidado buscar uma enquete',
     parameters: [{
       name: 'surveyId',
       in: 'path',
@@ -15,34 +12,24 @@ export const userSurveyVotePath = {
       },
       required: true
     }],
-    requestBody: {
-      required: true,
-      content: {
-        'application/json': {
-          schema: {
-            $ref: '#/schemas/surveyVoteParams'
-          }
-        }
-      }
-    },
     responses: {
       200: {
         description: 'Sucesso',
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/surveyForBasicUser'
+              $ref: '#/schemas/survey'
             },
             examples: {
               example01: {
-                value: surveyForBasicUserExample
+                value: surveyForGuestExample.survey
               }
             }
           }
         }
       },
-      400: {
-        $ref: '#/components/badRequest'
+      204: {
+        description: 'Nenhuma enquete encontrada'
       },
       403: {
         $ref: '#/components/forbidden'

@@ -1,4 +1,4 @@
-import { type Collection } from 'mongodb'
+import { ObjectId, type Collection } from 'mongodb'
 import { type User } from '@/domain/entities'
 import { type Account } from '@/application/entities'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
@@ -167,6 +167,21 @@ describe('Survey Routes', () => {
       await request(app)
         .get(`/api/user/surveys/${res.insertedId.toString()}`)
         .set('x-access-token', accessToken)
+        .expect(200)
+    })
+  })
+
+  describe('GET /guest/surveys/:surveyId', () => {
+    test('Should return 403 if survey not exist', async () => {
+      await request(app)
+        .get(`/api/guest/surveys/${new ObjectId().toString()}`)
+        .expect(403)
+    })
+
+    test('Should return 200 on load survey', async () => {
+      const res = await surveyCollection.insertOne(surveyToInsertOnDatabase)
+      await request(app)
+        .get(`/api/guest/surveys/${res.insertedId.toString()}`)
         .expect(200)
     })
   })

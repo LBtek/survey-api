@@ -19,7 +19,7 @@ export namespace SurveyRepository {
 
   export namespace LoadSurveyById {
     export type Params = { id: SurveyID }
-    export type Result = Survey.Model
+    export type Result = Survey.ModelForPubisher
   }
 
   export namespace LoadOneSurvey {

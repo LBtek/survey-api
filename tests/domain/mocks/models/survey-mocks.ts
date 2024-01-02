@@ -3,7 +3,8 @@ import {
   type PublisherAddSurvey,
   type AnswerToUserContext,
   type UserLoadOneSurvey,
-  type UserLoadAllSurveys
+  type UserLoadAllSurveys,
+  type GuestLoadOneSurvey
 } from '@/domain/models'
 import { type SurveyRepository } from '@/application/data/protocols/repositories'
 
@@ -43,16 +44,19 @@ export const mockSurvey = (): Survey.ModelForPubisher => ({
 })
 
 export const mockLoadOneSurveyRepositoryResult = (type: 'user' | 'guest'): SurveyRepository.LoadOneSurvey.Result => {
-  const survey: SurveyRepository.LoadOneSurvey.Result = {
-    ...mockSurvey(),
+  const survey = mockSurvey()
+  delete survey.publisherAccountId
+
+  const result: SurveyRepository.LoadOneSurvey.Result = {
+    ...survey,
     answers: mockSurvey().answers.map((answer: AnswerToUserContext) => {
       if (type === 'user') answer.isCurrentAccountAnswer = false
       return answer
     })
   }
-  if (type === 'user') survey.didAnswer = false
+  if (type === 'user') result.didAnswer = false
 
-  return survey
+  return result
 }
 
 export const mockUserLoadAllSurveysRepositoryResult = (): SurveyRepository.UserLoadAllSurveys.Result => {
@@ -72,6 +76,14 @@ export const mockUserLoadAllSurveysRepositoryResult = (): SurveyRepository.UserL
       didAnswer: false
     }]
 }
+
+export const mockSurveyToGuestContext = (): GuestLoadOneSurvey.Result => ({
+  ...mockLoadOneSurveyRepositoryResult('guest') as GuestLoadOneSurvey.Result,
+  answers: mockLoadOneSurveyRepositoryResult('guest').answers.map((answer: AnswerToUserContext) => {
+    answer.percent = 0
+    return answer
+  })
+})
 
 export const mockSurveyToUserContext = (): UserLoadOneSurvey.Result => ({
   ...mockLoadOneSurveyRepositoryResult('user') as UserLoadOneSurvey.Result,

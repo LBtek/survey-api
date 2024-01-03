@@ -7,7 +7,7 @@ export class UserLoadAllSurveys implements IUserLoadAllSurveysUsecase {
   constructor (private readonly userLoadAllSurveysRepository: IUserLoadAllSurveysRepository) { }
 
   async load (data: UserLoadAllSurveysModel.Params): Promise<UserLoadAllSurveysModel.Result> {
-    const surveys = await this.userLoadAllSurveysRepository.loadAll(data)
+    const surveys = await this.userLoadAllSurveysRepository.userLoadAllSurveys(data)
 
     const surveysWithPercent = surveys.map(survey => addPercentageToAnswers(survey))
 

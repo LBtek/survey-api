@@ -29,6 +29,39 @@ export const guestLoadOneSurveyPath = {
         }
       },
       204: {
+        description: 'Enquete não encontrada'
+      },
+      403: {
+        $ref: '#/components/forbidden'
+      },
+      500: {
+        $ref: '#/components/serverError'
+      }
+    }
+  }
+}
+
+export const guestLoadAllSurveysPath = {
+  get: {
+    tags: ['Enquetes'],
+    summary: 'API para um convidado listar todas as enquetes',
+    responses: {
+      200: {
+        description: 'Sucesso',
+        content: {
+          'application/json': {
+            schema: {
+              $ref: '#/schemas/surveys'
+            },
+            examples: {
+              example01: {
+                value: [surveyForGuestExample.survey]
+              }
+            }
+          }
+        }
+      },
+      204: {
         description: 'Nenhuma enquete encontrada'
       },
       403: {

@@ -1,5 +1,5 @@
-import { loginPath, logoutPathByQuery, logoutPathByParams, logoutPathPostAndPut, publisherAddSurveyPath, publisherLoadSurveysPath, signUpPath, userLoadAllSurveysPath, userLoadOneSurveyPath, userSurveyVotePath, guestSurveyVotePath, guestLoadOneSurveyPath } from './paths'
-import { addSurveyParamsSchema, apiKeyAuthSchema, errorSchema, guestSurveyVoteParamsSchema, guestSurveyVoteSchema, loginParamsSchema, loginResponseSchema, logoutParamsSchema, publisherSurveySchema, signUpParamsSchema, surveyAnswerForBasicUserSchema, surveyAnswerSchema, surveyForBasicUserSchema, surveyIdParamSchema, surveySchema, surveyVoteParamsSchema, surveysForBasicUserSchema } from './schemas'
+import { loginPath, logoutPathByQuery, logoutPathByParams, logoutPathPostAndPut, publisherAddSurveyPath, publisherLoadSurveysPath, signUpPath, userLoadAllSurveysPath, userLoadOneSurveyPath, userSurveyVotePath, guestSurveyVotePath, guestLoadOneSurveyPath, guestLoadAllSurveysPath } from './paths'
+import { addSurveyParamsSchema, apiKeyAuthSchema, errorSchema, guestSurveyVoteParamsSchema, guestSurveyVoteSchema, loginParamsSchema, loginResponseSchema, logoutParamsSchema, publisherSurveySchema, signUpParamsSchema, surveyAnswerForBasicUserSchema, surveyAnswerSchema, surveyForBasicUserSchema, surveyIdParamSchema, surveySchema, surveyVoteParamsSchema, surveysForBasicUserSchema, surveysForGuestSchema, surveysForPublisherSchema } from './schemas'
 import { badRequest, serverError, unauthorized, forbidden } from './components'
 
 export default {
@@ -26,6 +26,7 @@ export default {
     '/publisher/surveys': { ...publisherAddSurveyPath, ...publisherLoadSurveysPath },
     '/user/surveys': userLoadAllSurveysPath,
     '/user/surveys/{surveyId}': { ...userLoadOneSurveyPath, ...userSurveyVotePath },
+    '/guest/surveys': guestLoadAllSurveysPath,
     '/guest/surveys/{surveyId}': { ...guestSurveyVotePath, ...guestLoadOneSurveyPath }
   },
   schemas: {
@@ -39,11 +40,13 @@ export default {
     guestSurveyVote: guestSurveyVoteSchema,
     surveyIdParam: surveyIdParamSchema,
     survey: surveySchema,
+    surveys: surveysForGuestSchema,
     surveyAnswer: surveyAnswerSchema,
     surveyAnswerForBasicUser: surveyAnswerForBasicUserSchema,
     surveyForBasicUser: surveyForBasicUserSchema,
-    surveysForPublisher: publisherSurveySchema,
     surveysForBasicUser: surveysForBasicUserSchema,
+    surveyForPublisher: publisherSurveySchema,
+    surveysForPublisher: surveysForPublisherSchema,
     error: errorSchema
   },
   components: {

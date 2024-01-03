@@ -32,7 +32,7 @@ export const userLoadOneSurveyPath = {
         }
       },
       204: {
-        description: 'Nenhuma enquete encontrada'
+        description: 'Enquete não encontrada'
       },
       403: {
         $ref: '#/components/forbidden'

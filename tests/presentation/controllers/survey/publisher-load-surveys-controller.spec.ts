@@ -1,7 +1,6 @@
 import { PublisherLoadSurveysController } from '@/presentation/controllers'
 import { PublisherLoadSurveysSpy } from '#/domain/mocks/usecases'
 import { noContent, ok, serverError } from '@/presentation/helpers/http/http-helper'
-import MockDate from 'mockdate'
 
 const mockRequest = (): any => ({ accountId: 'any_account_id' })
 
@@ -20,14 +19,6 @@ const makeSut = (): SutTypes => {
 }
 
 describe('LoadSurveys Controller', () => {
-  beforeAll(() => {
-    MockDate.set(new Date())
-  })
-
-  afterAll(() => {
-    MockDate.reset()
-  })
-
   test('Should call LoadSurveys with correct publisherAccountId', async () => {
     const { sut, loadSurveysSpy } = makeSut()
     const httpRequest = mockRequest()

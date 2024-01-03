@@ -3,7 +3,6 @@ import { UserLoadAllSurveysController } from '@/presentation/controllers'
 import { UserLoadAllSurveysSpy } from '#/domain/mocks/usecases'
 import { mockAllSurveysToUserContext } from '#/domain/mocks/models'
 import { noContent, ok, serverError } from '@/presentation/helpers/http/http-helper'
-import MockDate from 'mockdate'
 
 const mockRequest = (): UserLoadAllSurveys.Params => ({ userId: 'any_user_id' })
 
@@ -22,14 +21,6 @@ const makeSut = (): SutTypes => {
 }
 
 describe('LoadSurveys Controller', () => {
-  beforeAll(() => {
-    MockDate.set(new Date())
-  })
-
-  afterAll(() => {
-    MockDate.reset()
-  })
-
   test('Should call LoadSurveys with correct userId', async () => {
     const { sut, loadSurveysSpy } = makeSut()
     const httpRequest = mockRequest()

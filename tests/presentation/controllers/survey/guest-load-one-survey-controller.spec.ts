@@ -5,6 +5,7 @@ import { badRequest, forbidden, ok, serverError } from '@/presentation/helpers/h
 import { ValidationSpy } from '#/presentation/_mocks'
 import { GuestLoadOneSurveySpy } from '#/domain/mocks/usecases'
 import { mockSurveyToGuestContext } from '#/domain/mocks/models'
+import { AccessDeniedError } from '@/application/errors'
 
 const mockRequest = (): GuestLoadOneSurvey.Params => ({
   surveyId: 'any_survey_id'
@@ -33,6 +34,12 @@ describe('LoadSurveys Controller', () => {
     const request = mockRequest()
     await sut.handle(request)
     expect(validationSpy.input).toBe(request)
+  })
+
+  test('Should return 403 if accessToken or role is provided', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handle({ ...mockRequest(), role: 'basic_user' })
+    expect(httpResponse).toEqual(forbidden(new AccessDeniedError()))
   })
 
   test('Should return 400 if Validation returns an error', async () => {

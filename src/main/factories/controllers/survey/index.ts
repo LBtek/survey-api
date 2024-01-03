@@ -1,6 +1,7 @@
 export * from './add-survey'
 export * from './load-one-survey-validation-factory'
 export * from './guest-load-one-survey-controller-factory'
+export * from './guest-load-all-surveys-controller-factory'
 export * from './user-load-one-survey-controller-factory'
 export * from './user-load-all-surveys-controller-factory'
 export * from './publisher-load-surveys-controller-factory'

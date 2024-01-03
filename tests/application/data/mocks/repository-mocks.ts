@@ -24,9 +24,10 @@ import {
   type ISaveGuestRepository,
   type IGuestSaveSurveyVoteRepository,
   type GuestSurveyVoteRepository,
-  type IPublisherLoadSurveysRepository
+  type IPublisherLoadSurveysRepository,
+  type IGuestLoadAllSurveysRepository
 } from '@/application/data/protocols/repositories'
-import { mockAccount, mockSurvey, mockLoadOneSurveyRepositoryResult, mockUserLoadAllSurveysRepositoryResult, mockLoadGuestsByAgentId, mockGuest } from '#/domain/mocks/models'
+import { mockAccount, mockSurvey, mockLoadOneSurveyRepositoryResult, mockUserLoadAllSurveysRepositoryResult, mockLoadGuestsByAgentId, mockGuest, mockAllSurveysToGuestContext } from '#/domain/mocks/models'
 
 export class AddAccountRepositorySpy implements IAddUserAccountRepository {
   addAccountData: AccountRepository.AddUserAccount.Params
@@ -193,11 +194,19 @@ export class PulisherLoadSurveysRepositorySpy implements IPublisherLoadSurveysRe
   }
 }
 
+export class GuestLoadAllSurveysRepositorySpy implements IGuestLoadAllSurveysRepository {
+  surveys = mockAllSurveysToGuestContext()
+
+  async guestLoadAllSurveys (): Promise<SurveyRepository.GuestLoadAllSurveys.Result> {
+    return this.surveys
+  }
+}
+
 export class UserLoadAllSurveysRepositorySpy implements IUserLoadAllSurveysRepository {
   surveys = mockUserLoadAllSurveysRepositoryResult()
   userId: string
 
-  async loadAll (data: SurveyRepository.UserLoadAllSurveys.Params): Promise<SurveyRepository.UserLoadAllSurveys.Result> {
+  async userLoadAllSurveys (data: SurveyRepository.UserLoadAllSurveys.Params): Promise<SurveyRepository.UserLoadAllSurveys.Result> {
     this.userId = data.userId
     return this.surveys
   }

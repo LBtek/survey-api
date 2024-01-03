@@ -16,12 +16,18 @@ export namespace PublisherAddSurvey {
   export type Result = 'Ok' | AnswersLengthError
 }
 
+export namespace GuestLoadAllSurveys {
+  export type Result = Array<Omit<Survey.Model, 'answers'>
+  & { answers: Array<Survey.BaseDataModel.BaseAnswer & { percent: number }> }>
+}
+
 export namespace GuestLoadOneSurvey {
   export type Params = {
     surveyId: SurveyID
   }
 
-  export type Result = Survey.Model
+  export type Result = Omit<Survey.Model, 'answers'>
+  & { answers: Array<Survey.BaseDataModel.BaseAnswer & { percent: number }> }
 }
 
 export namespace UserLoadOneSurvey {

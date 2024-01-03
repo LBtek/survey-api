@@ -34,6 +34,10 @@ export namespace SurveyRepository {
     & { answers: Array<Omit<AnswerToUserContext, 'percent'>> }>
   }
 
+  export namespace GuestLoadAllSurveys {
+    export type Result = Survey.Model[]
+  }
+
   export namespace UpdateSurvey {
     export type Params = {
       userOrGuestId: UserID | GuestID
@@ -66,7 +70,11 @@ export interface ILoadOneSurveyRepository {
 }
 
 export interface IUserLoadAllSurveysRepository {
-  loadAll: (data: SurveyRepository.UserLoadAllSurveys.Params) => Promise<SurveyRepository.UserLoadAllSurveys.Result>
+  userLoadAllSurveys: (data: SurveyRepository.UserLoadAllSurveys.Params) => Promise<SurveyRepository.UserLoadAllSurveys.Result>
+}
+
+export interface IGuestLoadAllSurveysRepository {
+  guestLoadAllSurveys: () => Promise<SurveyRepository.GuestLoadAllSurveys.Result>
 }
 
 export interface IUserUpdateSurveyRepository {

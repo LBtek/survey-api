@@ -7,7 +7,8 @@ import {
   type ILoadSurveyByIdRepository,
   type LoadSurveyByIdParams,
   type LoadSurveyByIdResult,
-  type IPublisherLoadSurveysRepository
+  type IPublisherLoadSurveysRepository,
+  type IGuestLoadAllSurveysRepository
 } from '@/application/data/protocols/repositories'
 import { MongoHelper } from './helpers/mongo-helper'
 import { MongoAggregateQueryBuilder } from './helpers/query-builder'
@@ -94,7 +95,7 @@ const makeFindSurveysQuery = (id: UserID | GuestID, type: 'user' | 'guest', surv
   return query
 }
 
-export class SurveyMongoRepository implements IPublisherAddSurveyRepository, ILoadOneSurveyRepository, IUserLoadAllSurveysRepository, ILoadSurveyByIdRepository, IUserUpdateSurveyRepository, IPublisherLoadSurveysRepository {
+export class SurveyMongoRepository implements IPublisherAddSurveyRepository, ILoadOneSurveyRepository, IGuestLoadAllSurveysRepository, IUserLoadAllSurveysRepository, ILoadSurveyByIdRepository, IUserUpdateSurveyRepository, IPublisherLoadSurveysRepository {
   async add (surveyData: SurveyRepository.PublisherAddSurvey.Params): Promise<SurveyRepository.PublisherAddSurvey.Result> {
     const surveyCollection = await MongoHelper.getCollection('surveys')
     const result = await surveyCollection.insertOne(surveyData)
@@ -104,7 +105,17 @@ export class SurveyMongoRepository implements IPublisherAddSurveyRepository, ILo
     }
   }
 
-  async loadAll (data: SurveyRepository.UserLoadAllSurveys.Params): Promise<SurveyRepository.UserLoadAllSurveys.Result> {
+  async guestLoadAllSurveys (): Promise<SurveyRepository.GuestLoadAllSurveys.Result> {
+    const surveysCollection = await MongoHelper.getCollection('surveys')
+    const surveys = (await surveysCollection.find({}).toArray()).map(survey => {
+      const s = { ...survey }
+      delete s.publisherAccountId
+      return s
+    })
+    return MongoHelper.mapManyDocumentsWithId(surveys)
+  }
+
+  async userLoadAllSurveys (data: SurveyRepository.UserLoadAllSurveys.Params): Promise<SurveyRepository.UserLoadAllSurveys.Result> {
     const surveysCollection = await MongoHelper.getCollection('surveys')
     const query = makeFindSurveysQuery(data.userId, 'user')
     const surveys = await surveysCollection.aggregate(query).toArray()

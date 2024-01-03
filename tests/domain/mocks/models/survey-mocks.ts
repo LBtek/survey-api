@@ -85,6 +85,11 @@ export const mockSurveyToGuestContext = (): GuestLoadOneSurvey.Result => ({
   })
 })
 
+export const mockAllSurveysToGuestContext = (): GuestLoadOneSurvey.Result[] => {
+  const surveys = [mockSurveyToGuestContext(), mockSurveyToGuestContext()]
+  return surveys
+}
+
 export const mockSurveyToUserContext = (): UserLoadOneSurvey.Result => ({
   ...mockLoadOneSurveyRepositoryResult('user') as UserLoadOneSurvey.Result,
   answers: mockLoadOneSurveyRepositoryResult('user').answers.map((answer: AnswerToUserContext) => {

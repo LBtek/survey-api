@@ -101,7 +101,7 @@ describe('Survey Mongo Repository', () => {
     })
   })
 
-  describe('loadAll()', () => {
+  describe('userLoadAll()', () => {
     test('Should load all surveys on success', async () => {
       const { user } = await makeAccount()
       const userId = user.id
@@ -136,7 +136,7 @@ describe('Survey Mongo Repository', () => {
       })
 
       const { sut } = makeSut()
-      const surveys = await sut.loadAll({ userId })
+      const surveys = await sut.userLoadAllSurveys({ userId })
       expect(surveys.length).toBe(2)
       expect(surveys[0].id).toBeTruthy()
       expect(surveys[1].id).toBeTruthy()
@@ -152,7 +152,7 @@ describe('Survey Mongo Repository', () => {
     test('Should load empty list', async () => {
       const { sut } = makeSut()
       const { user } = await makeAccount()
-      const surveys = await sut.loadAll({ userId: user.id })
+      const surveys = await sut.userLoadAllSurveys({ userId: user.id })
       expect(surveys.length).toBe(0)
     })
   })
@@ -166,6 +166,23 @@ describe('Survey Mongo Repository', () => {
       expect(surveyLoaded).toBeTruthy()
       expect(surveyLoaded.id).toBeTruthy()
       expect(surveyLoaded.id).toBe(surveyId)
+    })
+  })
+
+  describe('guestLoadAllSurveys()', () => {
+    test('Should guest load all surveys on success', async () => {
+      const { sut } = makeSut()
+      let surveysLoaded = await sut.guestLoadAllSurveys()
+      expect(surveysLoaded.length).toBe(0)
+
+      await surveyCollection.insertOne(mockAddSurveyRepositoryParams())
+      surveysLoaded = await sut.guestLoadAllSurveys()
+      expect(surveysLoaded.length).toBe(1)
+      expect(surveysLoaded[0].id).toBeTruthy()
+
+      await surveyCollection.insertOne(mockAddSurveyRepositoryParams())
+      surveysLoaded = await sut.guestLoadAllSurveys()
+      expect(surveysLoaded.length).toBe(2)
     })
   })
 

@@ -129,6 +129,21 @@ describe('Survey Routes', () => {
     })
   })
 
+  describe('GET /guest/surveys', () => {
+    test('Should return 204 on load surveys without accessToken', async () => {
+      await request(app)
+        .get('/api/guest/surveys')
+        .expect(204)
+    })
+
+    test('Should return 200 on load surveys without accessToken', async () => {
+      await surveyCollection.insertOne(surveyToInsertOnDatabase)
+      await request(app)
+        .get('/api/guest/surveys')
+        .expect(200)
+    })
+  })
+
   describe('GET /user/surveys', () => {
     test('Should return 403 on load surveys without accessToken', async () => {
       await request(app)

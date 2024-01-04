@@ -2,10 +2,14 @@ import { type UserID, type SurveyID, type Survey } from '../entities'
 import { type AccountID } from '@/application/entities'
 import { type AnswersLengthError } from '../errors'
 
-export type AnswerToUserContext =
+export type AnswerWithPercent =
   Survey.BaseDataModel.BaseAnswer & {
-    isCurrentAccountAnswer: boolean
     percent: number
+  }
+
+export type AnswerToUserContext =
+  AnswerWithPercent & {
+    isCurrentAccountAnswer: boolean
   }
 
 export namespace PublisherAddSurvey {
@@ -18,7 +22,7 @@ export namespace PublisherAddSurvey {
 
 export namespace GuestLoadAllSurveys {
   export type Result = Array<Omit<Survey.Model, 'answers'>
-  & { answers: Array<Survey.BaseDataModel.BaseAnswer & { percent: number }> }>
+  & { answers: AnswerWithPercent[] }>
 }
 
 export namespace GuestLoadOneSurvey {
@@ -27,7 +31,7 @@ export namespace GuestLoadOneSurvey {
   }
 
   export type Result = Omit<Survey.Model, 'answers'>
-  & { answers: Array<Survey.BaseDataModel.BaseAnswer & { percent: number }> }
+  & { answers: AnswerWithPercent[] }
 }
 
 export namespace UserLoadOneSurvey {
@@ -49,6 +53,14 @@ export namespace UserLoadAllSurveys {
     userId: UserID
   }
   export type Result = UserLoadOneSurvey.Result[]
+}
+
+export namespace PublisherLoadOneSurvey {
+  export type Params = {
+    surveyId: SurveyID
+    publisherAccountId: AccountID
+  }
+  export type Result = Survey.ModelForPubisher
 }
 
 export namespace PublisherLoadSurveys {

@@ -34,7 +34,10 @@ const surveyToInsertOnDatabase = {
 
 const authenticatedUserAccounts = new RedisAuthenticatedUserAccountsRepository()
 
-const makeAccessToken = async (role: Account.BaseDataModel.Roles): Promise<string> => {
+const makeAccessToken = async (role: Account.BaseDataModel.Roles): Promise<{
+  accessToken: string
+  accountId: string
+}> => {
   const user = await userCollection.findOneAndReplace({}, {
     name: 'Luan',
     email: 'teste123@gmail.com'
@@ -46,22 +49,27 @@ const makeAccessToken = async (role: Account.BaseDataModel.Roles): Promise<strin
     role
   }, { upsert: true, returnDocument: 'after' })
 
+  const accountId = account.value._id.toString()
+
   const accessToken = sign({
     userId: user.value._id.toString(),
-    accountId: account.value._id.toString(),
+    accountId,
     willExpireIn: (Date.now() / 1000) + 180,
     role
   }, env.api.jwtSecret)
 
   await authenticatedUserAccounts.authenticate({
     ip: '::ffff:127.0.0.1',
-    accountId: account.value._id.toString(),
+    accountId,
     user: MongoHelper.mapOneDocumentWithId(user.value) as User.Model,
     accessToken,
     role
   })
 
-  return accessToken
+  return {
+    accessToken,
+    accountId
+  }
 }
 
 describe('Survey Routes', () => {
@@ -93,10 +101,10 @@ describe('Survey Routes', () => {
     })
 
     test('Should return 204 on add survey with valid accessToken', async () => {
-      const accessToken = await makeAccessToken('publisher')
+      const access = await makeAccessToken('publisher')
       await request(app)
         .post('/api/publisher/surveys')
-        .set('x-access-token', accessToken)
+        .set('x-access-token', access.accessToken)
         .send(surveyRequest)
         .expect(204)
     })
@@ -111,19 +119,19 @@ describe('Survey Routes', () => {
     })
 
     test('Should return 403 on load surveys with invalid accessToken role', async () => {
-      const accessToken = await makeAccessToken('basic_user')
+      const access = await makeAccessToken('basic_user')
       await request(app)
         .get('/api/publisher/surveys')
-        .set('x-access-token', accessToken)
+        .set('x-access-token', access.accessToken)
         .send()
         .expect(403)
     })
 
     test('Should return 204 on add survey with valid accessToken', async () => {
-      const accessToken = await makeAccessToken('publisher')
+      const access = await makeAccessToken('publisher')
       await request(app)
         .get('/api/publisher/surveys')
-        .set('x-access-token', accessToken)
+        .set('x-access-token', access.accessToken)
         .send()
         .expect(204)
     })
@@ -152,19 +160,19 @@ describe('Survey Routes', () => {
     })
 
     test('Should return 204 on load surveys with valid accessToken', async () => {
-      const accessToken = await makeAccessToken('basic_user')
+      const access = await makeAccessToken('basic_user')
       await request(app)
         .get('/api/user/surveys')
-        .set('x-access-token', accessToken)
+        .set('x-access-token', access.accessToken)
         .expect(204)
     })
 
     test('Should return 200 on load surveys with valid accessToken', async () => {
       await surveyCollection.insertOne(surveyToInsertOnDatabase)
-      const accessToken = await makeAccessToken('basic_user')
+      const access = await makeAccessToken('basic_user')
       await request(app)
         .get('/api/user/surveys')
-        .set('x-access-token', accessToken)
+        .set('x-access-token', access.accessToken)
         .expect(200)
     })
   })
@@ -178,10 +186,30 @@ describe('Survey Routes', () => {
 
     test('Should return 200 on load survey with valid accessToken', async () => {
       const res = await surveyCollection.insertOne(surveyToInsertOnDatabase)
-      const accessToken = await makeAccessToken('basic_user')
+      const access = await makeAccessToken('basic_user')
       await request(app)
         .get(`/api/user/surveys/${res.insertedId.toString()}`)
-        .set('x-access-token', accessToken)
+        .set('x-access-token', access.accessToken)
+        .expect(200)
+    })
+  })
+
+  describe('GET /publisher/surveys/:surveyId', () => {
+    test('Should return 403 on load survey without accessToken', async () => {
+      await request(app)
+        .get('/api/publisher/surveys/survey_id')
+        .expect(403)
+    })
+
+    test('Should return 200 on load survey with valid accessToken', async () => {
+      const access = await makeAccessToken('publisher')
+      const res = await surveyCollection.insertOne({
+        ...surveyToInsertOnDatabase,
+        publisherAccountId: access.accountId
+      })
+      await request(app)
+        .get(`/api/publisher/surveys/${res.insertedId.toString()}`)
+        .set('x-access-token', access.accessToken)
         .expect(200)
     })
   })

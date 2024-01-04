@@ -4,7 +4,9 @@ import {
   type AnswerToUserContext,
   type UserLoadOneSurvey,
   type UserLoadAllSurveys,
-  type GuestLoadOneSurvey
+  type GuestLoadOneSurvey,
+  type PublisherLoadOneSurvey,
+  type AnswerWithPercent
 } from '@/domain/models'
 import { type SurveyRepository } from '@/application/data/protocols/repositories'
 
@@ -79,7 +81,7 @@ export const mockUserLoadAllSurveysRepositoryResult = (): SurveyRepository.UserL
 
 export const mockSurveyToGuestContext = (): GuestLoadOneSurvey.Result => ({
   ...mockLoadOneSurveyRepositoryResult('guest') as GuestLoadOneSurvey.Result,
-  answers: mockLoadOneSurveyRepositoryResult('guest').answers.map((answer: AnswerToUserContext) => {
+  answers: mockLoadOneSurveyRepositoryResult('guest').answers.map((answer: AnswerWithPercent) => {
     answer.percent = 0
     return answer
   })
@@ -89,6 +91,14 @@ export const mockAllSurveysToGuestContext = (): GuestLoadOneSurvey.Result[] => {
   const surveys = [mockSurveyToGuestContext(), mockSurveyToGuestContext()]
   return surveys
 }
+
+export const mockSurveyToPublisherContext = (): PublisherLoadOneSurvey.Result => ({
+  ...mockSurvey(),
+  answers: mockSurvey().answers.map((answer: AnswerWithPercent) => {
+    answer.percent = 0
+    return answer
+  })
+})
 
 export const mockSurveyToUserContext = (): UserLoadOneSurvey.Result => ({
   ...mockLoadOneSurveyRepositoryResult('user') as UserLoadOneSurvey.Result,

@@ -1,22 +1,25 @@
 [![Coverage Status](https://coveralls.io/repos/github/LBtek/clean-ts-api/badge.svg?branch=main)](https://coveralls.io/github/LBtek/clean-ts-api?branch=main)
 [![Node.js CI](https://github.com/LBtek/clean-ts-api/actions/workflows/main.yml/badge.svg)](https://github.com/LBtek/clean-ts-api/actions/workflows/main.yml)
 
-# **Clean Node API**
+# **Survey API**
 
-Essa API faz parte do treinamento do professor Rodrigo Manguinho (Mango) na Udemy.
-
-O objetivo do treinamento é mostrar como criar uma API com uma arquitetura bem definida e desacoplada, utilizando TDD (programação orientada a testes) como metodologia de trabalho, Clean Architecture para fazer a distribuição de responsabilidades em camadas, sempre seguindo os princípios do SOLID e, sempre que possível, aplicando Design Patterns para resolver alguns problemas comuns.
-
-## [**Link para a documentação da API**](http://fordevs.herokuapp.com/api-docs)
-
-> ## APIs construídas no treinamento
+> ## Endpoints construídos
 
 1. [Cadastro](./requirements/app-services/signup.md)
 2. [Login](./requirements/app-services/login.md)
+
 3. [Criar enquete](./requirements/usecases/publisher-context/add-survey.md)
-4. [Listar enquetes](./requirements/usecases/user-context/load-surveys.md)
-5. [Responder enquete](./requirements/usecases/user-context/save-survey-vote.md)
-6. [Resultado da enquete](./requirements/usecases/user-context/load-survey-vote.md)
+
+4. [Listar enquetes](./requirements/usecases/publisher-context/load-surveys.md)
+5. [Listar enquetes](./requirements/usecases/user-context/load-surveys.md)
+6. [Listar enquetes](./requirements/usecases/guest-context/load-surveys.md)
+
+7. [Responder enquete](./requirements/usecases/user-context/save-survey-vote.md)
+8. [Responder enquete](./requirements/usecases/guest-context/save-survey-vote.md)
+
+9. [Ver resultado de uma enquete](./requirements/usecases/guest-context/load-survey.md)
+10. [Ver resultado de uma enquete](./requirements/usecases/user-context/load-survey.md)
+11. [Ver resultado de uma enquete](./requirements/usecases/publisher-context/load-survey.md)
 
 > ## Princípios
 
@@ -74,6 +77,7 @@ O objetivo do treinamento é mostrar como criar uma API com uma arquitetura bem 
 * Faker
 * Coveralls
 * Validator
+* Zod
 * Express
 * Apollo Server Express
 * Graphql
@@ -83,7 +87,6 @@ O objetivo do treinamento é mostrar como criar uma API com uma arquitetura bem 
 * Lint Staged
 * Eslint
 * Standard Javascript Style
-* Sucrase
 * Nodemon
 * Rimraf
 * In-Memory MongoDb Server
@@ -103,8 +106,8 @@ O objetivo do treinamento é mostrar como criar uma API com uma arquitetura bem 
 * Segurança (Hashing, Encryption e Encoding)
 * CORS
 * Middlewares
-* Nível de Acesso nas Rotas (Admin, User e Anônimo)
-* Deploy no Heroku
+* Nível de Acesso nas Rotas (Publicador, Usuário Básico e Convidado)
+* Deploy com PM2 como balanceador de carga
 * Servir Arquivos Estáticos
 
 > ## Features do GraphQL

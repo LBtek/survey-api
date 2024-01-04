@@ -34,6 +34,9 @@ export const userLoadOneSurveyPath = {
       204: {
         description: 'Enquete não encontrada'
       },
+      400: {
+        $ref: '#/components/badRequest'
+      },
       403: {
         $ref: '#/components/forbidden'
       },

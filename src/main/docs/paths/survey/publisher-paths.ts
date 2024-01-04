@@ -66,3 +66,42 @@ export const publisherLoadSurveysPath = {
     }
   }
 }
+
+export const publisherLoadOneSurveyPath = {
+  get: {
+    security: [{
+      apiKeyAuth: []
+    }],
+    tags: ['Enquetes'],
+    summary: 'API para um publicador buscar uma de suas enquetes',
+    responses: {
+      200: {
+        description: 'Sucesso',
+        content: {
+          'application/json': {
+            schema: {
+              $ref: '#/schemas/surveyForPublisher'
+            },
+            examples: {
+              example01: {
+                value: surveyForPublisherExample
+              }
+            }
+          }
+        }
+      },
+      204: {
+        description: 'Nenhuma enquete encontrada'
+      },
+      400: {
+        $ref: '#/components/badRequest'
+      },
+      403: {
+        $ref: '#/components/forbidden'
+      },
+      500: {
+        $ref: '#/components/serverError'
+      }
+    }
+  }
+}

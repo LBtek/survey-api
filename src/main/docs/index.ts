@@ -1,4 +1,4 @@
-import { loginPath, logoutPathByQuery, logoutPathByParams, logoutPathPostAndPut, publisherAddSurveyPath, publisherLoadSurveysPath, signUpPath, userLoadAllSurveysPath, userLoadOneSurveyPath, userSurveyVotePath, guestSurveyVotePath, guestLoadOneSurveyPath, guestLoadAllSurveysPath } from './paths'
+import { loginPath, logoutPathByQuery, logoutPathByParams, logoutPathPostAndPut, publisherAddSurveyPath, publisherLoadSurveysPath, signUpPath, userLoadAllSurveysPath, userLoadOneSurveyPath, userSurveyVotePath, guestSurveyVotePath, guestLoadOneSurveyPath, guestLoadAllSurveysPath, publisherLoadOneSurveyPath } from './paths'
 import { addSurveyParamsSchema, apiKeyAuthSchema, errorSchema, guestSurveyVoteParamsSchema, guestSurveyVoteSchema, loginParamsSchema, loginResponseSchema, logoutParamsSchema, publisherSurveySchema, signUpParamsSchema, surveyAnswerForBasicUserSchema, surveyAnswerSchema, surveyForBasicUserSchema, surveyIdParamSchema, surveySchema, surveyVoteParamsSchema, surveysForBasicUserSchema, surveysForGuestSchema, surveysForPublisherSchema } from './schemas'
 import { badRequest, serverError, unauthorized, forbidden } from './components'
 
@@ -24,6 +24,7 @@ export default {
     '/logout/{accessToken}': logoutPathByParams,
     '/logout?accessToken={accessToken}': logoutPathByQuery,
     '/publisher/surveys': { ...publisherAddSurveyPath, ...publisherLoadSurveysPath },
+    '/publisher/surveys/{surveyId}': publisherLoadOneSurveyPath,
     '/user/surveys': userLoadAllSurveysPath,
     '/user/surveys/{surveyId}': { ...userLoadOneSurveyPath, ...userSurveyVotePath },
     '/guest/surveys': guestLoadAllSurveysPath,

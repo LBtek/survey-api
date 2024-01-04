@@ -7,13 +7,15 @@ import {
   makeUserLoadAllSurveysController,
   makePublisherLoadSurveysController,
   makeGuestLoadOneSurveyController,
-  makeGuestLoadAllSurveysController
+  makeGuestLoadAllSurveysController,
+  makePublisherLoadOneSurveyController
 } from '../factories/controllers'
 import { authUser, authPublisher } from '../middlewares/auth'
 
 export default (router: Router): void => {
   router.post('/publisher/surveys', authPublisher, adaptRoute(makePublisherAddSurveyController()))
   router.get('/publisher/surveys', authPublisher, adaptRoute(makePublisherLoadSurveysController()))
+  router.get('/publisher/surveys/:surveyId', authPublisher, adaptRoute(makePublisherLoadOneSurveyController()))
   router.get('/guest/surveys/:surveyId', adaptRoute(makeGuestLoadOneSurveyController()))
   router.get('/guest/surveys', adaptRoute(makeGuestLoadAllSurveysController()))
   router.get('/user/surveys/:surveyId', authUser, adaptRoute(makeUserLoadOneSurveyController()))

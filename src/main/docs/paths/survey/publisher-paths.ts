@@ -74,6 +74,14 @@ export const publisherLoadOneSurveyPath = {
     }],
     tags: ['Enquetes'],
     summary: 'API para um publicador buscar uma de suas enquetes',
+    parameters: [{
+      name: 'surveyId',
+      in: 'path',
+      schema: {
+        $ref: '#/schemas/surveyIdParam'
+      },
+      required: true
+    }],
     responses: {
       200: {
         description: 'Sucesso',

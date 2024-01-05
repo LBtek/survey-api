@@ -28,7 +28,7 @@ export default {
     '/user/surveys': userLoadAllSurveysPath,
     '/user/surveys/{surveyId}': { ...userLoadOneSurveyPath, ...userSurveyVotePath },
     '/guest/surveys': guestLoadAllSurveysPath,
-    '/guest/surveys/{surveyId}': { ...guestSurveyVotePath, ...guestLoadOneSurveyPath }
+    '/guest/surveys/{surveyId}': { ...guestLoadOneSurveyPath, ...guestSurveyVotePath }
   },
   schemas: {
     signUpParams: signUpParamsSchema,

@@ -10,16 +10,16 @@
 
 3. [Criar enquete](./requirements/usecases/publisher-context/add-survey.md)
 
-4. [Listar enquetes](./requirements/usecases/publisher-context/load-surveys.md)
-5. [Listar enquetes](./requirements/usecases/user-context/load-surveys.md)
-6. [Listar enquetes](./requirements/usecases/guest-context/load-surveys.md)
+4. [Listar enquetes - Publicador](./requirements/usecases/publisher-context/load-surveys.md)
+5. [Listar enquetes - Usuário](./requirements/usecases/user-context/load-surveys.md)
+6. [Listar enquetes - Convidado](./requirements/usecases/guest-context/load-surveys.md)
 
-7. [Responder enquete](./requirements/usecases/user-context/save-survey-vote.md)
-8. [Responder enquete](./requirements/usecases/guest-context/save-survey-vote.md)
+7. [Responder enquete - Usuário](./requirements/usecases/user-context/save-survey-vote.md)
+8. [Responder enquete - Convidado](./requirements/usecases/guest-context/save-survey-vote.md)
 
-9. [Ver resultado de uma enquete](./requirements/usecases/guest-context/load-survey.md)
-10. [Ver resultado de uma enquete](./requirements/usecases/user-context/load-survey.md)
-11. [Ver resultado de uma enquete](./requirements/usecases/publisher-context/load-survey.md)
+9. [Ver resultado de uma enquete - Convidado](./requirements/usecases/guest-context/load-survey.md)
+10. [Ver resultado de uma enquete - Usuário](./requirements/usecases/user-context/load-survey.md)
+11. [Ver resultado de uma enquete - Publicador](./requirements/usecases/publisher-context/load-survey.md)
 
 > ## Princípios
 

@@ -3,7 +3,7 @@ import { type Email } from '@/domain/value-objects'
 import { type GuestSaveSurveyVote } from '@/domain/models'
 import { InvalidParamError } from '@/presentation/errors'
 import { GuestSaveSurveyVoteController } from '@/presentation/controllers/survey-vote'
-import { badRequest, ok, serverError } from '@/presentation/helpers/http/http-helper'
+import { badRequest, forbidden, ok, serverError } from '@/presentation/helpers/http/http-helper'
 import { CheckSurveyAnswerServiceSpy } from '#/presentation/_mocks/services-mocks'
 import { ValidationSpy } from '#/presentation/_mocks'
 import { GuestSaveSurveyVoteSpy, SaveGuestSpy } from '#/domain/mocks/usecases'
@@ -11,6 +11,7 @@ import { mockSurvey } from '#/domain/mocks/models'
 import MockDate from 'mockdate'
 import { CheckUserAccountByEmailRepositorySpy } from '#/application/data/mocks/repository-mocks'
 import { EmailInUseError } from '@/domain/errors'
+import { AccessDeniedError } from '@/application/errors'
 
 let originalError
 
@@ -74,6 +75,12 @@ describe('UserSaveSurveyVote Controller', () => {
 
   afterAll(() => {
     MockDate.reset()
+  })
+
+  test('Should return 403 if role is provided', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handle({ ...mockRequest(), role: 'basic_user' })
+    expect(httpResponse).toEqual(forbidden(new AccessDeniedError()))
   })
 
   test('Should call Validation with correct value', async () => {

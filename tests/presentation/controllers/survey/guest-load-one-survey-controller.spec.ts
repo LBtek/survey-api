@@ -36,7 +36,7 @@ describe('LoadSurveys Controller', () => {
     expect(validationSpy.input).toBe(request)
   })
 
-  test('Should return 403 if accessToken or role is provided', async () => {
+  test('Should return 403 if role is provided', async () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle({ ...mockRequest(), role: 'basic_user' })
     expect(httpResponse).toEqual(forbidden(new AccessDeniedError()))

@@ -1,7 +1,7 @@
 import { PublisherAddSurvey } from '@/application/data/usecases/survey'
 import { PublisherAddSurveyRepositorySpy } from '#/application/data/mocks/repository-mocks'
 import { mockAddSurveyParams, mockAddSurveyRepositoryParams } from '#/domain/mocks/models'
-import { AnswersLengthError } from '@/domain/errors'
+import { AnswersLengthError, DuplicatedAnswersError } from '@/domain/errors'
 
 type SutTypes = {
   sut: PublisherAddSurvey
@@ -31,11 +31,19 @@ describe('PublisherAddSurvey UseCase', () => {
     await expect(promisse).rejects.toThrow()
   })
 
-  test('Should return an AnswersLengthError if answers is an empty array', async () => {
+  test('Should return an AnswersLengthError if the survey has fewer than two answer choices', async () => {
     const { sut } = makeSut()
     const surveyToAdd = mockAddSurveyParams()
     surveyToAdd.answers = []
     const result = await sut.add(surveyToAdd)
     expect(result).toEqual(new AnswersLengthError())
+  })
+
+  test('Should return a DuplicatedAnswersError if the survey contains duplicate answers', async () => {
+    const { sut } = makeSut()
+    const surveyToAdd = mockAddSurveyParams()
+    surveyToAdd.answers[1].answer = surveyToAdd.answers[0].answer
+    const result = await sut.add(surveyToAdd)
+    expect(result).toEqual(new DuplicatedAnswersError())
   })
 })

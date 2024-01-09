@@ -1,6 +1,6 @@
 export class AnswersLengthError extends Error {
   constructor () {
-    super('Answers must not be empty')
+    super('Must have at least two answer options')
     this.name = 'AnswersLengthError'
   }
 }

@@ -60,5 +60,5 @@ jobs:
           npm install
           npm run build
           cd ../survey-api-deploy
-          docker compose down
+          docker compose down --volumes
           docker compose up --build -d

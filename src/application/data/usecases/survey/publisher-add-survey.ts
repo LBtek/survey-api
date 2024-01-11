@@ -10,12 +10,20 @@ export class PublisherAddSurvey implements IPublisherAddSurveyUsecase {
     if (len < 2) {
       return new AnswersLengthError()
     }
-    const freq = {}
+    const answersFreq = {}
+    const imagesFreq = {}
     while (len--) {
       const answer = addSurveyData.answers[len].answer.toLowerCase().trim()
-      freq[answer] = (freq[answer] as number || 0) + 1
+      const image = addSurveyData.answers[len].image?.toLowerCase().trim()
+      if (image) {
+        imagesFreq[image] = (imagesFreq[image] as number || 0) + 1
+      }
+      answersFreq[answer] = (answersFreq[answer] as number || 0) + 1
     }
-    if (Object.values(freq).some((n: number) => n > 1)) {
+    if (
+      Object.values(answersFreq).some((n: number) => n > 1) ||
+      Object.values(imagesFreq).some((n: number) => n > 1)
+    ) {
       return new DuplicatedAnswersError()
     }
     const addSurveyRepositoryData: SurveyRepository.PublisherAddSurvey.Params = {

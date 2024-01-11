@@ -42,8 +42,14 @@ describe('PublisherAddSurvey UseCase', () => {
   test('Should return a DuplicatedAnswersError if the survey contains duplicate answers', async () => {
     const { sut } = makeSut()
     const surveyToAdd = mockAddSurveyParams()
+    const oldAnswer = surveyToAdd.answers[1].answer
     surveyToAdd.answers[1].answer = surveyToAdd.answers[0].answer
-    const result = await sut.add(surveyToAdd)
+    let result = await sut.add(surveyToAdd)
+    expect(result).toEqual(new DuplicatedAnswersError())
+
+    surveyToAdd.answers[1].answer = oldAnswer
+    surveyToAdd.answers[1].image = surveyToAdd.answers[0].image
+    result = await sut.add(surveyToAdd)
     expect(result).toEqual(new DuplicatedAnswersError())
   })
 })

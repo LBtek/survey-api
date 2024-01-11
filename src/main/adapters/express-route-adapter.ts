@@ -13,7 +13,7 @@ export const adaptRoute = (controller: IController) => {
       userId: req.userId || null,
       accountId: req.accountId || null,
       userAgent: req.headers?.['user-agent'] || null,
-      guestAgentId: req.guestAgentId || null,
+      guestAgentId: req.filteredData.guestAgentId || null,
       role: req.role || req.body.role || null
     }
 

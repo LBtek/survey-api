@@ -1,6 +1,6 @@
 import { PublisherLoadSurveys } from '@/application/data/usecases/survey'
 import { PulisherLoadSurveysRepositorySpy } from '#/application/data/mocks/repository-mocks'
-import { mockSurvey } from '#/domain/mocks/models'
+import { mockSurveyToPublisherContext } from '#/domain/mocks/models'
 
 type SutTypes = {
   sut: PublisherLoadSurveys
@@ -28,7 +28,7 @@ describe('LoadSurveys', () => {
   test('Should return surveys on success', async () => {
     const { sut } = makeSut()
     const survey = await sut.load(sutLoadParams)
-    expect(survey).toEqual([mockSurvey()])
+    expect(survey).toEqual([mockSurveyToPublisherContext()])
   })
 
   test('Should throw if LoadSurveysRepository throws', async () => {

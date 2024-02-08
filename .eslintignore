@@ -3,4 +3,6 @@ dist
 coverage
 **/*.http
 **/*.html
+**/*.handlebars
+**/*.hbs
 *config.js

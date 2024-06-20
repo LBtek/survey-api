@@ -47,6 +47,7 @@ services:
       - PORT=7000
     volumes: 
       - ./dist/:/usr/src/survey-api/dist/
+      - ./duty-roster/:/usr/src/survey-api/duty-roster/
     ports: 
       - 7000
       - '9222:9222'

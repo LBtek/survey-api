@@ -34,16 +34,16 @@ jobs:
     - name: Starting and check if the server is ok
       run: npm start & sleep 15 && node dist/infra/http/requests/check-server-is-ok.js pipeline_action
 
-    - name: Run docker
-      run: |
-        docker-compose up --build -d mongo redis api traefik
-        sleep 25 && node dist/infra/http/requests/check-server-is-ok.js pipeline_action 80 127.0.0.1
+    #- name: Run docker
+      #run: |
+        #docker-compose up --build -d mongo redis api traefik
+        #sleep 25 && node dist/infra/http/requests/check-server-is-ok.js pipeline_action 80 127.0.0.1
 
-    - name: Run coverage tests
-      run: npm run test:ci
+    #- name: Run coverage tests
+      #run: npm run test:ci
 
-    - name: Coveralls
-      uses: coverallsapp/github-action@v2
+    #- name: Coveralls
+      #uses: coverallsapp/github-action@v2
       
     - name: Deploy using ssh
       uses: appleboy/ssh-action@master

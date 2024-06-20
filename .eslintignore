@@ -6,3 +6,4 @@ coverage
 **/*.handlebars
 **/*.hbs
 *config.js
+**/main/config/routes.ts

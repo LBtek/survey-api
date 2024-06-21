@@ -11,7 +11,7 @@ function generateDuties(year, start, end, employees, bailiffs, vacation, vacatio
   const entries = insertEmployees(splitYear(year, start, end), employees, lastDaysWorkedEmp, vacation, bail, empl, year)
   const entries2 = insertEmployees(splitYear(year, start, end), bailiffs, lastDaysWorkedPO, vacationPO, bail, empl, year)
 
-  let obj = []
+  let arr = []
 
   entries.forEach((el, id) => {
     const month = el[0]
@@ -23,13 +23,13 @@ function generateDuties(year, start, end, employees, bailiffs, vacation, vacatio
         set.add(e.toString())
         set.add(entries2[id][1][idx][i].toString())
       })
-      return Array.from(set)
+      return { duty: Array.from(set) }
     })
 
-    obj.push([month, weeks])
+    arr.push({ month, duties: weeks })
   })
 
-  return obj
+  return { months: arr }
 }
 
 module.exports = generateDuties
